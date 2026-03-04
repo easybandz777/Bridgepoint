@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-charcoal: #1a1a1a;
+  --color-charcoal-light: #2a2a2a;
+  --color-warm-white: #f5f2ed;
+  --color-warm-white-dark: #ebe7e0;
+  --color-gold: #b8956a;
+  --color-gold-light: #d4b896;
+  --color-gold-dark: #9a7a54;
+  --color-slate: #4a4a4a;
+  --color-slate-light: #6a6a6a;
+  --color-cream: #faf8f5;
+
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-warm-white);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-gold);
+  color: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Gold divider utility */
+.gold-rule {
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--color-gold);
+  margin: 0 auto;
+}
+
+.gold-rule-left {
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--color-gold);
+}
+
+/* Subtle noise texture overlay for sections */
+.texture-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* Smooth image load */
+img {
+  max-width: 100%;
+  height: auto;
+  transition: opacity 0.3s ease;
+}
