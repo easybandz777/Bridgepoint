@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { ArrowRight, Check } from 'lucide-react';
 import { AnimatedSection } from '@/components/shared/animated-section';
-import { IMAGES } from '@/lib/images';
 
-const U = (id: string, w = 800) =>
-    `https://images.unsplash.com/photo-${id}?w=${w}&q=80&fit=crop`;
+// ── Real gallery photo paths ─────────────────────────────────────────────────
+const FLOORING = (n: string) => `/images/gallery/flooring/${n}`;
+const BATH = (n: string) => `/images/gallery/bathrooms/${n}`;
 
 interface ServiceSection {
     id: string;
@@ -33,11 +33,11 @@ const SECTIONS: ServiceSection[] = [
             'Cabinet spray finishing — factory quality',
         ],
         cta: { label: 'See Painting Services', href: '/painting' },
-        mainImage: IMAGES.interiorPainting,
+        mainImage: FLOORING('20230627_120713.jpg'),
         gallery: [
-            IMAGES.cabinetRefinishing,
-            IMAGES.exteriorPainting,
-            IMAGES.specialtyFinishes,
+            FLOORING('20230726_140032.jpg'),
+            FLOORING('20230728_163935.jpg'),
+            FLOORING('20230910_141320.jpg'),
         ],
         flip: false,
     },
@@ -53,11 +53,11 @@ const SECTIONS: ServiceSection[] = [
             'Luxury vinyl plank & tile',
         ],
         cta: { label: 'View Portfolio', href: '/portfolio' },
-        mainImage: U('1581858726788-d14f2c8cbdbd'),
+        mainImage: FLOORING('20200810_175717.jpg'),
         gallery: [
-            U('1558618666-fcd25c85cd64'),
-            U('1524758631624-e2822132304c'),
-            U('1600585154340-be6161a56a0c'),
+            FLOORING('20201007_133347.jpg'),
+            FLOORING('20210205_153641.jpg'),
+            FLOORING('20210417_143226.jpg'),
         ],
         flip: true,
     },
@@ -73,11 +73,11 @@ const SECTIONS: ServiceSection[] = [
             'Vanity, fixture & lighting install',
         ],
         cta: { label: 'Inquire About a Bath Remodel', href: '/contact' },
-        mainImage: IMAGES.bathroom,
+        mainImage: BATH('01.jpg'),
         gallery: [
-            U('1552321554-5fefe8c9ef14', 400),
-            U('1600566752353-2f46443f19b9', 400),
-            U('1600607687939-ce8a6c25118c', 400),
+            BATH('03.jpg'),
+            BATH('05.jpg'),
+            BATH('08.jpg'),
         ],
         flip: false,
     },
@@ -86,18 +86,18 @@ const SECTIONS: ServiceSection[] = [
         eyebrow: 'Cabinets · Counters · Full Remodels',
         title: 'Kitchen Remodels',
         description:
-            'Your kitchen should be as hardworking as it is beautiful. Whether it\'s cabinet painting, countertop replacement, or a complete gut renovation, we plan every detail and execute to an uncompromising standard.',
+            "Your kitchen should be as hardworking as it is beautiful. Whether it's cabinet painting, countertop replacement, or a complete gut renovation, we plan every detail and execute to an uncompromising standard.",
         features: [
             'Cabinet refinishing & refacing',
             'Countertop & backsplash replacement',
             'Full kitchen renovation coordination',
         ],
         cta: { label: 'Request a Kitchen Consultation', href: '/contact' },
-        mainImage: IMAGES.kitchen,
+        mainImage: BATH('10.jpg'),
         gallery: [
-            IMAGES.cabinetRefinishing,
-            U('1556911220-bff31c812dba', 400),
-            U('1556909114-f6e7ad7d3136', 400),
+            BATH('12.jpg'),
+            BATH('14.jpg'),
+            BATH('16.jpg'),
         ],
         flip: true,
     },

@@ -4,7 +4,10 @@ import Link from 'next/link';
 import { Lock, ArrowRight } from 'lucide-react';
 import { Section } from '@/components/ui/section';
 import { AnimatedSection } from '@/components/shared/animated-section';
-import { IMAGES } from '@/lib/images';
+
+const FULL_REMODEL_IMG = '/images/gallery/bathrooms/20.jpg';
+const CARPENTRY_IMG = '/images/gallery/flooring/20220806_101256.jpg';
+
 
 export function ExclusiveRemodeling() {
     return (
@@ -43,7 +46,7 @@ export function ExclusiveRemodeling() {
                         <Link href="/select-services" className="group block">
                             <div className="relative overflow-hidden">
                                 <img
-                                    src={IMAGES.fullRemodel}
+                                    src={FULL_REMODEL_IMG}
                                     alt="Full home remodel"
                                     className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
@@ -67,7 +70,7 @@ export function ExclusiveRemodeling() {
                         <Link href="/select-services" className="group block">
                             <div className="relative overflow-hidden">
                                 <img
-                                    src={IMAGES.customCarpentry}
+                                    src={CARPENTRY_IMG}
                                     alt="Custom carpentry and millwork"
                                     className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
