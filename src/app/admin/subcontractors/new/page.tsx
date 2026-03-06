@@ -41,15 +41,38 @@ export default function NewSubcontractorPage() {
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-
-        // Simulate API call to save subcontractor
-        // Normally this would POST to /api/subcontractors
-        setTimeout(() => {
-            // Once saved, redirect back to the directory or the new sub profile
+        try {
+            const res = await fetch('/api/subcontractors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    companyName,
+                    contactPerson: primaryContact,
+                    email,
+                    phone,
+                    address,
+                    trades: selectedTrades,
+                    status: 'Active',
+                    insuranceExpiry: insuranceExpiry || null,
+                    documents: [
+                        ...(hasW9 ? [{ id: `doc-${Date.now()}-w9`, type: 'W-9', filename: 'w9.pdf', url: '#', uploadedDate: new Date().toISOString().split('T')[0], verified: false }] : []),
+                        ...(hasCOI ? [{ id: `doc-${Date.now()}-coi`, type: 'COI', filename: 'coi.pdf', url: '#', uploadedDate: new Date().toISOString().split('T')[0], expiryDate: insuranceExpiry || null, verified: false }] : []),
+                        ...(hasMSA ? [{ id: `doc-${Date.now()}-msa`, type: 'Agreement', filename: 'msa.pdf', url: '#', uploadedDate: new Date().toISOString().split('T')[0], verified: false }] : []),
+                    ],
+                    metrics: { averageRating: 4.0, totalJobsCompleted: 0, reliabilityScore: 100 },
+                }),
+            });
+            const data = await res.json();
+            if (data.id) {
+                router.push(`/admin/subcontractors/${data.id}`);
+            } else {
+                router.push('/admin/subcontractors');
+            }
+        } catch {
             router.push('/admin/subcontractors');
-            router.refresh();
-        }, 1000);
+        }
     };
+
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
@@ -154,8 +177,8 @@ export default function NewSubcontractorPage() {
                                 type="button"
                                 onClick={() => toggleTrade(trade)}
                                 className={`px-4 py-3 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between ${selectedTrades.includes(trade)
-                                        ? 'bg-[#b8956a]/10 border-[#b8956a]/50 text-[#b8956a]'
-                                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white'
+                                    ? 'bg-[#b8956a]/10 border-[#b8956a]/50 text-[#b8956a]'
+                                    : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white'
                                     }`}
                             >
                                 {trade}
