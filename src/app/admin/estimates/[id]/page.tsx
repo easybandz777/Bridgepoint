@@ -4,9 +4,7 @@ import { ProposalDocument } from '@/components/admin/proposal-document';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-export function generateStaticParams() {
-    return SAMPLE_ESTIMATES.map(e => ({ id: e.id }));
-}
+export const dynamic = 'force-dynamic';
 
 export default async function EstimateDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
