@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
-const ADMIN_PASSWORD = 'bridgepoint2024';
+const ADMIN_USERNAME = 'Mark';
+const ADMIN_PASSWORD = 'wiley19!';
 const SESSION_KEY = 'bp_admin_auth';
 
 export function AdminAuth({ children }: { children: React.ReactNode }) {
     const [authed, setAuthed] = useState(false);
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [show, setShow] = useState(false);
     const [error, setError] = useState('');
@@ -25,11 +27,11 @@ export function AdminAuth({ children }: { children: React.ReactNode }) {
         setLoading(true);
         setError('');
         setTimeout(() => {
-            if (password === ADMIN_PASSWORD) {
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
                 sessionStorage.setItem(SESSION_KEY, 'true');
                 setAuthed(true);
             } else {
-                setError('Incorrect password. Please try again.');
+                setError('Incorrect username or password. Please try again.');
                 setPassword('');
             }
             setLoading(false);
@@ -69,16 +71,25 @@ export function AdminAuth({ children }: { children: React.ReactNode }) {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Username"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
+                                required
+                                autoFocus
+                            />
+                        </div>
                         <div className="relative">
                             <input
                                 type={show ? 'text' : 'password'}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Admin password"
-                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/25 text-sm
-                           focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all pr-12"
+                                placeholder="Password"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all pr-12"
                                 required
-                                autoFocus
                             />
                             <button
                                 type="button"
@@ -98,7 +109,7 @@ export function AdminAuth({ children }: { children: React.ReactNode }) {
 
                         <button
                             type="submit"
-                            disabled={loading || !password}
+                            disabled={loading || !password || !username}
                             className="w-full py-3.5 rounded-xl font-sans text-sm font-semibold uppercase tracking-[0.12em] transition-all cursor-pointer
                          disabled:opacity-40 disabled:cursor-not-allowed"
                             style={{ background: 'linear-gradient(135deg, #b8956a 0%, #9a7a54 100%)', color: 'white' }}
