@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Receipt, LogOut, Phone } from 'lucide-react';
+import { LayoutDashboard, FileText, Receipt, LogOut, Phone, X } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
@@ -12,7 +12,11 @@ const NAV = [
     { href: '/admin/invoices', label: 'Invoices', icon: Receipt, exact: false },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+    onClose?: () => void;
+}
+
+export function AdminSidebar({ onClose }: AdminSidebarProps) {
     const pathname = usePathname();
 
     function handleLogout() {
@@ -20,11 +24,15 @@ export function AdminSidebar() {
         window.location.reload();
     }
 
+    function handleNavClick() {
+        onClose?.();
+    }
+
     return (
         <aside className="w-64 min-h-screen bg-[#131313] border-r border-white/6 flex flex-col shrink-0">
             {/* Brand */}
-            <div className="px-6 py-7 border-b border-white/6">
-                <Link href="/admin">
+            <div className="px-6 py-6 border-b border-white/6 flex items-center justify-between">
+                <Link href="/admin" onClick={handleNavClick}>
                     <h1 className="font-serif text-xl font-bold text-white tracking-tight leading-none mb-0.5">
                         {SITE_CONFIG.name}
                     </h1>
@@ -32,6 +40,16 @@ export function AdminSidebar() {
                         Admin Portal
                     </p>
                 </Link>
+                {/* Mobile close button */}
+                {onClose && (
+                    <button
+                        onClick={onClose}
+                        aria-label="Close navigation"
+                        className="md:hidden w-8 h-8 flex items-center justify-center rounded-xl text-white/30 hover:text-white hover:bg-white/5 transition-all"
+                    >
+                        <X size={16} />
+                    </button>
+                )}
             </div>
 
             {/* Gold rule */}
@@ -49,8 +67,9 @@ export function AdminSidebar() {
                             <li key={href}>
                                 <Link
                                     href={href}
+                                    onClick={handleNavClick}
                                     className={cn(
-                                        'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
+                                        'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all',
                                         active
                                             ? 'bg-[#b8956a]/15 text-[#b8956a]'
                                             : 'text-white/45 hover:text-white/80 hover:bg-white/5'
@@ -75,7 +94,8 @@ export function AdminSidebar() {
                 <Link
                     href="/"
                     target="_blank"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/35 hover:text-white/65 hover:bg-white/5 transition-all"
+                    onClick={handleNavClick}
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-white/35 hover:text-white/65 hover:bg-white/5 transition-all"
                 >
                     <span className="text-white/25">↗</span>
                     View Live Site

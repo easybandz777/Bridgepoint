@@ -21,14 +21,14 @@ const sec = `bg-[#1a1a1a] border border-white/6 rounded-2xl p-6 mb-4`;
 function TemplatePicker({ onSelect }: { onSelect: (t: EstimateTemplate | null) => void }) {
     const [hovered, setHovered] = useState<string | null>(null);
     return (
-        <div className="p-8 max-w-4xl">
-            <div className="mb-10">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-4xl">
+            <div className="mb-8 sm:mb-10">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#b8956a] mb-2">Admin · Estimates</p>
-                <h1 className="font-serif text-3xl font-bold text-white mb-2">New Estimate</h1>
+                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white mb-2">New Estimate</h1>
                 <p className="text-white/40 text-sm">Choose a project type to pre-load a professional template, or start from scratch.</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 {ESTIMATE_TEMPLATES.map(t => (
                     <button key={t.id} onClick={() => onSelect(t)}
                         onMouseEnter={() => setHovered(t.id)} onMouseLeave={() => setHovered(null)}
@@ -234,10 +234,10 @@ export default function EstimateForm() {
             {/* Client Info */}
             <div className={sec}>
                 <h2 className="font-serif text-base font-bold text-white mb-5">Client Information</h2>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div><label className={lbl}>Client Name *</label><input className={inp} placeholder="John & Jane Smith" value={clientName} onChange={e => setClientName(e.target.value)} /></div>
                     <div><label className={lbl}>Company (optional)</label><input className={inp} placeholder="Acme Corp" value={clientCompany} onChange={e => setClientCompany(e.target.value)} /></div>
-                    <div className="col-span-2"><label className={lbl}>Street Address</label><input className={inp} placeholder="123 Main St" value={clientAddress} onChange={e => setClientAddress(e.target.value)} /></div>
+                    <div className="sm:col-span-2"><label className={lbl}>Street Address</label><input className={inp} placeholder="123 Main St" value={clientAddress} onChange={e => setClientAddress(e.target.value)} /></div>
                     <div><label className={lbl}>City</label><input className={inp} placeholder="Atlanta" value={clientCity} onChange={e => setClientCity(e.target.value)} /></div>
                     <div className="grid grid-cols-2 gap-3">
                         <div><label className={lbl}>State</label><input className={inp} placeholder="GA" value={clientState} onChange={e => setClientState(e.target.value)} /></div>
@@ -251,7 +251,7 @@ export default function EstimateForm() {
             {/* Project Details */}
             <div className={sec}>
                 <h2 className="font-serif text-base font-bold text-white mb-5">Project Details</h2>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="col-span-2"><label className={lbl}>Project Title *</label><input className={inp} placeholder="Interior Repaint — Smith Residence" value={projTitle} onChange={e => setProjTitle(e.target.value)} /></div>
                     <div className="col-span-2"><label className={lbl}>Project Address</label><input className={inp} placeholder="123 Main St, Atlanta, GA" value={projAddress} onChange={e => setProjAddress(e.target.value)} /></div>
                     <div className="col-span-2"><label className={lbl}>Scope of Work</label><textarea className={`${inp} resize-none`} rows={3} placeholder="Describe the work to be done..." value={projDesc} onChange={e => setProjDesc(e.target.value)} /></div>

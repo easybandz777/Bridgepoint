@@ -60,24 +60,24 @@ export default function EstimatesPage() {
     const pending = estimates.filter(e => e.status === 'Sent' || e.status === 'Draft').length;
 
     return (
-        <div className="p-8 max-w-5xl">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-5xl">
             {/* Header */}
-            <div className="mb-8 flex items-start justify-between">
+            <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#b8956a] mb-1">Admin</p>
-                    <h1 className="font-serif text-2xl font-bold text-white">Estimates & Proposals</h1>
+                    <h1 className="font-serif text-xl sm:text-2xl font-bold text-white">Estimates & Proposals</h1>
                 </div>
                 <div className="flex items-center gap-3">
                     {estimates.length > 0 && (
-                        <div className="bg-[#1a1a1a] border border-white/6 rounded-xl px-4 py-3 text-right">
+                        <div className="bg-[#1a1a1a] border border-white/6 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-right">
                             <p className="text-[10px] text-white/30 uppercase tracking-wide mb-0.5">Pipeline</p>
-                            <p className="font-serif text-base font-bold text-white">{fmt(total)}</p>
+                            <p className="font-serif text-sm sm:text-base font-bold text-white">{fmt(total)}</p>
                         </div>
                     )}
                     <Link href="/admin/estimates/new"
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wider transition-all"
+                        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wider transition-all whitespace-nowrap"
                         style={{ background: 'linear-gradient(135deg, #b8956a 0%, #9a7a54 100%)', color: 'white' }}>
-                        <Plus size={15} /> New Estimate
+                        <Plus size={15} /> New
                     </Link>
                 </div>
             </div>
@@ -117,7 +117,7 @@ export default function EstimatesPage() {
                             <EstimateCard estimate={estimate} />
                             <button
                                 onClick={() => deleteEstimate(estimate.id)}
-                                className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-white/30 hover:text-red-400 hover:bg-red-400/10 transition-all z-10"
+                                className="absolute top-3 right-3 sm:top-4 sm:right-4 opacity-100 sm:opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-white/30 hover:text-red-400 hover:bg-red-400/10 transition-all z-10"
                                 title="Delete estimate">
                                 <Trash2 size={14} />
                             </button>

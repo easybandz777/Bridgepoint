@@ -29,15 +29,15 @@ export default function AdminDashboard() {
     ];
 
     return (
-        <div className="p-8 max-w-6xl">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-6xl">
             {/* Page header */}
-            <div className="mb-8">
+            <div className="mb-6 sm:mb-8">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#b8956a] mb-1">Overview</p>
-                <h1 className="font-serif text-2xl font-bold text-white">Dashboard</h1>
+                <h1 className="font-serif text-xl sm:text-2xl font-bold text-white">Dashboard</h1>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-10">
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
                 <StatsCard
                     icon={DollarSign}
                     label="YTD Revenue Collected"
