@@ -187,7 +187,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <Footer />
-        {process.env.NODE_ENV === 'development' && <Agentation />}
+        <Agentation />
       </body>
     </html>
   );
