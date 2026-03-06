@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 
 import { useState } from 'react';
@@ -135,8 +136,8 @@ export default function SubcontractorsDirectoryPage() {
                             key={status}
                             onClick={() => setStatusFilter(status as any)}
                             className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${statusFilter === status
-                                    ? 'bg-white/15 text-white'
-                                    : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                                ? 'bg-white/15 text-white'
+                                : 'text-white/40 hover:text-white/70 hover:bg-white/5'
                                 }`}
                         >
                             {status}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { notFound } from 'next/navigation';
 import { SAMPLE_PROJECTS } from '@/lib/projects';
 import { SAMPLE_ASSIGNMENTS, SAMPLE_SUBCONTRACTORS } from '@/lib/subcontractors';

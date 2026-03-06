@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, Briefcase, User, Calendar, DollarSign } from 'lucide-react';
+import { ArrowLeft, Save, Briefcase, User, Calendar, DollarSign, FileText } from 'lucide-react';
 import { SAMPLE_ESTIMATES } from '@/lib/estimates';
 import { formatCurrency } from '@/lib/estimates';
 
@@ -65,8 +65,8 @@ export default function NewProjectPage() {
                             type="button"
                             onClick={() => { setSource('scratch'); setSelectedEstimateId(''); }}
                             className={`p-4 rounded-xl border text-left transition-all ${source === 'scratch'
-                                    ? 'border-[#b8956a] bg-[#b8956a]/10'
-                                    : 'border-white/10 hover:border-white/20 bg-white/5'
+                                ? 'border-[#b8956a] bg-[#b8956a]/10'
+                                : 'border-white/10 hover:border-white/20 bg-white/5'
                                 }`}
                         >
                             <div className="flex items-center gap-3 mb-2">
@@ -82,8 +82,8 @@ export default function NewProjectPage() {
                             type="button"
                             onClick={() => setSource('estimate')}
                             className={`p-4 rounded-xl border text-left transition-all ${source === 'estimate'
-                                    ? 'border-[#b8956a] bg-[#b8956a]/10'
-                                    : 'border-white/10 hover:border-white/20 bg-white/5'
+                                ? 'border-[#b8956a] bg-[#b8956a]/10'
+                                : 'border-white/10 hover:border-white/20 bg-white/5'
                                 }`}
                         >
                             <div className="flex items-center gap-3 mb-2">

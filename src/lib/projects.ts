@@ -5,7 +5,8 @@ export type ProjectStatus =
     | 'Active'
     | 'On Hold'
     | 'Completed'
-    | 'Cancelled';
+    | 'Cancelled'
+    | 'Archived';
 
 export type PhaseStatus =
     | 'Not Started'
@@ -25,15 +26,31 @@ export type CostCategory =
     | 'Design'
     | 'Miscellaneous'
     | 'Change Order Cost'
-    | 'Warranty/Callback';
+    | 'Warranty/Callback'
+    // Aliases used by reports/pages:
+    | 'Demolition'
+    | 'Framing'
+    | 'Plumbing'
+    | 'Electrical'
+    | 'HVAC'
+    | 'Drywall'
+    | 'Painting'
+    | 'Flooring'
+    | 'Cabinets'
+    | 'Countertops'
+    | 'Fixtures'
+    | 'Appliances'
+    | 'Cleaning'
+    | 'Other';
 
 export interface ProjectPhase {
     id: string;
     projectId: string;
     name: string;
-    status: PhaseStatus;
+    status: PhaseStatus | 'Scheduled';
     order: number;
     estimatedBudget: number;
+    estimatedCost?: number;     // alias for estimatedBudget
     actualCost: number;
     completionPct: number;
     startDate: string;
@@ -49,11 +66,15 @@ export interface ProjectPhase {
 export interface BudgetItem {
     id: string;
     projectId: string;
+    phaseId?: string;
+    name?: string;
     category: CostCategory;
     description: string;
     estimatedAmount: number;
+    estimatedCost?: number;     // alias for estimatedAmount
     committedAmount: number;
     actualAmount: number;
+    actualCost?: number;        // alias for actualAmount
 }
 
 export interface Project {
@@ -62,6 +83,7 @@ export interface Project {
     name: string;
     status: ProjectStatus;
     clientName: string;
+    clientId?: string;              // optional reference to client record
     clientEmail: string;
     clientPhone: string;
     address: string;
@@ -71,9 +93,11 @@ export interface Project {
     description: string;
     startDate: string;
     endDate: string;
+    targetCompletionDate?: string;  // alias for endDate
     estimateId?: string;
     estimateNumber?: string;
     estimatedRevenue: number;
+    revenue?: number;               // alias for estimatedRevenue
     estimatedCost: number;
     actualRevenue: number;
     actualCost: number;

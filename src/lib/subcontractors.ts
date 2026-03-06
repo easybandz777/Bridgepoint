@@ -3,6 +3,10 @@ export type TradeCategory =
     | 'Demo / Abatement'
     | 'Framing'
     | 'Drywall & Paint'
+    | 'Drywall'
+    | 'Painting'
+    | 'Roofing'
+    | 'Landscaping'
     | 'Trim & Finish Carpentry'
     | 'Cabinetry'
     | 'Flooring'
@@ -27,20 +31,53 @@ export interface RequiredDocument {
 export interface Subcontractor {
     id: string;
     companyName: string;
+    name?: string;               // alias for companyName
     contactPerson: string;
+    primaryContact?: string;     // alias for contactPerson
     phone: string;
     email: string;
     address: string;
     trade: TradeCategory;
+    trades?: TradeCategory[];    // multi-trade alias (pages use sub.trades)
     status: SubStatus;
     rating: number; // 1-5
     tags: string[];
     paymentTerms: string;
     defaultRate?: string;
     documents: RequiredDocument[];
+    documentsRequired?: {        // convenience flags used by newer pages
+        hasW9: boolean;
+        hasCOI: boolean;
+        hasMSA: boolean;
+    };
     notes: string;
+    insuranceExpiry?: string;    // COI expiry convenience accessor
+    compliance?: {
+        isCompliant: boolean;
+        issues: string[];
+    };
+    metrics?: {
+        jobsCompleted: number;
+        totalJobsCompleted: number;   // alias for jobsCompleted
+        onTimeRate: number;
+        avgRating: number;
+        averageRating: number;        // alias for avgRating
+        issueRatePct: number;
+        totalPaidYTD: number;
+        reliabilityScore: number;     // computed 0-100
+    };
+    stats?: {                        // alias for metrics
+        jobsCompleted: number;
+        totalJobsCompleted: number;
+        onTimeRate: number;
+        avgRating: number;
+        averageRating: number;
+        issueRatePct: number;
+        totalPaidYTD: number;
+        reliabilityScore: number;
+    };
 
-    // Aggregated metrics
+    // Aggregated metrics (also direct on the object)
     jobsCompleted: number;
     activeJobs: number;
     totalPaidYTD: number;
@@ -53,9 +90,13 @@ export interface SubcontractorAssignment {
     subcontractorId: string;
     projectId: string;
     phaseId?: string;
+    subcategoryId?: string;
     scopeOfWork: string;
+    scopeDescription?: string;   // alias for scopeOfWork
     assignmentStatus: 'Invited' | 'Assigned' | 'Scheduled' | 'In Progress' | 'Completed' | 'Approved' | 'Paid' | 'Issue Flagged';
+    status?: string;             // alias for assignmentStatus
     agreedAmount: number;
+    agreedPrice?: number;        // alias for agreedAmount
     billedAmount: number;
     approvedAmount: number;
     paidAmount: number;

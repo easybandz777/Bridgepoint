@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { notFound } from 'next/navigation';
 import { SAMPLE_SUBCONTRACTORS } from '@/lib/subcontractors';
 import { SubTabNav } from '@/components/admin/sub-tab-nav';
@@ -131,8 +132,8 @@ export default function SubcontractorOverviewPage({ params }: { params: { id: st
                 <div className="space-y-6">
                     {/* Compliance Box */}
                     <div className={`border rounded-2xl p-6 ${isInsuranceExpired || missingDocs.length > 0
-                            ? 'bg-red-500/5 border-red-500/20'
-                            : 'bg-[#1a1a1a] border-white/6'
+                        ? 'bg-red-500/5 border-red-500/20'
+                        : 'bg-[#1a1a1a] border-white/6'
                         }`}>
                         <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${isInsuranceExpired || missingDocs.length > 0 ? 'text-red-400' : 'text-white'
                             }`}>

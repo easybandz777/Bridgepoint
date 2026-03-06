@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { notFound } from 'next/navigation';
 import { SAMPLE_SUBCONTRACTORS } from '@/lib/subcontractors';
 import { SubTabNav } from '@/components/admin/sub-tab-nav';

@@ -9,18 +9,21 @@ export interface ChangeOrder {
     reason: string;
     status: ChangeOrderStatus;
     createdDate: string;
+    dateCreated?: string;           // alias for createdDate
     approvedDate?: string;
 
     // Financials
     customerPriceTarget: number;    // Amount charged to customer
+    customerAmount?: number;        // alias for customerPriceTarget
     internalCostImpact: number;     // Expected cost increase for us
+    internalCost?: number;          // alias for internalCostImpact
     subcontractorImpactId?: string; // If this increases a sub's PO
 
     customerApproved: boolean;
     internalApproved: boolean;
 }
 
-export type PayoutStatus = 'Submitted' | 'Under Review' | 'Approved' | 'Partially Approved' | 'Rejected' | 'Paid' | 'Disputed';
+export type PayoutStatus = 'Submitted' | 'Under Review' | 'Approved' | 'Partially Approved' | 'Rejected' | 'Paid' | 'Disputed' | 'Pending';
 
 export interface PayoutRequest {
     id: string;
@@ -28,8 +31,10 @@ export interface PayoutRequest {
     subcontractorId: string;
     assignmentId: string;
     invoiceNumber: string;
+    description?: string;
     status: PayoutStatus;
     submittedDate: string;
+    dateSubmitted?: string;      // alias for submittedDate
 
     requestedAmount: number;
     approvedAmount: number;
@@ -88,14 +93,22 @@ export function getTotalApprovedCOPrice(cos: ChangeOrder[]) {
 
 export function summarizeChangeOrders(cos: ChangeOrder[]) {
     const approved = filterApprovedChangeOrders(cos);
+    const approvedCostImpact = getTotalApprovedCOCost(cos);
+    const approvedRevenueImpact = getTotalApprovedCOPrice(cos);
+    const pendingCos = cos.filter(co => co.status === 'Pending');
     return {
         total: cos.length,
         approved: approved.length,
-        pending: cos.filter(co => co.status === 'Pending').length,
+        pending: pendingCos.length,
         totalCostImpact: cos.reduce((sum, co) => sum + co.internalCostImpact, 0),
         totalRevenueImpact: cos.reduce((sum, co) => sum + co.customerPriceTarget, 0),
-        approvedCostImpact: getTotalApprovedCOCost(cos),
-        approvedRevenueImpact: getTotalApprovedCOPrice(cos),
+        approvedCostImpact,
+        approvedRevenueImpact,
+        // Aliases used by change-orders page:
+        approvedCost: approvedCostImpact,
+        approvedRevenue: approvedRevenueImpact,
+        pendingCost: pendingCos.reduce((sum, co) => sum + co.internalCostImpact, 0),
+        pendingRevenue: pendingCos.reduce((sum, co) => sum + co.customerPriceTarget, 0),
     };
 }
 
