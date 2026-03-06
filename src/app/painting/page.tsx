@@ -10,10 +10,22 @@ import { paintingServices } from '@/content/services';
 import { IMAGES } from '@/lib/images';
 
 export const metadata: Metadata = {
-  title: 'Painting Services',
-  description:
-    'Premium interior, exterior, cabinet refinishing, and specialty painting services. Meticulous preparation and flawless execution on every project.',
+  title: 'Professional Painting Services Atlanta, GA | Interior & Exterior',
+  description: 'Premium painting services in Atlanta, GA. Expert interior painting, exterior painting, cabinet refinishing & specialty finishes. Serving Buckhead, Alpharetta, Roswell & all Metro Atlanta. Benjamin Moore certified. Free estimates. 18 years experience.',
+  keywords: [
+    'painting services Atlanta GA', 'interior painting Atlanta', 'exterior painting Atlanta',
+    'painting company Atlanta Georgia', 'house painters Atlanta', 'residential painting Atlanta',
+    'interior exterior painting Metro Atlanta', 'cabinet painting Atlanta', 'premium painting services Atlanta',
+    'professional painters Atlanta GA', 'painting contractor Buckhead', 'luxury painters Atlanta',
+  ],
+  openGraph: {
+    title: 'Professional Painting Services in Atlanta, GA | Bridgepointe',
+    description: 'Interior painting, exterior painting & cabinet refinishing across Metro Atlanta. Meticulous prep, premium paints, expert craftsmen.',
+    url: 'https://bridgepointepainting.com/painting',
+  },
+  alternates: { canonical: 'https://bridgepointepainting.com/painting' },
 };
+
 
 export default function PaintingPage() {
   return (

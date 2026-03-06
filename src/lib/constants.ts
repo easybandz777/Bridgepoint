@@ -3,7 +3,7 @@
   tagline: 'Where Craft Meets Home',
   description:
     'Premium painting services and exclusive high-end remodeling by a true craftsman. Bridgepointe delivers meticulous attention to detail on every project.',
-  url: 'https://bridgepointefloor.com',
+  url: 'https://bridgepointepainting.com',
   phone: '(862) 421-8973',
   email: 'Bridgepointefloors@gmail.com',
   address: {
