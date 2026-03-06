@@ -1,14 +1,15 @@
 import { notFound } from 'next/navigation';
 import { SAMPLE_SUBCONTRACTORS } from '@/lib/subcontractors';
 
-export default function SubcontractorLayout({
+export default async function SubcontractorLayout({
     children,
     params
 }: {
     children: React.ReactNode;
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
-    const sub = SAMPLE_SUBCONTRACTORS.find((s) => s.id === params.id);
+    const { id } = await params;
+    const sub = SAMPLE_SUBCONTRACTORS.find((s) => s.id === id);
 
     if (!sub) {
         notFound();

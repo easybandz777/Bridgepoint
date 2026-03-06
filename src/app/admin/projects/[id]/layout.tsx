@@ -1,14 +1,15 @@
 import { notFound } from 'next/navigation';
 import { SAMPLE_PROJECTS } from '@/lib/projects';
 
-export default function ProjectLayout({
+export default async function ProjectLayout({
     children,
     params
 }: {
     children: React.ReactNode;
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
-    const project = SAMPLE_PROJECTS.find((p) => p.id === params.id);
+    const { id } = await params;
+    const project = SAMPLE_PROJECTS.find((p) => p.id === id);
 
     if (!project) {
         notFound();
