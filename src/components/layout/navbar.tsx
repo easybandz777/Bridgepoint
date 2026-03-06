@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { NAV_LINKS, SITE_CONFIG } from '@/lib/constants';
@@ -72,17 +72,29 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop CTA (phone) */}
-        <a
-          href={`tel:${SITE_CONFIG.phone}`}
-          className={cn(
-            'hidden lg:flex items-center gap-2 font-sans text-xs font-semibold uppercase tracking-[0.15em] transition-colors duration-300',
-            scrolled ? 'text-gold hover:text-gold-dark' : 'text-white/70 hover:text-white'
-          )}
-        >
-          <Phone size={13} />
-          {SITE_CONFIG.phone}
-        </a>
+        {/* Desktop CTA (phone + admin) */}
+        <div className="hidden lg:flex items-center gap-4">
+          <a
+            href={`tel:${SITE_CONFIG.phone}`}
+            className={cn(
+              'flex items-center gap-2 font-sans text-xs font-semibold uppercase tracking-[0.15em] transition-colors duration-300',
+              scrolled ? 'text-gold hover:text-gold-dark' : 'text-white/70 hover:text-white'
+            )}
+          >
+            <Phone size={13} />
+            {SITE_CONFIG.phone}
+          </a>
+          <Link
+            href="/admin"
+            title="Admin Portal"
+            className={cn(
+              'flex items-center justify-center w-7 h-7 rounded-full transition-all duration-300 opacity-35 hover:opacity-100',
+              scrolled ? 'text-slate' : 'text-white'
+            )}
+          >
+            <Lock size={13} />
+          </Link>
+        </div>
 
         {/* Mobile Toggle */}
         <button
