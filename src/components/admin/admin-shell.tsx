@@ -9,7 +9,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className="flex min-h-screen" style={{ background: '#0f0f0f' }}>
+        <div className="flex h-screen overflow-hidden" style={{ background: '#0f0f0f' }}>
 
             {/* ── Mobile top bar ── */}
             <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-14 bg-[#131313] border-b border-white/6 md:hidden">
@@ -37,17 +37,18 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             )}
 
             {/* ── Sidebar ── */}
-            {/* Desktop: always visible, sticky */}
+            {/* Desktop: always visible, sticky full height */}
             {/* Mobile: slides in from left as a drawer */}
             <div className={[
-                'fixed inset-y-0 left-0 z-[60] transition-transform duration-300 md:relative md:translate-x-0 md:flex md:shrink-0',
+                'fixed inset-y-0 left-0 z-[60] transition-transform duration-300 md:static md:inset-y-auto md:translate-x-0 md:flex md:shrink-0',
                 open ? 'translate-x-0' : '-translate-x-full',
             ].join(' ')}>
                 <AdminSidebar onClose={() => setOpen(false)} />
             </div>
 
             {/* ── Main content ── */}
-            <div className="flex-1 min-w-0 overflow-auto mt-14 md:mt-0">
+            {/* pt-14 on mobile offsets the fixed top bar; md:pt-0 resets on desktop */}
+            <div className="flex-1 min-w-0 overflow-y-auto pt-14 md:pt-0">
                 {children}
             </div>
         </div>

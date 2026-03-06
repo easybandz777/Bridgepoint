@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { Receipt, Plus, Trash2 } from 'lucide-react';
 import { InvoiceCard } from '@/components/admin/invoice-card';
 
-export const dynamic = 'force-dynamic';
-
 function fmt(n: number) {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 }
