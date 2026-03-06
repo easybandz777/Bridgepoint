@@ -1,4 +1,4 @@
-export type InvoiceStatus = 'Paid' | 'Partial' | 'Outstanding' | 'Overdue';
+﻿export type InvoiceStatus = 'Paid' | 'Partial' | 'Outstanding' | 'Overdue';
 
 export interface InvoiceLineItem {
     description: string;
@@ -87,11 +87,11 @@ export const SAMPLE_INVOICES: Invoice[] = [
         amountDue: 0,
         paymentInstructions: {
             bankName: 'Wells Fargo Business',
-            accountName: 'Bridgepoint LLC',
+            accountName: 'Bridgepointe LLC',
             routing: '121000248',
             account: '****7823',
             zelle: 'Bridgepointefloors@gmail.com',
-            check: 'Pay to the order of: Bridgepoint LLC',
+            check: 'Pay to the order of: Bridgepointe LLC',
         },
         notes: 'Thank you for your business, Harrison & Elaine. It was a pleasure working on your home. We look forward to serving you again.',
     },
@@ -134,11 +134,11 @@ export const SAMPLE_INVOICES: Invoice[] = [
         amountDue: 56937,
         paymentInstructions: {
             bankName: 'Wells Fargo Business',
-            accountName: 'Bridgepoint LLC',
+            accountName: 'Bridgepointe LLC',
             routing: '121000248',
             account: '****7823',
             zelle: 'Bridgepointefloors@gmail.com',
-            check: 'Pay to the order of: Bridgepoint LLC',
+            check: 'Pay to the order of: Bridgepointe LLC',
         },
         notes: 'Progress Invoice #1 of 3 — reflects completed Phase 1 (demo) and Phase 2 (kitchen cabinetry, countertops, rough-in). Phase 3 (master bath) to be invoiced separately upon completion. Deposit of $40,699 received 02/03/2025.',
     },
@@ -179,12 +179,12 @@ export const SAMPLE_INVOICES: Invoice[] = [
         amountDue: 43555,
         paymentInstructions: {
             bankName: 'Wells Fargo Business',
-            accountName: 'Bridgepoint LLC',
+            accountName: 'Bridgepointe LLC',
             routing: '121000248',
             account: '****7823',
             zelle: 'Bridgepointefloors@gmail.com',
-            check: 'Pay to the order of: Bridgepoint LLC',
+            check: 'Pay to the order of: Bridgepointe LLC',
         },
-        notes: 'Final invoice reflecting project completion as of February 27th. Deposit of $29,037 was received on February 14th. Balance of $43,555 due within 7 days. Thank you for choosing Bridgepoint.',
+        notes: 'Final invoice reflecting project completion as of February 27th. Deposit of $29,037 was received on February 14th. Balance of $43,555 due within 7 days. Thank you for choosing Bridgepointe.',
     },
 ];

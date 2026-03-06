@@ -1,4 +1,4 @@
-// ─── Template Types ───────────────────────────────────────────────────────────
+﻿// ─── Template Types ───────────────────────────────────────────────────────────
 
 export type LineItem = {
     id: string;
@@ -122,16 +122,16 @@ const PAINTING_TEMPLATE: EstimateTemplate = {
     terms: [
         'This estimate is valid for 30 days from the date issued.',
         'All interior work performed during standard business hours (Mon–Fri, 8 AM–5 PM). Weekend scheduling available at a 15% surcharge.',
-        'Client is responsible for moving furniture, decor, and personal belongings from all work areas prior to the start date. Bridgepoint will move and protect large furniture as a courtesy.',
+        'Client is responsible for moving furniture, decor, and personal belongings from all work areas prior to the start date. Bridgepointe will move and protect large furniture as a courtesy.',
         'Any unforeseen structural repairs, mold remediation, or lead-paint encapsulation requirements will be itemized and quoted separately before work proceeds.',
-        'Color selections and paint sheen levels must be finalized and submitted to Bridgepoint no later than 7 days before the scheduled start date.',
-        'Bridgepoint warrants all labor for a period of two (2) years from project completion. Normal wear, impact damage, and moisture intrusion are excluded.',
+        'Color selections and paint sheen levels must be finalized and submitted to Bridgepointe no later than 7 days before the scheduled start date.',
+        'Bridgepointe warrants all labor for a period of two (2) years from project completion. Normal wear, impact damage, and moisture intrusion are excluded.',
         'Paint materials are covered under the manufacturer\'s product warranty (typically 15–25 years for Aura line).',
         'Exterior start is weather-dependent. Work will not proceed in temperatures below 50°F or above 90°F, or when rain is forecast within 24 hours of application.',
         'Payment is due within 7 days of milestone completion. A 1.5% monthly finance charge applies to balances outstanding beyond 30 days.',
         'All work performed in compliance with EPA RRP (Renovation, Repair and Painting) rules where applicable.',
     ],
-    notes: 'Color consultation is included for up to three on-site sessions. Final color selections must be confirmed in writing. Bridgepoint recommends Benjamin Moore Aura for its best-in-class hide and durability ratings.',
+    notes: 'Color consultation is included for up to three on-site sessions. Final color selections must be confirmed in writing. Bridgepointe recommends Benjamin Moore Aura for its best-in-class hide and durability ratings.',
 };
 
 // ─── 2. FLOORING ─────────────────────────────────────────────────────────────
@@ -221,10 +221,10 @@ const FLOORING_TEMPLATE: EstimateTemplate = {
         'Client is responsible for clearing all furniture, decor, and personal items from the installation area before the scheduled start date. Heavy furniture moving is included in the estimate.',
         'Relative humidity in the home must be maintained between 35–55% RH during and after installation for proper wood acclimation and dimensional stability.',
         'A 10% material overage is standard practice and is included in all material quantities. Leftover material will be left with the client for future repairs.',
-        'Bridgepoint is not responsible for pre-existing subfloor defects (rot, structural damage, unlevel sections in excess of 3/16" over 10 ft) discovered after existing flooring removal. Repair costs will be itemized and approved before work proceeds.',
+        'Bridgepointe is not responsible for pre-existing subfloor defects (rot, structural damage, unlevel sections in excess of 3/16" over 10 ft) discovered after existing flooring removal. Repair costs will be itemized and approved before work proceeds.',
         'Final sand-and-coat schedule on hardwood is humidity-dependent. HVAC must be operational. No wet traffic for 24 hrs after final coat; light foot traffic after 48 hrs; full area rugs after 14 days.',
         'Tile grout choice must be finalized no later than 5 business days before the installation date.',
-        'Bridgepoint warrants all installation labor for two (2) years from completion. Material warranties are per manufacturer.',
+        'Bridgepointe warrants all installation labor for two (2) years from completion. Material warranties are per manufacturer.',
         'Payment due within 7 days of each milestone. A 1.5% monthly finance charge applies to overdue balances.',
     ],
     notes: 'Wood sample confirmed on-site. Please indicate your preferred grout color, transition metal finish (nickel, oil-rubbed bronze, or brushed gold), and stain color (if applicable) within 5 business days of contract execution.',
@@ -343,12 +343,12 @@ const BATHROOM_TEMPLATE: EstimateTemplate = {
         'Client fixture, tile, vanity, and hardware selections must be finalized within 10 days of contract execution to maintain the scheduled start date. Delays in selection may impact project timeline.',
         'Material allowances represent estimates. Client-directed upgrades or overages will be invoiced at cost plus a 12% procurement coordination fee.',
         'All plumbing and electrical work is performed by licensed, insured subcontractors. Subcontractor warranties pass through to the client.',
-        'Bridgepoint carries a $2M general liability policy. Certificate of insurance available upon request.',
-        'Bridgepoint warrants all labor for two (2) years from project completion. Subcontractor work is warranted under their respective agreements.',
+        'Bridgepointe carries a $2M general liability policy. Certificate of insurance available upon request.',
+        'Bridgepointe warrants all labor for two (2) years from project completion. Subcontractor work is warranted under their respective agreements.',
         'A dedicated site supervisor will be on-site daily. Weekly photo progress reports will be provided every Friday.',
         'Payment due within 7 days of each milestone completion. A 1.5% monthly finance charge applies to overdue balances.',
     ],
-    notes: 'All fixture selections should be coordinated with your designer or provided to Bridgepoint for procurement. A site measure will be conducted prior to ordering custom glass and countertop. Plumbing rough-in locations will be finalized at the pre-construction meeting.',
+    notes: 'All fixture selections should be coordinated with your designer or provided to Bridgepointe for procurement. A site measure will be conducted prior to ordering custom glass and countertop. Plumbing rough-in locations will be finalized at the pre-construction meeting.',
 };
 
 // ─── 4. COMPLETE REMODELING ───────────────────────────────────────────────────
@@ -477,16 +477,16 @@ const REMODELING_TEMPLATE: EstimateTemplate = {
         'A pre-construction meeting will be held within 5 business days of contract execution to finalize scope, schedule, and all client selections.',
         'All material and finish selections must be finalized within 10 days of contract execution. Delayed decisions may push the project schedule accordingly.',
         'Material allowances represent realistic estimates based on similar projects. Any client-directed upgrades or overages will be invoiced at cost plus a 12% procurement coordination fee.',
-        'Permits must be issued before demolition begins. Bridgepoint will manage all permit applications and inspections.',
+        'Permits must be issued before demolition begins. Bridgepointe will manage all permit applications and inspections.',
         'All subcontractors (plumbing, electrical, HVAC) are licensed, bonded, and insured. Their work is warranted under their respective agreements; warranties pass through to the client.',
         'Any unforeseen conditions discovered during construction (structural damage, hidden mold, asbestos, outdated wiring) will be documented, photographed, and submitted to the client for written approval before additional work proceeds.',
-        'Bridgepoint maintains a $2 million general liability policy and workers\' compensation coverage. Certificate of insurance available upon request.',
-        'Bridgepoint warrants all self-performed labor for two (2) years from issuance of Certificate of Occupancy (CO).',
+        'Bridgepointe maintains a $2 million general liability policy and workers\' compensation coverage. Certificate of insurance available upon request.',
+        'Bridgepointe warrants all self-performed labor for two (2) years from issuance of Certificate of Occupancy (CO).',
         'Weekly written progress reports (with photos) will be emailed every Friday. Client site visits should be scheduled in advance to maintain job site safety.',
         'Payment is due within 7 days of milestone completion. Late balances accrue a 1.5% monthly finance charge. Substantial non-payment may result in a work stoppage as permitted by Georgia lien law.',
-        'Bridgepoint reserves the right to file a Preliminary Notice of Lien as a standard business practice to preserve lien rights. This does not indicate any billing dispute.',
+        'Bridgepointe reserves the right to file a Preliminary Notice of Lien as a standard business practice to preserve lien rights. This does not indicate any billing dispute.',
     ],
-    notes: 'A full materials and finish specification binder will be maintained throughout the project. All selections will be tracked and signed off by both client and Bridgepoint project manager. Site access hours are 7 AM–5 PM Monday–Friday, unless otherwise agreed in writing.',
+    notes: 'A full materials and finish specification binder will be maintained throughout the project. All selections will be tracked and signed off by both client and Bridgepointe project manager. Site access hours are 7 AM–5 PM Monday–Friday, unless otherwise agreed in writing.',
 };
 
 // ─── Export ───────────────────────────────────────────────────────────────────

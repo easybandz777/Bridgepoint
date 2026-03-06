@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { type Estimate, formatCurrency } from '@/lib/estimates';
 import { Printer } from 'lucide-react';
@@ -55,7 +55,7 @@ export function ProposalDocument({ estimate }: { estimate: Estimate }) {
                     <div className="relative px-14 pt-12 pb-10 flex items-start justify-between">
                         <div>
                             <h1 className="font-serif text-3xl font-bold text-white tracking-tight mb-1">
-                                Bridgepoint
+                                Bridgepointe
                             </h1>
                             <p className="text-[11px] uppercase tracking-[0.2em] text-[#b8956a] mb-6">
                                 Premium Painting &amp; Remodeling
@@ -256,11 +256,11 @@ export function ProposalDocument({ estimate }: { estimate: Estimate }) {
                                 <p className="text-[11px] text-white/30">Date</p>
                             </div>
                             <div>
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#b8956a] mb-6">Authorized by Bridgepoint</p>
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#b8956a] mb-6">Authorized by Bridgepointe</p>
                                 <div className="h-12 border-b border-white/15 mb-2" />
                                 <p className="text-[11px] text-white/30">Signature</p>
                                 <div className="mt-4 mb-2">
-                                    <p className="font-serif text-sm font-bold text-white">Bridgepoint</p>
+                                    <p className="font-serif text-sm font-bold text-white">Bridgepointe</p>
                                 </div>
                                 <p className="text-[11px] text-white/30">Printed Name</p>
                                 <div className="h-8 border-b border-white/10 mt-4 mb-2" />

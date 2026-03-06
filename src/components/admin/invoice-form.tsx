@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -57,11 +57,11 @@ export default function InvoiceForm() {
 
     // Payment instructions
     const [bankName, setBankName] = useState('');
-    const [accountName, setAccountName] = useState('Bridgepoint');
+    const [accountName, setAccountName] = useState('Bridgepointe');
     const [routing, setRouting] = useState('');
     const [account, setAccount] = useState('');
     const [zelle, setZelle] = useState('');
-    const [checkPayable, setCheckPayable] = useState('Bridgepoint');
+    const [checkPayable, setCheckPayable] = useState('Bridgepointe');
 
     const [notes, setNotes] = useState('');
 
@@ -237,11 +237,11 @@ export default function InvoiceForm() {
                 <h2 className="font-serif text-base font-bold text-white mb-5">Payment Instructions</h2>
                 <div className="grid grid-cols-2 gap-4">
                     <div><label className={label}>Bank Name</label><input className={inp} placeholder="Chase Bank" value={bankName} onChange={e => setBankName(e.target.value)} /></div>
-                    <div><label className={label}>Account Name</label><input className={inp} placeholder="Bridgepoint" value={accountName} onChange={e => setAccountName(e.target.value)} /></div>
+                    <div><label className={label}>Account Name</label><input className={inp} placeholder="Bridgepointe" value={accountName} onChange={e => setAccountName(e.target.value)} /></div>
                     <div><label className={label}>Routing Number</label><input className={inp} placeholder="021000021" value={routing} onChange={e => setRouting(e.target.value)} /></div>
                     <div><label className={label}>Account Number</label><input className={inp} placeholder="XXXXXXXXXX" value={account} onChange={e => setAccount(e.target.value)} /></div>
                     <div><label className={label}>Zelle (optional)</label><input className={inp} placeholder="phone or email" value={zelle} onChange={e => setZelle(e.target.value)} /></div>
-                    <div><label className={label}>Check Payable To</label><input className={inp} placeholder="Bridgepoint" value={checkPayable} onChange={e => setCheckPayable(e.target.value)} /></div>
+                    <div><label className={label}>Check Payable To</label><input className={inp} placeholder="Bridgepointe" value={checkPayable} onChange={e => setCheckPayable(e.target.value)} /></div>
                 </div>
             </div>
 

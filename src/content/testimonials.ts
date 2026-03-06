@@ -1,4 +1,4 @@
-import { TESTIMONIAL_IMAGES } from '@/lib/images';
+﻿import { TESTIMONIAL_IMAGES } from '@/lib/images';
 
 export interface Testimonial {
   id: string;
@@ -65,7 +65,7 @@ export const testimonials: Testimonial[] = [
   {
     id: 'martinez',
     quote:
-      'We hired Bridgepoint for exterior painting and the transformation was jaw-dropping. Neighbors have stopped to compliment the house. The color consultation alone was invaluable.',
+      'We hired Bridgepointe for exterior painting and the transformation was jaw-dropping. Neighbors have stopped to compliment the house. The color consultation alone was invaluable.',
     author: 'Carlos & Maria Martinez',
     location: 'Rollingwood',
     projectType: 'Exterior Painting',

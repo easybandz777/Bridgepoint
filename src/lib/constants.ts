@@ -1,8 +1,8 @@
-export const SITE_CONFIG = {
-  name: 'Bridgepoint',
+﻿export const SITE_CONFIG = {
+  name: 'Bridgepointe',
   tagline: 'Where Craft Meets Home',
   description:
-    'Premium painting services and exclusive high-end remodeling by a true craftsman. Bridgepoint delivers meticulous attention to detail on every project.',
+    'Premium painting services and exclusive high-end remodeling by a true craftsman. Bridgepointe delivers meticulous attention to detail on every project.',
   url: 'https://bridgepointefloor.com',
   phone: '(862) 421-8973',
   email: 'Bridgepointefloors@gmail.com',
@@ -13,8 +13,8 @@ export const SITE_CONFIG = {
     zip: '',
   },
   social: {
-    instagram: 'https://instagram.com/bridgepointcraft',
-    facebook: 'https://facebook.com/bridgepointcraft',
+    instagram: 'https://instagram.com/Bridgepointecraft',
+    facebook: 'https://facebook.com/Bridgepointecraft',
   },
   stats: {
     yearsExperience: 18,

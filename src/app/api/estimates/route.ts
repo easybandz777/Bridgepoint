@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import sql, { initDB } from '@/lib/db';
 
 export async function GET() {
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
                 ${body.subtotal ?? 0}, ${body.taxRate ?? 0}, ${body.taxAmount ?? 0}, ${body.total ?? 0},
                 ${JSON.stringify(body.paymentSchedule ?? [])},
                 ${JSON.stringify(body.terms ?? [])},
-                ${body.notes ?? ''}, ${body.preparedBy ?? 'Bridgepoint'}
+                ${body.notes ?? ''}, ${body.preparedBy ?? 'Bridgepointe'}
             )
         `;
         return NextResponse.json({ id, estimateNumber });

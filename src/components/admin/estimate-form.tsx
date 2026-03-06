@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -143,7 +143,7 @@ export default function EstimateForm() {
         'All work is performed during standard business hours (Mon–Fri, 8 AM–5 PM) unless otherwise agreed.',
         'Client is responsible for moving furniture and personal belongings from work areas prior to start date.',
         'Any unforeseen structural repairs or additional scope will be quoted separately before work proceeds.',
-        'Bridgepoint warrants all labor for a period of two (2) years from project completion date.',
+        'Bridgepointe warrants all labor for a period of two (2) years from project completion date.',
         "Materials are covered under the manufacturer's product warranty.",
         'Payment is due within 7 days of milestone completion. A 1.5% monthly finance charge applies to balances over 30 days.',
     ]);
@@ -179,7 +179,7 @@ export default function EstimateForm() {
                     paymentSchedule: ms,
                     terms: terms.filter(Boolean),
                     notes,
-                    preparedBy: 'Bridgepoint',
+                    preparedBy: 'Bridgepointe',
                 }),
             });
             if (res.ok) router.push('/admin/estimates');

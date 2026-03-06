@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Section } from '@/components/ui/section';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { IMAGES } from '@/lib/images';
 export const metadata: Metadata = {
   title: 'Testimonials',
   description:
-    'Read what our clients say about working with Bridgepoint. Real stories from homeowners who trusted us with their most valuable investment.',
+    'Read what our clients say about working with Bridgepointe. Real stories from homeowners who trusted us with their most valuable investment.',
 };
 
 export default function TestimonialsPage() {

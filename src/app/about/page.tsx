@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Section } from '@/components/ui/section';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { IMAGES } from '@/lib/images';
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Meet the craftsman behind Bridgepoint. Over 18 years of experience in high-end remodeling and premium painting, with an unwavering commitment to quality.',
+    'Meet the craftsman behind Bridgepointe. Over 18 years of experience in high-end remodeling and premium painting, with an unwavering commitment to quality.',
 };
 
 const VALUES = [

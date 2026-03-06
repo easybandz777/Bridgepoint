@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
@@ -56,7 +56,7 @@ export function AdminAuth({ children }: { children: React.ReactNode }) {
                         <Lock size={22} className="text-white" />
                     </div>
                     <h1 className="font-serif text-3xl font-bold text-white tracking-tight mb-1">
-                        Bridgepoint
+                        Bridgepointe
                     </h1>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#b8956a]">
                         Admin Portal

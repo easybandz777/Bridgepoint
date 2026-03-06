@@ -1,8 +1,8 @@
-import { AdminAuth } from '@/components/admin/admin-auth';
+﻿import { AdminAuth } from '@/components/admin/admin-auth';
 import { AdminSidebar } from '@/components/admin/admin-sidebar';
 
 export const metadata = {
-    title: 'Admin | Bridgepoint',
+    title: 'Admin | Bridgepointe',
     robots: { index: false, follow: false },
 };
 

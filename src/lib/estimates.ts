@@ -1,4 +1,4 @@
-// ─── Types ────────────────────────────────────────────────────────────────────
+﻿// ─── Types ────────────────────────────────────────────────────────────────────
 
 export type EstimateStatus = 'Draft' | 'Sent' | 'Approved' | 'Declined';
 export type LineItemCategory = 'Labor' | 'Materials' | 'Subcontractor' | 'Equipment' | 'Permits & Fees';
@@ -121,12 +121,12 @@ export const SAMPLE_ESTIMATES: Estimate[] = [
             'All work is performed during standard business hours (Mon–Fri, 8 AM–5 PM) unless otherwise agreed.',
             'Client is responsible for moving furniture and personal belongings from work areas prior to start date.',
             'Any unforeseen structural repairs or additional scope will be quoted separately before work proceeds.',
-            'Bridgepoint warrants all labor for a period of two (2) years from project completion date.',
+            'Bridgepointe warrants all labor for a period of two (2) years from project completion date.',
             "Materials are covered under the manufacturer's product warranty.",
             'Payment is due within 7 days of milestone completion. A 1.5% monthly finance charge applies to balances over 30 days.',
         ],
         notes: 'Color consultation scheduled for December 18th at the property. Final color selections must be confirmed no later than December 27th to maintain the January 6th start date.',
-        preparedBy: 'Bridgepoint — Lead Estimator',
+        preparedBy: 'Bridgepointe — Lead Estimator',
     },
 
     // ── Estimate 2: High-End Kitchen & Bath Remodel ───────────────────────────
@@ -183,14 +183,14 @@ export const SAMPLE_ESTIMATES: Estimate[] = [
         terms: [
             'This estimate is valid for 30 days from the date issued.',
             'Material allowances are estimates. Any overages or client-directed upgrades will be invoiced at cost plus 12% procurement fee.',
-            'Permits must be issued before demolition begins. Bridgepoint will manage the permit application process.',
+            'Permits must be issued before demolition begins. Bridgepointe will manage the permit application process.',
             'Client selections (tile, hardware, fixtures) must be finalized within 10 days of contract execution.',
             'Subcontractor schedules are subject to availability and may impact the project timeline.',
-            'Bridgepoint warrants all labor for two (2) years. Subcontractor warranties pass through to client.',
+            'Bridgepointe warrants all labor for two (2) years. Subcontractor warranties pass through to client.',
             'A site superintendent will be on-site daily. Weekly progress reports will be emailed every Friday.',
         ],
         notes: 'Appliance delivery and integration coordinated with Sub-Zero/Wolf dealer. Client has pre-selected the 48" range and 42" refrigerator — measurements confirmed on-site 11/29.',
-        preparedBy: 'Bridgepoint — Senior Project Estimator',
+        preparedBy: 'Bridgepointe — Senior Project Estimator',
     },
 
     // ── Estimate 3: Hardwood Floors + Accent Walls ────────────────────────────
@@ -242,12 +242,12 @@ export const SAMPLE_ESTIMATES: Estimate[] = [
             'This estimate is valid for 30 days from the date issued.',
             'Wood must acclimate in the home for a minimum of 72 hours before installation begins.',
             'Client is responsible for clearing furniture from all work areas prior to the start date.',
-            'Bridgepoint is not responsible for pre-existing subfloor damage discovered after removal of existing flooring; additional repair costs will be quoted before proceeding.',
+            'Bridgepointe is not responsible for pre-existing subfloor damage discovered after removal of existing flooring; additional repair costs will be quoted before proceeding.',
             'A 10% material overage is included in pricing and is standard practice for wood flooring.',
             'Final sand and coat schedule is weather-dependent; humidity levels must remain below 55% RH.',
-            'Bridgepoint warrants all installation labor for two (2) years from completion.',
+            'Bridgepointe warrants all installation labor for two (2) years from completion.',
         ],
         notes: 'Client has confirmed white oak sample "WO-112 Natural Matte" on January 5th visit. Wood has been ordered from supplier — estimated ship date January 29th.',
-        preparedBy: 'Bridgepoint — Lead Estimator',
+        preparedBy: 'Bridgepointe — Lead Estimator',
     },
 ];

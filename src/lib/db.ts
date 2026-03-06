@@ -1,4 +1,4 @@
-import { neon } from '@neondatabase/serverless';
+﻿import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL!);
 
@@ -23,7 +23,7 @@ export async function initDB() {
             payment_schedule JSONB NOT NULL DEFAULT '[]',
             terms JSONB NOT NULL DEFAULT '[]',
             notes TEXT DEFAULT '',
-            prepared_by TEXT DEFAULT 'Bridgepoint',
+            prepared_by TEXT DEFAULT 'Bridgepointe',
             created_at TIMESTAMPTZ DEFAULT NOW()
         )
     `;

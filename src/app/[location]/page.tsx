@@ -1,109 +1,77 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { SERVICE_LOCATIONS, getLocationName } from '@/lib/locations';
-import { SITE_CONFIG } from '@/lib/constants';
-import { LocationHero } from '@/components/home/location-hero';
-import { ServicesPreview } from '@/components/home/services-preview';
-import { CredibilityStrip } from '@/components/home/credibility-strip';
-import { LocationCTA } from '@/components/home/location-cta';
+﻿import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Section } from '@/components/ui/section';
+import { Button } from '@/components/ui/button';
+import { AnimatedSection } from '@/components/shared/animated-section';
+import { TestimonialCard } from '@/components/shared/testimonial-card';
+import { testimonials } from '@/content/testimonials';
+import { IMAGES } from '@/lib/images';
 
-interface LocationPageProps {
-    params: {
-        location: string;
-    };
-}
+export const metadata: Metadata = {
+  title: 'Testimonials',
+  description:
+    'Read what our clients say about working with Bridgepointe. Real stories from homeowners who trusted us with their most valuable investment.',
+};
 
-export function generateStaticParams() {
-    return SERVICE_LOCATIONS.map((loc) => ({
-        location: loc.id,
-    }));
-}
+export default function TestimonialsPage() {
+  return (
+    <>
+      {/* Hero */}
+      <section className="relative flex min-h-[50vh] items-end overflow-hidden pb-16 pt-32">
+        <div className="absolute inset-0">
+          <img
+            src={IMAGES.testimonialsHero}
+            alt="Happy homeowner"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-charcoal/60" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+          <AnimatedSection>
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.3em] text-gold">
+              Client Stories
+            </p>
+            <h1 className="mt-4 font-serif text-5xl font-bold text-white md:text-6xl lg:text-7xl">
+              Testimonials
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
+              Our most powerful marketing has always been the same thing:
+              delighted clients who share their experience.
+            </p>
+          </AnimatedSection>
+        </div>
+      </section>
 
-export function generateMetadata({ params }: LocationPageProps): Metadata {
-    const locationName = getLocationName(params.location);
-
-    if (!locationName) {
-        return { title: 'Not Found' };
-    }
-
-    return {
-        title: `Premium Painting & Remodeling in ${locationName} | ${SITE_CONFIG.name}`,
-        description: `Discover elite painting and exclusive remodeling services in ${locationName}. Bridgepoint delivers meticulous craftsmanship and unmatched luxury for your home.`,
-        openGraph: {
-            title: `Premium Painting in ${locationName} | ${SITE_CONFIG.name}`,
-            description: `Elevate your ${locationName} home with our premium painting and select remodeling services.`,
-            url: `${SITE_CONFIG.url}/${params.location}`,
-            siteName: SITE_CONFIG.name,
-            locale: 'en_US',
-            type: 'website',
-        },
-    };
-}
-
-export default function LocationPage({ params }: LocationPageProps) {
-    const locationName = getLocationName(params.location);
-
-    if (!locationName) {
-        notFound();
-    }
-
-    // Schema.org structured data for LocalBusiness SEO
-    const jsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'LocalBusiness',
-        name: SITE_CONFIG.name,
-        image: `${SITE_CONFIG.url}/favicon.ico`,
-        '@id': `${SITE_CONFIG.url}/#localbusiness`,
-        url: `${SITE_CONFIG.url}/${params.location}`,
-        telephone: SITE_CONFIG.phone,
-        email: SITE_CONFIG.email,
-        address: {
-            '@type': 'PostalAddress',
-            streetAddress: SITE_CONFIG.address.street,
-            addressLocality: locationName,
-            addressRegion: SITE_CONFIG.address.state,
-            addressCountry: 'US',
-        },
-        geo: {
-            '@type': 'GeoCircle',
-            geoMidpoint: {
-                '@type': 'GeoCoordinates',
-                description: `Center of ${locationName}, GA`,
-            },
-            geoRadius: '20000',
-        },
-        openingHoursSpecification: [
-            {
-                '@type': 'OpeningHoursSpecification',
-                dayOfWeek: [
-                    'Monday',
-                    'Tuesday',
-                    'Wednesday',
-                    'Thursday',
-                    'Friday',
-                    'Saturday'
-                ],
-                opens: '07:00',
-                closes: '18:00'
-            }
-        ],
-        areaServed: {
-            '@type': 'City',
-            name: locationName,
-        },
-        priceRange: '$$$$'
-    };
-
-    return (
-        <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      {/* Testimonial Grid */}
+      <Section variant="alternate" spacious>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((testimonial, index) => (
+            <TestimonialCard
+              key={testimonial.id}
+              testimonial={testimonial}
+              index={index}
             />
-            <LocationHero locationName={locationName} />
-            <ServicesPreview />
-            <CredibilityStrip />
-            <LocationCTA locationName={locationName} />
-        </>
-    );
+          ))}
+        </div>
+      </Section>
+
+      {/* CTA */}
+      <Section variant="default" spacious>
+        <AnimatedSection className="text-center">
+          <h2 className="font-serif text-4xl font-bold text-charcoal md:text-5xl">
+            Ready to Join Our Story?
+          </h2>
+          <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate">
+            Every testimonial here started with a simple conversation.
+            Let&apos;s start yours.
+          </p>
+          <div className="mt-10">
+            <Link href="/contact">
+              <Button size="lg">Begin a Conversation</Button>
+            </Link>
+          </div>
+        </AnimatedSection>
+      </Section>
+    </>
+  );
 }
