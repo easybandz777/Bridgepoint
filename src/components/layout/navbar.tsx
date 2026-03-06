@@ -40,7 +40,7 @@ export function Navbar() {
           <img
             src="/images/logo.png"
             alt={SITE_CONFIG.name}
-            style={{ height: '52px', width: 'auto', maxWidth: '130px', objectFit: 'contain' }}
+            style={{ height: '50px', width: 'auto', objectFit: 'contain' }}
             className={!scrolled && !mobileOpen ? 'drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]' : ''}
           />
         </Link>
