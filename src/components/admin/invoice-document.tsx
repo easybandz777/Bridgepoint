@@ -1,3 +1,5 @@
+'use client';
+
 import { type Invoice } from '@/lib/invoices';
 import { Printer, CheckCircle, AlertCircle, Timer, XCircle } from 'lucide-react';
 

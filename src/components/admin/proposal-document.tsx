@@ -1,3 +1,5 @@
+'use client';
+
 import { type Estimate, formatCurrency } from '@/lib/estimates';
 import { Printer } from 'lucide-react';
 
