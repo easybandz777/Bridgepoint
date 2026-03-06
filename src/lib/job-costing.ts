@@ -223,3 +223,6 @@ export const SAMPLE_ACTIVITY: ActivityLogEntry[] = [
     { id: 'act-003', projectId: 'proj-002', userId: 'u1', userName: 'Mark', action: 'Change Order Created', details: 'CO-01: Asbestos Abatement', timestamp: '2025-02-05T14:22:00Z' },
     { id: 'act-004', projectId: 'proj-002', userId: 'u1', userName: 'Mark', action: 'Approved Payout', details: 'Approved $6,800 for Ironclad Demo', timestamp: '2025-02-09T11:05:00Z' }
 ];
+
+/** Alias — some pages import SAMPLE_ACTIVITY_LOGS, others import SAMPLE_ACTIVITY */
+export const SAMPLE_ACTIVITY_LOGS = SAMPLE_ACTIVITY;

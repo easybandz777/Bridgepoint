@@ -260,3 +260,68 @@ export const SAMPLE_SUBCONTRACTORS: Subcontractor[] = [
         issueRatePct: 3
     }
 ];
+
+export const SAMPLE_ASSIGNMENTS: SubcontractorAssignment[] = [
+    {
+        id: 'asg-001',
+        subcontractorId: 'sub-001',
+        projectId: 'proj-001',
+        phaseId: 'ph-001-2',
+        scopeOfWork: 'White oak flooring install and sand & finish throughout main floor',
+        assignmentStatus: 'Completed',
+        agreedAmount: 5500,
+        billedAmount: 5820,
+        approvedAmount: 5820,
+        paidAmount: 5820,
+        startDate: '2025-01-20',
+        endDate: '2025-01-25',
+        completionPct: 100,
+        rating: 5
+    },
+    {
+        id: 'asg-002',
+        subcontractorId: 'sub-003',
+        projectId: 'proj-002',
+        phaseId: 'ph-002-1',
+        scopeOfWork: 'Full kitchen & bathrooms gut demo, debris removal, dumpster pulls',
+        assignmentStatus: 'Paid',
+        agreedAmount: 6400,
+        billedAmount: 6800,
+        approvedAmount: 6800,
+        paidAmount: 6800,
+        startDate: '2025-01-30',
+        endDate: '2025-02-03',
+        completionPct: 100,
+        rating: 4.5
+    },
+    {
+        id: 'asg-003',
+        subcontractorId: 'sub-006',
+        projectId: 'proj-002',
+        phaseId: 'ph-002-3',
+        scopeOfWork: 'Custom inset cabinetry — kitchen, bar, master bath',
+        assignmentStatus: 'Scheduled',
+        agreedAmount: 32000,
+        billedAmount: 16000,
+        approvedAmount: 16000,
+        paidAmount: 0,
+        startDate: '2025-04-01',
+        endDate: '2025-04-05',
+        completionPct: 0
+    },
+    {
+        id: 'asg-004',
+        subcontractorId: 'sub-001',
+        projectId: 'proj-003',
+        phaseId: 'ph-003-2',
+        scopeOfWork: '3,200 sqft of 5" engineered white oak — install, sand, finish',
+        assignmentStatus: 'In Progress',
+        agreedAmount: 11760,
+        billedAmount: 5880,
+        approvedAmount: 0,
+        paidAmount: 0,
+        startDate: '2025-02-28',
+        endDate: '2025-03-08',
+        completionPct: 50
+    }
+];
