@@ -36,14 +36,13 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
 
         {/* Logo */}
-        <Link href="/" className="relative z-10 group flex items-center">
+        <Link href="/" className="relative z-10 shrink-0">
           <img
             src="/images/logo.png"
             alt={SITE_CONFIG.name}
             className={cn(
-              'h-14 w-auto object-contain transition-all duration-300',
-              // On dark (transparent over hero) give it a very subtle shadow so it pops
-              !scrolled && !mobileOpen ? 'drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)]' : ''
+              'h-11 w-auto max-w-[140px] object-contain',
+              !scrolled && !mobileOpen ? 'drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]' : ''
             )}
           />
         </Link>
