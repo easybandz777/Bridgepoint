@@ -48,11 +48,17 @@ export interface Expense {
     projectId: string;
     phaseId?: string;
     vendor: string;
+    description: string;
     category: 'Materials' | 'Equipment' | 'Permits' | 'Disposal' | 'Travel' | 'Misc';
     amount: number;
-    date: string;
+    date: string;          // kept for backward compat
+    dateIncurred: string;
+    status: 'Paid' | 'Pending' | 'Flagged';
     notes: string;
-    reimbursable: boolean;
+    reimbursable: boolean;      // backward compat
+    isReimbursable: boolean;
+    referenceNumber?: string;
+    paymentMethod?: string;
     receiptUrl?: string;
 }
 
@@ -212,9 +218,11 @@ export const SAMPLE_PAYOUTS: PayoutRequest[] = [
 ];
 
 export const SAMPLE_EXPENSES: Expense[] = [
-    { id: 'exp-001', projectId: 'proj-002', phaseId: 'ph-002-1', vendor: 'Home Depot', category: 'Materials', amount: 145.20, date: '2025-02-04', notes: 'Trash bags, visqueen line, tape', reimbursable: false },
-    { id: 'exp-002', projectId: 'proj-002', phaseId: 'ph-002-2', vendor: 'Ferguson', category: 'Materials', amount: 852.00, date: '2025-02-11', notes: 'Rough-in valves (pot filler + shower body sprays)', reimbursable: false },
-    { id: 'exp-003', projectId: 'proj-003', vendor: 'City of Atlanta', category: 'Permits', amount: 250.00, date: '2025-02-14', notes: 'Expedited permit fee', reimbursable: true }
+    { id: 'exp-001', projectId: 'proj-002', phaseId: 'ph-002-1', vendor: 'Home Depot', description: 'Trash bags, visqueen liner, tape', category: 'Materials', amount: 145.20, date: '2025-02-04', dateIncurred: '2025-02-04', status: 'Paid', notes: 'Demo supplies', reimbursable: false, isReimbursable: false, paymentMethod: 'Company Card', referenceNumber: 'HD-9912' },
+    { id: 'exp-002', projectId: 'proj-002', phaseId: 'ph-002-2', vendor: 'Ferguson', description: 'Rough-in valves (pot filler + shower body sprays)', category: 'Materials', amount: 852.00, date: '2025-02-11', dateIncurred: '2025-02-11', status: 'Paid', notes: 'Plumbing rough-in', reimbursable: false, isReimbursable: false, paymentMethod: 'Company Card', referenceNumber: 'FRG-2250' },
+    { id: 'exp-003', projectId: 'proj-003', vendor: 'City of Atlanta', description: 'Expedited flooring permit fee', category: 'Permits', amount: 250.00, date: '2025-02-14', dateIncurred: '2025-02-14', status: 'Paid', notes: 'Expedited permit', reimbursable: true, isReimbursable: true, paymentMethod: 'Check', referenceNumber: 'ATL-PERMIT-0312' },
+    { id: 'exp-004', projectId: 'proj-002', vendor: 'Sunbelt Rentals', description: '2-day floor scraper rental', category: 'Equipment', amount: 420.00, date: '2025-02-03', dateIncurred: '2025-02-03', status: 'Paid', notes: 'Demo equipment', reimbursable: false, isReimbursable: false, paymentMethod: 'Company Card' },
+    { id: 'exp-005', projectId: 'proj-003', vendor: 'MasterShield Adhesives', description: 'Moisture barrier and adhesive for engineered flooring', category: 'Materials', amount: 680.00, date: '2025-02-28', dateIncurred: '2025-02-28', status: 'Pending', notes: 'Flooring prep materials', reimbursable: false, isReimbursable: false, paymentMethod: 'Pending' }
 ];
 
 export const SAMPLE_ACTIVITY: ActivityLogEntry[] = [
