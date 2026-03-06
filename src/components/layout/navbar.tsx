@@ -36,21 +36,18 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
 
         {/* Logo */}
-        <Link href="/" className="relative z-10 group">
-          <span
+        <Link href="/" className="relative z-10 group flex items-center">
+          <img
+            src="/images/logo.png"
+            alt={SITE_CONFIG.name}
             className={cn(
-              'font-serif text-2xl font-bold tracking-tight transition-colors duration-300',
-              scrolled || mobileOpen ? 'text-charcoal' : 'text-white'
+              'h-14 w-auto object-contain transition-all duration-300',
+              // On dark (transparent over hero) give it a very subtle shadow so it pops
+              !scrolled && !mobileOpen ? 'drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)]' : ''
             )}
-          >
-            {SITE_CONFIG.name}
-          </span>
-          {/* Subtle underline on hover */}
-          <span className={cn(
-            'absolute -bottom-0.5 left-0 h-px transition-all duration-300 w-0 group-hover:w-full',
-            scrolled || mobileOpen ? 'bg-gold' : 'bg-white/50'
-          )} />
+          />
         </Link>
+
 
         {/* Desktop Nav */}
         <ul className="hidden items-center gap-7 lg:flex">
