@@ -5,7 +5,8 @@ export type ProjectCategory =
   | 'kitchen'
   | 'bathroom'
   | 'full-remodel'
-  | 'custom';
+  | 'custom'
+  | 'flooring';
 
 export interface Project {
   slug: string;
@@ -149,6 +150,25 @@ export const projects: Project[] = [
     investmentRange: '$12,000 - $16,000',
     image: PROJECT_IMAGES['bee-cave-cabinet-refinishing'].main,
     gallery: PROJECT_IMAGES['bee-cave-cabinet-refinishing'].gallery,
+    featured: false,
+  },
+  {
+    slug: 'custom-flooring-installation',
+    title: 'Custom Flooring Installation',
+    category: 'flooring',
+    categoryLabel: 'Flooring',
+    description:
+      'Premium hardwood and engineered flooring installation. Precision-laid with meticulous attention to transitions, subfloor prep, and finishing details.',
+    scope: 'Full home flooring replacement and refinishing',
+    timeline: '2 weeks',
+    investmentRange: '$15,000 - $35,000',
+    image: '/images/gallery/flooring/20210218_171520.jpg', // Using one of the uploaded images as the project hero
+    gallery: [
+      '/images/gallery/flooring/20200810_175717.jpg',
+      '/images/gallery/flooring/20200811_102238.jpg',
+      '/images/gallery/flooring/20200920_132234.jpg',
+      '/images/gallery/flooring/20201007_133347.jpg',
+    ],
     featured: false,
   },
 ];

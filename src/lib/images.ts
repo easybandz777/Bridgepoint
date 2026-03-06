@@ -8,8 +8,8 @@ const U = (id: string, w = 1200, q = 80) =>
   `https://images.unsplash.com/photo-${id}?w=${w}&q=${q}&fit=crop`;
 
 export const IMAGES = {
-  /** Home hero: luxury living room / interior */
-  hero: U('1600585154340-be6161a56a0c', 1920),
+  /** Home hero: real project house photo */
+  hero: '/images/hero-home.png',
   /** Painting page hero: refined interior with paint */
   paintingHero: U('1615873968403-89e068629265', 1920),
   /** Services preview - painting: interior room */

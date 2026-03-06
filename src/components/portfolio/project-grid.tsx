@@ -16,6 +16,7 @@ const CATEGORY_TO_GALLERY: Partial<Record<ProjectCategory, string>> = {
   painting: 'painting',
   'full-remodel': 'full-remodel',
   custom: 'custom',
+  flooring: 'flooring',
 };
 
 interface ProjectGridProps {

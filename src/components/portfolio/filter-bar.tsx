@@ -16,6 +16,7 @@ const FILTERS: { value: FilterOption; label: string }[] = [
   { value: 'kitchen', label: 'Kitchen' },
   { value: 'bathroom', label: 'Bathroom' },
   { value: 'full-remodel', label: 'Full Remodel' },
+  { value: 'flooring', label: 'Flooring' },
   { value: 'custom', label: 'Custom' },
 ];
 
