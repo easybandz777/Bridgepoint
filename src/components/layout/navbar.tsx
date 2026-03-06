@@ -41,8 +41,8 @@ export function Navbar() {
             src="/images/logo.png"
             alt={SITE_CONFIG.name}
             className={cn(
-              'h-11 w-auto max-w-[140px] object-contain',
-              !scrolled && !mobileOpen ? 'drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]' : ''
+              'h-14 w-auto object-contain',
+              !scrolled && !mobileOpen ? 'drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]' : ''
             )}
           />
         </Link>
