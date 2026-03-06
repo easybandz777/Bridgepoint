@@ -133,6 +133,24 @@ export function overallCompletionPct(p: Project): number {
     return Math.round(total / p.phases.length);
 }
 
+// Convenience aliases used across multiple feature pages
+export type BudgetCategory = CostCategory;
+
+/** Revenue shorthand — pages use `project.revenue` but the type has `estimatedRevenue` */
+export function revenue(p: Project): number {
+    return p.estimatedRevenue;
+}
+
+/** Currency formatter */
+export function formatCurrency(n: number): string {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+}
+
+/** Short alias for formatCurrency — used in admin/page.tsx */
+export function fmt(n: number): string {
+    return formatCurrency(n);
+}
+
 // ─── Sample Data ──────────────────────────────────────────────────────────────
 
 export const SAMPLE_PROJECTS: Project[] = [

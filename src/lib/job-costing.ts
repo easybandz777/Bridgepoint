@@ -80,6 +80,19 @@ export function getTotalApprovedCOPrice(cos: ChangeOrder[]) {
     return filterApprovedChangeOrders(cos).reduce((sum, co) => sum + co.customerPriceTarget, 0);
 }
 
+export function summarizeChangeOrders(cos: ChangeOrder[]) {
+    const approved = filterApprovedChangeOrders(cos);
+    return {
+        total: cos.length,
+        approved: approved.length,
+        pending: cos.filter(co => co.status === 'Pending').length,
+        totalCostImpact: cos.reduce((sum, co) => sum + co.internalCostImpact, 0),
+        totalRevenueImpact: cos.reduce((sum, co) => sum + co.customerPriceTarget, 0),
+        approvedCostImpact: getTotalApprovedCOCost(cos),
+        approvedRevenueImpact: getTotalApprovedCOPrice(cos),
+    };
+}
+
 // ─── Sample Data ──────────────────────────────────────────────────────────────
 
 export const SAMPLE_CHANGE_ORDERS: ChangeOrder[] = [
