@@ -99,10 +99,7 @@ export function Navbar() {
         {/* Mobile Toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={cn(
-            'relative z-10 lg:hidden transition-colors duration-300 cursor-pointer p-1',
-            scrolled || mobileOpen ? 'text-charcoal' : 'text-white'
-          )}
+          className="relative z-10 lg:hidden p-2 rounded-full bg-gold text-white transition-all duration-300 cursor-pointer"
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
         >
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -113,19 +110,19 @@ export function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
-            className="absolute inset-x-0 top-0 bg-warm-white pt-20 pb-10 shadow-xl border-b border-warm-white-dark/60 lg:hidden"
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-x-0 top-0 bg-warm-white pt-24 pb-12 shadow-xl border-b border-warm-white-dark/60 lg:hidden"
           >
-            <ul className="flex flex-col items-center gap-5">
+            <ul className="flex flex-col items-center gap-6 px-6">
               {NAV_LINKS.map((link) => (
-                <li key={link.href}>
+                <li key={link.href} className="w-full text-center">
                   <Link
                     href={link.href}
                     className={cn(
-                      'font-sans text-sm font-semibold uppercase tracking-[0.2em]',
+                      'block py-3 font-sans text-base font-semibold uppercase tracking-[0.2em]',
                       'text-slate transition-colors hover:text-gold',
                       pathname === link.href && 'text-gold'
                     )}
@@ -137,12 +134,12 @@ export function Navbar() {
             </ul>
 
             {/* Phone in mobile menu */}
-            <div className="mt-8 flex justify-center">
+            <div className="mt-10 flex justify-center">
               <a
                 href={`tel:${SITE_CONFIG.phone}`}
-                className="inline-flex items-center gap-2 font-sans text-xs font-semibold uppercase tracking-widest text-gold"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gold text-white font-sans text-sm font-semibold uppercase tracking-widest transition-colors hover:bg-gold-dark"
               >
-                <Phone size={13} />
+                <Phone size={14} />
                 {SITE_CONFIG.phone}
               </a>
             </div>
