@@ -54,12 +54,12 @@ export function ProposalDocument({ estimate }: { estimate: Estimate }) {
                     <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(184,149,106,0.12) 0%, transparent 65%)' }} />
                     <div className="relative px-14 pt-12 pb-10 flex items-start justify-between">
                         <div>
-                            <h1 className="font-serif text-3xl font-bold text-white tracking-tight mb-1">
-                                Bridgepointe
-                            </h1>
-                            <p className="text-[11px] uppercase tracking-[0.2em] text-[#b8956a] mb-6">
-                                Premium Painting &amp; Remodeling
-                            </p>
+                            {/* Company logo */}
+                            <img
+                                src="/images/logo.png"
+                                alt="Bridge Pointe"
+                                style={{ height: '80px', width: 'auto', objectFit: 'contain', marginBottom: '14px' }}
+                            />
                             <div className="text-[11px] text-white/35 space-y-0.5 leading-relaxed">
                                 <p>Atlanta Metro Area, Georgia</p>
                                 <p>(862) 421-8973 · Bridgepointefloors@gmail.com</p>

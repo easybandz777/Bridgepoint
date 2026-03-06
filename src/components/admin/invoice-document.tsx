@@ -53,8 +53,12 @@ export function InvoiceDocument({ invoice }: { invoice: Invoice }) {
                     <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(184,149,106,0.10) 0%, transparent 65%)' }} />
                     <div className="relative px-12 pt-10 pb-8 flex items-start justify-between">
                         <div>
-                            <h1 className="font-serif text-2xl font-bold text-white tracking-tight mb-0.5">Bridgepointe</h1>
-                            <p className="text-[10px] uppercase tracking-[0.2em] text-[#b8956a] mb-5">Premium Painting &amp; Remodeling</p>
+                            {/* Company logo */}
+                            <img
+                                src="/images/logo.png"
+                                alt="Bridge Pointe"
+                                style={{ height: '72px', width: 'auto', objectFit: 'contain', marginBottom: '12px' }}
+                            />
                             <div className="text-[11px] text-white/30 space-y-0.5">
                                 <p>Atlanta Metro Area, Georgia</p>
                                 <p>(862) 421-8973 · Bridgepointefloors@gmail.com</p>
