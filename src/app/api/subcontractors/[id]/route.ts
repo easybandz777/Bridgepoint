@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
 import sql, { initDB } from '@/lib/db';
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+type Ctx = { params: Promise<{ id: string }> };
+
+export async function GET(_req: Request, ctx: Ctx) {
     try {
+        const { id } = await ctx.params;
         await initDB();
-        const rows = await sql`SELECT * FROM subcontractors WHERE id = ${params.id}`;
+        const rows = await sql`SELECT * FROM subcontractors WHERE id = ${id}`;
         if (rows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
         return NextResponse.json(rows[0]);
     } catch (e) {
@@ -12,8 +15,9 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, ctx: Ctx) {
     try {
+        const { id } = await ctx.params;
         await initDB();
         const body = await req.json();
         await sql`
@@ -34,7 +38,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
                 documents = COALESCE(${body.documents != null ? JSON.stringify(body.documents) : null}::jsonb, documents),
                 metrics = COALESCE(${body.metrics != null ? JSON.stringify(body.metrics) : null}::jsonb, metrics),
                 updated_at = NOW()
-            WHERE id = ${params.id}
+            WHERE id = ${id}
         `;
         return NextResponse.json({ ok: true });
     } catch (e) {
@@ -42,10 +46,11 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     }
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, ctx: Ctx) {
     try {
+        const { id } = await ctx.params;
         await initDB();
-        await sql`DELETE FROM subcontractors WHERE id = ${params.id}`;
+        await sql`DELETE FROM subcontractors WHERE id = ${id}`;
         return NextResponse.json({ ok: true });
     } catch (e) {
         return NextResponse.json({ error: String(e) }, { status: 500 });

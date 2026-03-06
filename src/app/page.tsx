@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { Hero } from '@/components/home/hero';
-import { ServicesPreview } from '@/components/home/services-preview';
+import { ServiceStrip } from '@/components/home/service-strip';
+import { CoreServices } from '@/components/home/core-services';
 import { FeaturedWork } from '@/components/home/featured-work';
 import { CredibilityStrip } from '@/components/home/credibility-strip';
+import { ExclusiveRemodeling } from '@/components/home/exclusive-remodeling';
 import { CTABanner } from '@/components/home/cta-banner';
 
 export const metadata: Metadata = {
@@ -71,10 +73,13 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Hero />
-      <ServicesPreview />
+      <ServiceStrip />
+      <CoreServices />
       <FeaturedWork />
       <CredibilityStrip />
+      <ExclusiveRemodeling />
       <CTABanner />
     </>
   );
 }
+
