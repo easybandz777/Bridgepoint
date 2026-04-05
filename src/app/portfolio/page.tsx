@@ -15,12 +15,7 @@ export default function PortfolioPage() {
   const collections = getGalleryCollections();
   const galleryImages: Record<string, string[]> = {};
   for (const col of collections) {
-    // Bathroom photos are imported as duplicate pairs — show only every other one
-    if (col.id === 'bathrooms') {
-      galleryImages[col.id] = col.images.filter((_, i) => i % 2 === 0);
-    } else {
-      galleryImages[col.id] = col.images;
-    }
+    galleryImages[col.id] = col.images;
   }
 
   return (

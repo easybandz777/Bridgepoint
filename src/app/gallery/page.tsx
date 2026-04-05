@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { Section } from '@/components/ui/section';
 import { AnimatedSection } from '@/components/shared/animated-section';
+import { GalleryGrid } from '@/components/gallery/gallery-grid';
 import { getGalleryCollections } from '@/lib/gallery';
 import { IMAGES } from '@/lib/images';
 
@@ -73,23 +73,7 @@ export default async function GalleryPage() {
               </p>
             </AnimatedSection>
 
-            <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {collection.images.map((src, i) => (
-                <li key={src} className="overflow-hidden">
-                  <AnimatedSection delay={i * 0.03}>
-                    <div className="relative aspect-[4/3] overflow-hidden bg-charcoal/5">
-                      <Image
-                        src={src}
-                        alt={`${collection.label} project ${i + 1}`}
-                        fill
-                        className="object-cover transition-transform duration-500 hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                  </AnimatedSection>
-                </li>
-              ))}
-            </ul>
+            <GalleryGrid images={collection.images} label={collection.label} />
           </Section>
         ))
       )}

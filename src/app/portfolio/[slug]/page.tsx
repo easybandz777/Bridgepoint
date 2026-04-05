@@ -6,6 +6,7 @@ import { Section } from '@/components/ui/section';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AnimatedSection } from '@/components/shared/animated-section';
+import { ProjectGallery } from '@/components/portfolio/project-gallery';
 import { projects, getProjectBySlug } from '@/content/projects';
 
 interface PageProps {
@@ -79,19 +80,7 @@ export default async function ProjectDetailPage({
             </AnimatedSection>
 
             {/* Gallery */}
-            <AnimatedSection delay={0.2} className="mt-12">
-              <div className="grid gap-4 sm:grid-cols-2">
-                {project.gallery.map((image, index) => (
-                  <div key={index} className="overflow-hidden">
-                    <img
-                      src={image}
-                      alt={`${project.title} - Image ${index + 1}`}
-                      className="h-64 w-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                ))}
-              </div>
-            </AnimatedSection>
+            <ProjectGallery images={project.gallery} projectTitle={project.title} />
           </div>
 
           {/* Sidebar */}

@@ -6,6 +6,7 @@ import { FilterBar } from '@/components/portfolio/filter-bar';
 import { ProjectCard } from '@/components/portfolio/project-card';
 import { projects, type ProjectCategory } from '@/content/projects';
 import { AnimatedSection } from '@/components/shared/animated-section';
+import { Lightbox, type LightboxImage } from '@/components/shared/lightbox';
 
 type FilterOption = ProjectCategory | 'all';
 
@@ -26,6 +27,7 @@ interface ProjectGridProps {
 
 export function ProjectGrid({ galleryImages = {} }: ProjectGridProps) {
   const [filter, setFilter] = useState<FilterOption>('all');
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const filtered = useMemo(() => {
     if (filter === 'all') return projects;
@@ -34,6 +36,12 @@ export function ProjectGrid({ galleryImages = {} }: ProjectGridProps) {
 
   const galleryFolder = filter !== 'all' ? CATEGORY_TO_GALLERY[filter] : undefined;
   const categoryGalleryImages = galleryFolder ? (galleryImages[galleryFolder] ?? []) : [];
+
+  const galleryLabel = filter !== 'all' ? filter : '';
+  const lightboxImages: LightboxImage[] = categoryGalleryImages.map((src, i) => ({
+    src,
+    alt: `${galleryLabel} project photo ${i + 1}`,
+  }));
 
   return (
     <div>
@@ -73,20 +81,34 @@ export function ProjectGrid({ galleryImages = {} }: ProjectGridProps) {
             {categoryGalleryImages.map((src, i) => (
               <li key={src} className="overflow-hidden">
                 <AnimatedSection delay={i * 0.02}>
-                  <div className="relative aspect-[4/3] overflow-hidden bg-charcoal/5">
-                    <Image
-                      src={src}
-                      alt={`Bathroom project photo ${i + 1}`}
-                      fill
-                      className="object-cover transition-transform duration-500 hover:scale-105"
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    />
-                  </div>
+                  <button
+                    type="button"
+                    className="relative block w-full cursor-pointer overflow-hidden"
+                    onClick={() => setLightboxIndex(i)}
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-charcoal/5">
+                      <Image
+                        src={src}
+                        alt={`${galleryLabel} project photo ${i + 1}`}
+                        fill
+                        className="object-cover transition-transform duration-500 hover:scale-105"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      />
+                    </div>
+                  </button>
                 </AnimatedSection>
               </li>
             ))}
           </ul>
         </div>
+      )}
+
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={lightboxImages}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
       )}
     </div>
   );
