@@ -119,7 +119,7 @@ export function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
             <img
               src={current.src}
               alt={current.alt}
-              className="max-h-[90vh] max-w-[90vw] object-contain"
+              className="h-[90vh] w-[90vw] object-contain"
               draggable={false}
             />
           </motion.div>
