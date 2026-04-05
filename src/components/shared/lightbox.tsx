@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -19,6 +19,7 @@ interface LightboxProps {
 export function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
+  const [naturalSize, setNaturalSize] = useState<{ w: number; h: number } | null>(null);
 
   const goTo = useCallback(
     (next: number, dir: number) => {
@@ -61,7 +62,31 @@ export function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
     preload(currentIndex - 1);
   }, [currentIndex, images]);
 
+  // Reset natural size when image changes so we recalculate
+  useEffect(() => {
+    setNaturalSize(null);
+  }, [currentIndex]);
+
   const current = images[currentIndex];
+
+  // Compute display size: scale up to 2x natural (stays sharp) but cap at viewport
+  const getImageStyle = (): React.CSSProperties => {
+    if (!naturalSize) return { maxHeight: '85vh', maxWidth: '90vw' };
+    const maxW = window.innerWidth * 0.9;
+    const maxH = window.innerHeight * 0.85;
+    // Allow up to 2.5x natural size, but don't exceed viewport
+    const targetW = Math.min(naturalSize.w * 2.5, maxW);
+    const targetH = Math.min(naturalSize.h * 2.5, maxH);
+    // Maintain aspect ratio
+    const ratio = naturalSize.w / naturalSize.h;
+    let finalW = targetW;
+    let finalH = targetW / ratio;
+    if (finalH > targetH) {
+      finalH = targetH;
+      finalW = targetH * ratio;
+    }
+    return { width: finalW, height: finalH };
+  };
 
   const slideVariants = {
     enter: (d: number) => ({ x: d > 0 ? 80 : -80, opacity: 0 }),
@@ -119,8 +144,13 @@ export function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
             <img
               src={current.src}
               alt={current.alt}
-              className="h-[90vh] w-[90vw] object-contain"
+              className="rounded-lg shadow-2xl object-contain"
+              style={getImageStyle()}
               draggable={false}
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                setNaturalSize({ w: img.naturalWidth, h: img.naturalHeight });
+              }}
             />
           </motion.div>
         </AnimatePresence>
