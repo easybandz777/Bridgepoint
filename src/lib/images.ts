@@ -10,17 +10,17 @@ const U = (id: string, w = 1200, q = 80) =>
 export const IMAGES = {
   /** Home hero: real project house photo */
   hero: '/images/hero-home.png',
-  /** Painting page hero: refined interior with paint */
-  paintingHero: U('1615873968403-89e068629265', 1920),
-  /** Services preview - painting: interior room */
-  servicesPreviewPainting: U('1615873968403-89e068629265', 800),
+  /** Painting page hero: open kitchen w/ coffered ceiling, navy island, painted millwork */
+  paintingHero: '/images/gallery/painting/14.jpg',
+  /** Services preview - painting: refined interior with painted built-ins */
+  servicesPreviewPainting: '/images/gallery/painting/11.jpg',
   /** Services preview - select: high-end interior */
   servicesPreviewRemodel: U('1600607687939-ce8a6c25118c', 800),
-  /** Painting services */
-  interiorPainting: U('1615873968403-89e068629265', 800),
-  exteriorPainting: U('1568605114967-8130f3a36994', 800),
-  cabinetRefinishing: U('1556909114-f6e7ad7d3136', 800),
-  specialtyFinishes: U('1600566752353-2f46443f19b9', 800),
+  /** Painting services — local photos */
+  interiorPainting: '/images/gallery/painting/11.jpg',
+  exteriorPainting: '/images/gallery/painting/52.jpg',
+  cabinetRefinishing: '/images/gallery/painting/29.jpg',
+  specialtyFinishes: '/images/gallery/painting/37.jpg',
   /** Select services */
   fullRemodel: U('1600585154340-be6161a56a0c', 800),
   kitchen: U('1556911220-bff31c812dba', 800),
@@ -33,9 +33,6 @@ export const IMAGES = {
   aboutHero: U('1600566752353-2f46443f19b9', 1920),
   /** About: craftsman / builder */
   craftsmanPortrait: U('1560250097-0bf428fe8f58', 800),
-  /** Before/after: older interior vs refreshed (same theme). */
-  beforePaint: U('1600566752353-2f46443f19b9', 1200),
-  afterPaint: U('1615873968403-89e068629265', 1200),
 } as const;
 
 /** Project-type image for portfolio (main + gallery from same themed set). */
