@@ -41,3 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# raw photo source folders (originals; renamed copies live under public/images/gallery)
+/KITCHEN GALLERY/
+/PAINT GALLERY/
+/TILE GALLERY/

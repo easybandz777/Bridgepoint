@@ -38,56 +38,71 @@ export const IMAGES = {
   afterPaint: U('1615873968403-89e068629265', 1200),
 } as const;
 
-/** Real Unsplash IDs for gallery variety (interiors, kitchen, bath, exterior, library). */
-const GALLERY_IDS = [
-  '1600566752353-2f46443f19b9',
-  '1600607687939-ce8a6c25118c',
-  '1556911220-bff31c812dba',
-  '1552321554-5fefe8c9ef14',
-  '1568605114967-8130f3a36994',
-  '1495446815904-a4c6f8f9c71b',
-  '1556909114-f6e7ad7d3136',
-  '1600585154340-be6161a56a0c',
-];
-
 /** Project-type image for portfolio (main + gallery from same themed set). */
 export const PROJECT_IMAGES: Record<string, { main: string; gallery: string[] }> = {
-  'westlake-hills-estate': {
-    main: U('1600585154340-be6161a56a0c', 1200),
-    gallery: GALLERY_IDS.slice(0, 4).map((id) => U(id, 1200)),
-  },
   'barton-creek-kitchen': {
-    main: U('1556911220-bff31c812dba', 1200),
-    gallery: [U('1556909114-f6e7ad7d3136', 1200), U('1556911220-bff31c812dba', 1200), U('1600585154340-be6161a56a0c', 1200)],
+    main: '/images/gallery/kitchens/01.jpg',
+    gallery: [
+      '/images/gallery/kitchens/01.jpg',
+      '/images/gallery/kitchens/02.jpg',
+      '/images/gallery/kitchens/03.jpg',
+      '/images/gallery/kitchens/04.jpg',
+      '/images/gallery/kitchens/05.jpg',
+      '/images/gallery/kitchens/06.jpg',
+    ],
   },
   'lake-travis-master-bath': {
     main: '/images/gallery/bathrooms/01.jpg',
     gallery: [
       '/images/gallery/bathrooms/01.jpg',
-      '/images/gallery/bathrooms/02.jpg',
       '/images/gallery/bathrooms/03.jpg',
-      '/images/gallery/bathrooms/04.jpg',
       '/images/gallery/bathrooms/05.jpg',
-      '/images/gallery/bathrooms/06.jpg',
       '/images/gallery/bathrooms/07.jpg',
-      '/images/gallery/bathrooms/08.jpg',
+      '/images/gallery/bathrooms/09.jpg',
+      '/images/gallery/bathrooms/11.jpg',
+      '/images/gallery/bathrooms/13.jpg',
+      '/images/gallery/bathrooms/15.jpg',
+    ],
+  },
+  'artisan-tile-work': {
+    main: '/images/gallery/tile/01.jpg',
+    gallery: [
+      '/images/gallery/tile/01.jpg',
+      '/images/gallery/tile/02.jpg',
+      '/images/gallery/tile/03.jpg',
+      '/images/gallery/tile/04.jpg',
+      '/images/gallery/tile/05.jpg',
+      '/images/gallery/tile/06.jpg',
+      '/images/gallery/tile/07.jpg',
+      '/images/gallery/tile/08.jpg',
     ],
   },
   'tarrytown-interior-painting': {
-    main: U('1615873968403-89e068629265', 1200),
-    gallery: [U('1615873968403-89e068629265', 1200), U('1600566752353-2f46443f19b9', 1200)],
+    main: '/images/gallery/painting/01.jpg',
+    gallery: [
+      '/images/gallery/painting/01.jpg',
+      '/images/gallery/painting/02.jpg',
+      '/images/gallery/painting/03.jpg',
+      '/images/gallery/painting/04.jpg',
+    ],
   },
   'rollingwood-exterior': {
-    main: U('1568605114967-8130f3a36994', 1200),
-    gallery: [U('1568605114967-8130f3a36994', 1200), U('1600585154340-be6161a56a0c', 1200)],
-  },
-  'clarksville-custom-library': {
-    main: U('1495446815904-a4c6f8f9c71b', 1200),
-    gallery: [U('1495446815904-a4c6f8f9c71b', 1200), U('1600566752353-2f46443f19b9', 1200), U('1600607687939-ce8a6c25118c', 1200)],
+    main: '/images/gallery/painting/05.jpg',
+    gallery: [
+      '/images/gallery/painting/05.jpg',
+      '/images/gallery/painting/06.jpg',
+      '/images/gallery/painting/07.jpg',
+      '/images/gallery/painting/08.jpg',
+    ],
   },
   'bee-cave-cabinet-refinishing': {
-    main: U('1556909114-f6e7ad7d3136', 1200),
-    gallery: [U('1556909114-f6e7ad7d3136', 1200), U('1556911220-bff31c812dba', 1200)],
+    main: '/images/gallery/painting/09.jpg',
+    gallery: [
+      '/images/gallery/painting/09.jpg',
+      '/images/gallery/painting/10.jpg',
+      '/images/gallery/painting/11.jpg',
+      '/images/gallery/painting/12.jpg',
+    ],
   },
 };
 

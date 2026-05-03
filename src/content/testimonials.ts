@@ -24,9 +24,8 @@ export const testimonials: Testimonial[] = [
       'The level of craftsmanship is extraordinary. Every corner of our home tells a story of meticulous care and artistry. We have had many contractors over the years, but none come close to this caliber of work.',
     author: 'The Harrison Family',
     location: 'Westlake Hills',
-    projectType: 'Full Remodel',
+    projectType: 'Whole-Home Refresh',
     rating: 5,
-    projectSlug: 'westlake-hills-estate',
     image: TESTIMONIAL_IMAGES.harrison,
   },
   {
@@ -52,14 +51,14 @@ export const testimonials: Testimonial[] = [
     image: TESTIMONIAL_IMAGES.thompson,
   },
   {
-    id: 'owens',
+    id: 'patel',
     quote:
-      'This library is a work of art. Friends walk in and their jaw drops. The rolling ladder alone is a conversation piece. Worth every penny and then some.',
-    author: 'Dr. Rebecca Owens',
-    location: 'Clarksville',
-    projectType: 'Custom Build',
+      'Every tile is set perfectly. The detail in our shower niche and herringbone floor is the kind of work you only see in magazines. Worth every penny.',
+    author: 'The Patel Family',
+    location: 'Westlake',
+    projectType: 'Tile Work',
     rating: 5,
-    projectSlug: 'clarksville-custom-library',
+    projectSlug: 'artisan-tile-work',
     image: TESTIMONIAL_IMAGES.owens,
   },
   {

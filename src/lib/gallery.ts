@@ -19,9 +19,8 @@ export const GALLERY_CATEGORIES = [
   { id: 'bathrooms', label: 'Bathrooms' },
   { id: 'kitchens', label: 'Kitchens' },
   { id: 'painting', label: 'Painting' },
+  { id: 'tile', label: 'Tile Work' },
   { id: 'flooring', label: 'Flooring' },
-  { id: 'full-remodel', label: 'Full Remodel' },
-  { id: 'custom', label: 'Custom' },
 ] as const;
 
 export type GalleryCategoryId = (typeof GALLERY_CATEGORIES)[number]['id'];

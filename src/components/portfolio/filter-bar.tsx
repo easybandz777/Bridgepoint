@@ -15,9 +15,8 @@ const FILTERS: { value: FilterOption; label: string }[] = [
   { value: 'painting', label: 'Painting' },
   { value: 'kitchen', label: 'Kitchen' },
   { value: 'bathroom', label: 'Bathroom' },
-  { value: 'full-remodel', label: 'Full Remodel' },
+  { value: 'tile', label: 'Tile Work' },
   { value: 'flooring', label: 'Flooring' },
-  { value: 'custom', label: 'Custom' },
 ];
 
 export function FilterBar({ active, onChange }: FilterBarProps) {

@@ -7,7 +7,7 @@
  * Example - BATHROOMS album downloaded to Downloads:
  *   node scripts/import-gallery.js "C:\Users\You\Downloads\BATHROOMS" bathrooms
  *
- * Categories: bathrooms | kitchens | painting | flooring | full-remodel | custom
+ * Categories: bathrooms | kitchens | painting | flooring | tile
  * Default category if omitted: bathrooms
  */
 
@@ -15,7 +15,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ALLOWED_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp']);
-const VALID_CATEGORIES = ['bathrooms', 'kitchens', 'painting', 'flooring', 'full-remodel', 'custom'];
+const VALID_CATEGORIES = ['bathrooms', 'kitchens', 'painting', 'flooring', 'tile'];
 
 const sourceDir = process.argv[2];
 const category = (process.argv[3] || 'bathrooms').toLowerCase();

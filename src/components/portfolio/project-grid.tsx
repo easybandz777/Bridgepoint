@@ -15,8 +15,7 @@ const CATEGORY_TO_GALLERY: Partial<Record<ProjectCategory, string>> = {
   bathroom: 'bathrooms',
   kitchen: 'kitchens',
   painting: 'painting',
-  'full-remodel': 'full-remodel',
-  custom: 'custom',
+  tile: 'tile',
   flooring: 'flooring',
 };
 
