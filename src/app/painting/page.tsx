@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     title: 'Professional Painting Services in Atlanta, GA | Bridgepointe',
     description: 'Interior painting, exterior painting & cabinet refinishing across Metro Atlanta. Meticulous prep, premium paints, expert craftsmen.',
     url: 'https://bridgepointepainting.com/painting',
+    images: [{ url: '/images/gallery/painting/14.jpg', width: 1200, height: 630, alt: 'Open kitchen with coffered ceiling and painted millwork by Bridgepointe Atlanta' }],
   },
   alternates: { canonical: 'https://bridgepointepainting.com/painting' },
 };

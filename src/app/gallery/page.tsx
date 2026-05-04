@@ -6,9 +6,21 @@ import { getGalleryCollections } from '@/lib/gallery';
 import { IMAGES } from '@/lib/images';
 
 export const metadata: Metadata = {
-  title: 'Gallery',
+  title: 'Photo Gallery | Bathrooms, Kitchens, Tile, Painting & Flooring | Atlanta',
   description:
-    'Photo gallery of our bathroom, kitchen, painting, and remodeling work. Real projects, real craftsmanship.',
+    'Browse 280+ real project photos from Bridgepointe — bathroom remodels, kitchen renovations, custom tile work, interior and exterior painting, and hardwood flooring across Metro Atlanta. Sorted by category.',
+  keywords: [
+    'painting photo gallery Atlanta', 'bathroom remodel photos Atlanta', 'kitchen remodel photos Atlanta',
+    'tile installation photos Atlanta', 'home renovation gallery Atlanta GA', 'Bridgepointe gallery',
+    'cabinet painting before after Atlanta', 'house painting examples Atlanta',
+  ],
+  openGraph: {
+    title: 'Photo Gallery | Bridgepointe Atlanta',
+    description: 'Hundreds of real project photos: bathrooms, kitchens, tile, painting, flooring across Metro Atlanta.',
+    url: 'https://bridgepointepainting.com/gallery',
+    images: [{ url: '/images/gallery/tile/01.jpg', width: 1200, height: 630, alt: 'Bridgepointe Atlanta — project gallery' }],
+  },
+  alternates: { canonical: 'https://bridgepointepainting.com/gallery' },
 };
 
 export default async function GalleryPage() {

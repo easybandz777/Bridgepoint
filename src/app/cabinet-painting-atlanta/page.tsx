@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { breadcrumbSchema, jsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = {
     title: 'Cabinet Painting Atlanta, GA | Kitchen Cabinet Refinishing | Bridgepointe',
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
         title: 'Cabinet Painting & Refinishing Atlanta, GA | Bridgepointe',
         description: 'Professional spray-applied cabinet refinishing in Atlanta. New look. Fraction of replacement cost. Free estimates.',
         url: 'https://bridgepointepainting.com/cabinet-painting-atlanta',
+        images: [{ url: '/images/gallery/painting/29.jpg', width: 1200, height: 630, alt: 'Two-tone shaker kitchen cabinets with calacatta marble — refinished by Bridgepointe Atlanta' }],
     },
     alternates: { canonical: 'https://bridgepointepainting.com/cabinet-painting-atlanta' },
 };
@@ -50,11 +52,18 @@ const process = [
     { title: 'Cure & Reinstall', body: 'Full cure time observed. Doors and hardware reinstalled with new hinges if requested.' },
 ];
 
+const crumbs = breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Painting', url: '/painting' },
+    { name: 'Cabinet Painting Atlanta', url: '/cabinet-painting-atlanta' },
+]);
+
 export default function CabinetPaintingAtlanta() {
     return (
         <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(crumbs)} />
 
             {/* Hero */}
             <section className="relative min-h-[60vh] flex items-end pb-20 pt-36 overflow-hidden bg-[#0f0f0f]">

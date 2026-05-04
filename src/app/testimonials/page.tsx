@@ -8,9 +8,20 @@ import { testimonials } from '@/content/testimonials';
 import { IMAGES } from '@/lib/images';
 
 export const metadata: Metadata = {
-  title: 'Testimonials',
+  title: 'Client Testimonials & Reviews | Bridgepointe Atlanta',
   description:
-    'Read what our clients say about working with Bridgepointe. Real stories from homeowners who trusted us with their most valuable investment.',
+    'Real client reviews from Bridgepointe painting and remodeling projects across Metro Atlanta — Buckhead, Alpharetta, Roswell, Sandy Springs, Marietta. Kitchens, bathrooms, cabinet refinishing, and luxury home painting.',
+  keywords: [
+    'Bridgepointe reviews', 'Atlanta painting contractor reviews', 'painting company testimonials Atlanta GA',
+    'kitchen remodel reviews Atlanta', 'bathroom remodel reviews Atlanta', 'best painting contractor reviews Atlanta',
+  ],
+  openGraph: {
+    title: 'Client Testimonials | Bridgepointe Atlanta',
+    description: 'Real client reviews from painting, kitchen, bathroom, tile, and flooring projects across Metro Atlanta.',
+    url: 'https://bridgepointepainting.com/testimonials',
+    images: [{ url: '/images/gallery/painting/14.jpg', width: 1200, height: 630, alt: 'Bridgepointe client testimonials Atlanta' }],
+  },
+  alternates: { canonical: 'https://bridgepointepainting.com/testimonials' },
 };
 
 export default function TestimonialsPage() {

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { breadcrumbSchema, jsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = {
     title: 'Interior Painting Atlanta, GA | Premium Interior Painters | Bridgepointe',
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
         title: 'Interior Painting Atlanta, GA | Bridgepointe',
         description: 'Premium interior painting across Metro Atlanta. Walls, ceilings, trim, cabinetry. Benjamin Moore certified. Free estimates.',
         url: 'https://bridgepointepainting.com/interior-painting-atlanta',
+        images: [{ url: '/images/gallery/painting/11.jpg', width: 1200, height: 630, alt: 'Sage living room with painted built-ins by Bridgepointe Atlanta' }],
     },
     alternates: { canonical: 'https://bridgepointepainting.com/interior-painting-atlanta' },
 };
@@ -50,11 +52,18 @@ const highlights = [
     { icon: '📋', title: 'Free Detailed Estimate', body: 'On-site consultation and itemized written estimate — no surprises, no hidden costs.' },
 ];
 
+const crumbs = breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Painting', url: '/painting' },
+    { name: 'Interior Painting Atlanta', url: '/interior-painting-atlanta' },
+]);
+
 export default function InteriorPaintingAtlanta() {
     return (
         <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(crumbs)} />
 
             {/* Hero */}
             <section className="relative min-h-[60vh] flex items-end pb-20 pt-36 overflow-hidden bg-[#0f0f0f]">

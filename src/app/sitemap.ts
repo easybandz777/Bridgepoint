@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { SERVICE_LOCATIONS } from '@/lib/locations';
+import { projects } from '@/content/projects';
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const base = 'https://bridgepointepainting.com';
@@ -12,6 +13,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${base}/exterior-painting-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
         { url: `${base}/cabinet-painting-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.90 },
         { url: `${base}/luxury-home-painting`, lastModified: now, changeFrequency: 'monthly', priority: 0.90 },
+        { url: `${base}/cost-of-cabinet-painting-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
+        { url: `${base}/cost-of-house-painting-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
+        { url: `${base}/paint-or-replace-kitchen-cabinets`, lastModified: now, changeFrequency: 'monthly', priority: 0.80 },
+        { url: `${base}/before-and-after`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
         { url: `${base}/portfolio`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
         { url: `${base}/gallery`, lastModified: now, changeFrequency: 'weekly', priority: 0.80 },
         { url: `${base}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
@@ -26,5 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.88,
     }));
 
-    return [...staticPages, ...locationPages];
+    const portfolioDetailPages: MetadataRoute.Sitemap = projects.map(p => ({
+        url: `${base}/portfolio/${p.slug}`,
+        lastModified: now,
+        changeFrequency: 'monthly' as const,
+        priority: 0.70,
+    }));
+
+    return [...staticPages, ...locationPages, ...portfolioDetailPages];
 }

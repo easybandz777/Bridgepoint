@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import { AnimatedSection } from '@/components/shared/animated-section';
 import { ProjectGallery } from '@/components/portfolio/project-gallery';
 import { projects, getProjectBySlug } from '@/content/projects';
+import { breadcrumbSchema, jsonLd } from '@/lib/seo';
+
+const BASE = 'https://bridgepointepainting.com';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -26,9 +29,17 @@ export async function generateMetadata({
   const project = getProjectBySlug(slug);
   if (!project) return { title: 'Project Not Found' };
 
+  const fullImg = project.image.startsWith('http') ? project.image : `${BASE}${project.image}`;
   return {
-    title: project.title,
+    title: `${project.title} | ${project.categoryLabel} Project | Atlanta`,
     description: project.description,
+    openGraph: {
+      title: `${project.title} | Bridgepointe Atlanta`,
+      description: project.description,
+      url: `${BASE}/portfolio/${project.slug}`,
+      images: [{ url: fullImg, width: 1200, height: 630, alt: project.title }],
+    },
+    alternates: { canonical: `${BASE}/portfolio/${project.slug}` },
   };
 }
 
@@ -39,8 +50,37 @@ export default async function ProjectDetailPage({
   const project = getProjectBySlug(slug);
   if (!project) notFound();
 
+  const fullImage = project.image.startsWith('http') ? project.image : `${BASE}${project.image}`;
+  const projectSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.title,
+    description: project.description,
+    image: fullImage,
+    url: `${BASE}/portfolio/${project.slug}`,
+    creator: { '@type': 'LocalBusiness', name: 'Bridgepointe', url: BASE },
+    locationCreated: { '@type': 'Place', address: { '@type': 'PostalAddress', addressRegion: 'GA', addressCountry: 'US' } },
+    about: project.categoryLabel,
+    ...(project.testimonial && {
+      review: {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: project.testimonial.author },
+        reviewBody: project.testimonial.quote,
+        reviewRating: { '@type': 'Rating', ratingValue: '5' },
+      },
+    }),
+  };
+
+  const crumbs = breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Portfolio', url: '/portfolio' },
+    { name: project.title, url: `/portfolio/${project.slug}` },
+  ]);
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(projectSchema)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(crumbs)} />
       {/* Hero */}
       <section className="relative flex min-h-[60vh] items-end overflow-hidden pb-16 pt-32">
         <div className="absolute inset-0">

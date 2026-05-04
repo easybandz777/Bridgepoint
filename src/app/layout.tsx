@@ -64,10 +64,10 @@ export const metadata: Metadata = {
     description: 'Atlanta\'s premier high-end painting and remodeling contractor. 18+ years of meticulous craftsmanship across Buckhead, Alpharetta, Roswell, Marietta & all Metro Atlanta.',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/images/gallery/painting/14.jpg',
         width: 1200,
         height: 630,
-        alt: 'Bridgepointe — Luxury Painting Contractor Atlanta GA',
+        alt: 'Bridgepointe — open kitchen with coffered ceiling, painted millwork, and navy island',
       },
     ],
   },
@@ -75,12 +75,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Bridgepointe | Atlanta\'s Luxury Painting Contractor',
     description: 'Premium interior, exterior & cabinet painting across Metro Atlanta. 18+ years of meticulous craftsmanship.',
-    images: ['/og-image.jpg'],
+    images: ['/images/gallery/painting/14.jpg'],
   },
   alternates: { canonical: BASE_URL },
-  verification: {
-    google: 'your-google-verification-code',
-  },
   other: {
     'geo.region': 'US-GA',
     'geo.placename': 'Atlanta, Georgia',
@@ -99,8 +96,8 @@ const localBusinessSchema = {
   url: BASE_URL,
   telephone: '+18624218973',
   email: 'Bridgepointefloors@gmail.com',
-  image: `${BASE_URL}/og-image.jpg`,
-  logo: `${BASE_URL}/logo.png`,
+  image: `${BASE_URL}/images/gallery/painting/14.jpg`,
+  logo: `${BASE_URL}/images/logo.png`,
   priceRange: '$$$',
   currenciesAccepted: 'USD',
   paymentAccepted: 'Cash, Credit Card, Check',
@@ -137,27 +134,9 @@ const localBusinessSchema = {
       { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Complete Home Remodeling', description: 'Whole-home renovation management with licensed subcontractors and permit handling.' } },
     ],
   },
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '5.0',
-    reviewCount: '47',
-    bestRating: '5',
-    worstRating: '1',
-  },
-  review: [
-    {
-      '@type': 'Review',
-      author: { '@type': 'Person', name: 'Sarah M.' },
-      reviewRating: { '@type': 'Rating', ratingValue: '5' },
-      reviewBody: 'Bridgepointe transformed our home in Buckhead. Absolutely flawless work, meticulous attention to detail, and the whole team was professional top to bottom.',
-    },
-    {
-      '@type': 'Review',
-      author: { '@type': 'Person', name: 'James R.' },
-      reviewRating: { '@type': 'Rating', ratingValue: '5' },
-      reviewBody: 'Best painting contractor in Atlanta by far. They prepped every surface perfectly and the finish is stunning. Worth every penny.',
-    },
-  ],
+  // aggregateRating + review intentionally omitted until backed by real
+  // Google Business Profile reviews. Inventing numbers here is a structured-data
+  // violation and risks a Google manual penalty. Repopulate once GBP is wired.
   openingHoursSpecification: [
     { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '08:00', closes: '17:00' },
   ],

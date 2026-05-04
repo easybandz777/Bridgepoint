@@ -9,9 +9,21 @@ import { AnimatedSection } from '@/components/shared/animated-section';
 import { selectServices } from '@/content/services';
 
 export const metadata: Metadata = {
-  title: 'Select Services',
+  title: 'Select Remodeling Services | High-End Kitchens, Baths & Custom Carpentry | Atlanta',
   description:
-    'Exclusive high-end remodeling services available by application only. Full home remodels, kitchen transformations, luxury bathrooms, and custom carpentry.',
+    'By-application luxury remodeling: kitchen transformations, master bathroom remodels, custom carpentry, and whole-home renovations across Buckhead, Alpharetta, and Metro Atlanta. Limited annual capacity. Investments start at $100K.',
+  keywords: [
+    'luxury remodeling Atlanta', 'high end remodeler Atlanta GA', 'kitchen remodeler Atlanta',
+    'luxury bathroom remodel Atlanta', 'whole home remodel Atlanta', 'custom carpentry Atlanta',
+    'six figure home remodel Atlanta', 'estate remodeling Buckhead Alpharetta',
+  ],
+  openGraph: {
+    title: 'Select Remodeling Services | Bridgepointe Atlanta',
+    description: 'Exclusive luxury remodeling — kitchens, bathrooms, custom carpentry — across Metro Atlanta. By application only.',
+    url: 'https://bridgepointepainting.com/select-services',
+    images: [{ url: '/images/gallery/kitchens/01.jpg', width: 1200, height: 630, alt: 'Bridgepointe luxury remodeling Atlanta' }],
+  },
+  alternates: { canonical: 'https://bridgepointepainting.com/select-services' },
 };
 
 const PILLARS = [

@@ -9,7 +9,10 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ['/admin/', '/api/'],
             },
         ],
-        sitemap: 'https://bridgepointepainting.com/sitemap.xml',
+        sitemap: [
+            'https://bridgepointepainting.com/sitemap.xml',
+            'https://bridgepointepainting.com/image-sitemap.xml',
+        ],
         host: 'https://bridgepointepainting.com',
     };
 }

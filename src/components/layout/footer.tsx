@@ -12,7 +12,7 @@ export function Footer() {
       <div className="h-px w-full bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
       <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-4 lg:gap-16">
+        <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-5 lg:gap-12">
 
           {/* Brand */}
           <div className="md:col-span-1">
@@ -63,6 +63,33 @@ export function Footer() {
                     className="text-sm transition-colors duration-300 hover:text-warm-white"
                   >
                     {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h4 className="mb-5 font-sans text-xs font-semibold uppercase tracking-[0.25em] text-gold">
+              Services
+            </h4>
+            <ul className="space-y-3">
+              {[
+                { href: '/interior-painting-atlanta', label: 'Interior Painting' },
+                { href: '/exterior-painting-atlanta', label: 'Exterior Painting' },
+                { href: '/cabinet-painting-atlanta', label: 'Cabinet Refinishing' },
+                { href: '/luxury-home-painting', label: 'Luxury Home Painting' },
+                { href: '/before-and-after', label: 'Before & After' },
+                { href: '/portfolio', label: 'Portfolio' },
+                { href: '/gallery', label: 'Photo Gallery' },
+              ].map((s) => (
+                <li key={s.href}>
+                  <Link
+                    href={s.href}
+                    className="text-sm transition-colors duration-300 hover:text-warm-white"
+                  >
+                    {s.label}
                   </Link>
                 </li>
               ))}

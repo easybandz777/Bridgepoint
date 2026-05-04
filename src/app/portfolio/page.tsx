@@ -6,9 +6,21 @@ import { getGalleryCollections } from '@/lib/gallery';
 import { IMAGES } from '@/lib/images';
 
 export const metadata: Metadata = {
-  title: 'Portfolio',
+  title: 'Portfolio | Painting, Kitchen, Bathroom & Tile Projects | Atlanta',
   description:
-    'Explore our portfolio of premium painting, remodeling, and custom carpentry projects. Each project reflects meticulous craftsmanship and attention to detail.',
+    'Real Bridgepointe projects across Metro Atlanta — kitchen repaints, master bathroom remodels, custom tile installations, hardwood flooring, and luxury interior painting. Photos, scope, timeline, and investment ranges for every project.',
+  keywords: [
+    'Atlanta painting portfolio', 'kitchen remodel Atlanta portfolio', 'bathroom remodel Atlanta portfolio',
+    'tile installation Atlanta examples', 'painting contractor portfolio Atlanta GA',
+    'Bridgepointe projects', 'home remodeling portfolio Atlanta',
+  ],
+  openGraph: {
+    title: 'Portfolio | Bridgepointe Atlanta',
+    description: 'Real photos and details from recent kitchen, bathroom, tile, painting, and flooring projects across Metro Atlanta.',
+    url: 'https://bridgepointepainting.com/portfolio',
+    images: [{ url: '/images/gallery/kitchens/01.jpg', width: 1200, height: 630, alt: 'Bridgepointe Atlanta — kitchen remodel portfolio' }],
+  },
+  alternates: { canonical: 'https://bridgepointepainting.com/portfolio' },
 };
 
 export default function PortfolioPage() {

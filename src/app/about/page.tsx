@@ -7,9 +7,20 @@ import { SITE_CONFIG } from '@/lib/constants';
 import { IMAGES } from '@/lib/images';
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'About Bridgepointe | Atlanta\'s Luxury Painting & Remodeling Craftsman',
   description:
-    'Meet the craftsman behind Bridgepointe. Over 18 years of experience in high-end remodeling and premium painting, with an unwavering commitment to quality.',
+    'Meet the craftsman behind Bridgepointe. 18+ years of premium painting, cabinet refinishing, tile, and remodeling for luxury homes across Buckhead, Alpharetta, Roswell, and Metro Atlanta. One dedicated crew, no subcontracted finishers.',
+  keywords: [
+    'about Bridgepointe', 'Atlanta painting contractor about', 'luxury painter Atlanta GA',
+    'master craftsman Atlanta', 'high end painter Buckhead', 'family-owned painting company Atlanta',
+  ],
+  openGraph: {
+    title: 'About Bridgepointe | Luxury Painting & Remodeling Atlanta',
+    description: '18+ years of meticulous craftsmanship across Metro Atlanta. One crew, no shortcuts.',
+    url: 'https://bridgepointepainting.com/about',
+    images: [{ url: '/images/gallery/painting/14.jpg', width: 1200, height: 630, alt: 'About Bridgepointe — Atlanta painting craftsman' }],
+  },
+  alternates: { canonical: 'https://bridgepointepainting.com/about' },
 };
 
 const VALUES = [
