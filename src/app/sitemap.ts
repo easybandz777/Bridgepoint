@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { SERVICE_LOCATIONS } from '@/lib/locations';
+import { NEIGHBORHOODS } from '@/lib/neighborhoods';
 import { projects } from '@/content/projects';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -38,5 +39,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.70,
     }));
 
-    return [...staticPages, ...locationPages, ...portfolioDetailPages];
+    const neighborhoodPages: MetadataRoute.Sitemap = NEIGHBORHOODS.map(n => ({
+        url: `${base}/painting-contractor-${n.slug}`,
+        lastModified: now,
+        changeFrequency: 'monthly' as const,
+        priority: 0.82,
+    }));
+
+    return [...staticPages, ...locationPages, ...neighborhoodPages, ...portfolioDetailPages];
 }
