@@ -1,0 +1,79 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "name": "Bridgepointe Flooring & Painting — Color Tokens",
+  "version": "1.0.0",
+  "notes": "Logo colors sampled directly from public/images/logo.png with ImageMagick. Website palette mirrors src/app/globals.css.",
+  "logo": {
+    "navy": {
+      "value": "#17233B",
+      "rgb": [23, 35, 59],
+      "use": "Primary brand navy. Wordmark 'BRIDGE'. Use for headlines, primary buttons, dark UI surfaces."
+    },
+    "navy-deep": {
+      "value": "#1B232E",
+      "rgb": [27, 35, 46],
+      "use": "Emblem fill (bridge silhouette). Slightly cooler/darker than wordmark navy. Use sparingly for emblem reproductions and very dark surfaces."
+    },
+    "green": {
+      "value": "#365E1F",
+      "rgb": [54, 94, 31],
+      "use": "Primary brand green. Wordmark 'POINTE' and brush stroke body. Use for accents, secondary CTAs, success states, paint-related callouts."
+    },
+    "green-bright": {
+      "value": "#6B9E35",
+      "rgb": [107, 158, 53],
+      "use": "Accent green highlight from the location pin / brush highlights. Use for hover states, badges, charts. Do NOT use for body text on light backgrounds (low contrast)."
+    }
+  },
+  "website": {
+    "charcoal": {
+      "value": "#1A1A1A",
+      "use": "Body text on warm-white. Dark surfaces. Primary foreground."
+    },
+    "charcoal-light": {
+      "value": "#2A2A2A",
+      "use": "Secondary dark surface. Card backgrounds on dark sections."
+    },
+    "warm-white": {
+      "value": "#F5F2ED",
+      "use": "Primary background. Body color of the site."
+    },
+    "warm-white-dark": {
+      "value": "#EBE7E0",
+      "use": "Secondary surface. Subtle section bands, hover backgrounds."
+    },
+    "gold": {
+      "value": "#B8956A",
+      "use": "Legacy accent (pre-rebrand). Use only when matching existing site components. Prefer logo green for new accents."
+    },
+    "gold-light": {
+      "value": "#D4B896",
+      "use": "Light gold tint. Borders, subtle dividers on dark surfaces."
+    },
+    "gold-dark": {
+      "value": "#9A7A54",
+      "use": "Dark gold. Hover state for gold buttons."
+    },
+    "slate": {
+      "value": "#4A4A4A",
+      "use": "Muted body text. Captions on warm-white."
+    },
+    "slate-light": {
+      "value": "#6A6A6A",
+      "use": "Tertiary text. Metadata, timestamps."
+    },
+    "cream": {
+      "value": "#FAF8F5",
+      "use": "Lightest surface. Modal backgrounds, elevated cards."
+    }
+  },
+  "semantic": {
+    "primary": "logo.navy",
+    "accent": "logo.green",
+    "background": "website.warm-white",
+    "surface": "website.cream",
+    "text": "website.charcoal",
+    "text-muted": "website.slate",
+    "border": "website.warm-white-dark"
+  }
+}

@@ -1,0 +1,38 @@
+/*
+ * Bridgepointe Flooring & Painting — Color Tokens
+ * Source: marketing/brand/tokens/colors.json
+ * Logo colors sampled from public/images/logo.png with ImageMagick.
+ *
+ * Naming convention: --bridgepointe-{group}-{tone}
+ *   Other agents: import this file and reference variables by name.
+ *   Do not redefine these values elsewhere — change them here only.
+ */
+
+:root {
+  /* ---------- LOGO COLORS (primary brand identity) ---------- */
+  --bridgepointe-navy: #17233B;          /* wordmark BRIDGE — primary */
+  --bridgepointe-navy-deep: #1B232E;     /* emblem silhouette fill */
+  --bridgepointe-green: #365E1F;         /* wordmark POINTE / brush */
+  --bridgepointe-green-bright: #6B9E35;  /* pin highlight / accent */
+
+  /* ---------- WEBSITE PALETTE (existing site) ---------- */
+  --bridgepointe-charcoal: #1A1A1A;
+  --bridgepointe-charcoal-light: #2A2A2A;
+  --bridgepointe-warm-white: #F5F2ED;
+  --bridgepointe-warm-white-dark: #EBE7E0;
+  --bridgepointe-gold: #B8956A;
+  --bridgepointe-gold-light: #D4B896;
+  --bridgepointe-gold-dark: #9A7A54;
+  --bridgepointe-slate: #4A4A4A;
+  --bridgepointe-slate-light: #6A6A6A;
+  --bridgepointe-cream: #FAF8F5;
+
+  /* ---------- SEMANTIC ALIASES ---------- */
+  --bridgepointe-primary: var(--bridgepointe-navy);
+  --bridgepointe-accent: var(--bridgepointe-green);
+  --bridgepointe-background: var(--bridgepointe-warm-white);
+  --bridgepointe-surface: var(--bridgepointe-cream);
+  --bridgepointe-text: var(--bridgepointe-charcoal);
+  --bridgepointe-text-muted: var(--bridgepointe-slate);
+  --bridgepointe-border: var(--bridgepointe-warm-white-dark);
+}

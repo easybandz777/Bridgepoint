@@ -1,43 +1,73 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Trash2, Receipt, Upload, Banknote } from 'lucide-react';
-import { SAMPLE_PROJECTS } from '@/lib/projects';
+import { ArrowLeft, Receipt, Banknote } from 'lucide-react';
+import { listProjects, createExpense, DbProject } from '@/lib/project-api';
 
 export default function NewExpensePage() {
     const router = useRouter();
+    const [projects, setProjects] = useState<DbProject[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // Form State
     const [vendor, setVendor] = useState('');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
-    const [projectId, setProjectId] = useState('none');
+    const [projectId, setProjectId] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('Credit Card');
     const [reference, setReference] = useState('');
     const [isReimbursable, setIsReimbursable] = useState(false);
 
-    const handleSave = async (e: React.FormEvent) => {
+    useEffect(() => {
+        (async () => {
+            try {
+                const rows = await listProjects();
+                setProjects(rows);
+            } catch {
+                /* non-fatal */
+            }
+        })();
+    }, []);
+
+    async function handleSave(e: React.FormEvent) {
         e.preventDefault();
         setIsSubmitting(true);
-
-        // Simulate API call to save expense
-        setTimeout(() => {
+        setError(null);
+        try {
+            await createExpense({
+                vendor,
+                date,
+                amount: Number(amount),
+                category,
+                description,
+                projectId: projectId || null,
+                paymentMethod,
+                notes: reference ? `Ref: ${reference}` : '',
+                reimbursable: isReimbursable,
+                actor: 'admin',
+            });
             router.push('/admin/expenses');
-            router.refresh();
-        }, 800);
-    };
+        } catch (err) {
+            setError(err instanceof Error ? err.message : String(err));
+            setIsSubmitting(false);
+        }
+    }
+
+    const active = projects.filter((p) => p.status === 'Active');
+    const others = projects.filter((p) => p.status !== 'Active');
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto">
-            {/* Header */}
             <div className="mb-8 flex items-center justify-between">
                 <div>
-                    <Link href="/admin/expenses" className="inline-flex items-center text-xs font-semibold uppercase tracking-widest text-[#b8956a] hover:text-[#cbb08c] transition-colors mb-4">
+                    <Link
+                        href="/admin/expenses"
+                        className="inline-flex items-center text-xs font-semibold uppercase tracking-widest text-[#b8956a] hover:text-[#cbb08c] transition-colors mb-4"
+                    >
                         <ArrowLeft size={14} className="mr-2" />
                         Back to Expenses
                     </Link>
@@ -46,16 +76,18 @@ export default function NewExpensePage() {
                 </div>
             </div>
 
-            <form onSubmit={handleSave} className="bg-[#1a1a1a] border border-white/6 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-                {/* Background Pattern */}
+            <form
+                onSubmit={handleSave}
+                className="bg-[#1a1a1a] border border-white/6 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
+            >
                 <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#b8956a]/5 to-transparent rounded-bl-[100px] pointer-events-none" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-
-                    {/* Amount (Hero Input) */}
                     <div className="md:col-span-2 mb-4 p-6 bg-white/5 border border-white/10 rounded-xl flex items-center justify-between">
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Total Amount *</label>
+                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">
+                                Total Amount *
+                            </label>
                             <div className="flex items-center gap-2">
                                 <span className="text-3xl font-serif text-white/50">$</span>
                                 <input
@@ -66,7 +98,7 @@ export default function NewExpensePage() {
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.00"
-                                    className="w-full bg-transparent border-none p-0 text-4xl sm:text-5xl font-mono text-white focus:ring-0 placeholder-white/20"
+                                    className="w-full bg-transparent border-none p-0 text-4xl sm:text-5xl font-mono text-white focus:ring-0 placeholder-white/20 focus:outline-none"
                                 />
                             </div>
                         </div>
@@ -75,10 +107,11 @@ export default function NewExpensePage() {
                         </div>
                     </div>
 
-                    {/* Left Column */}
                     <div className="space-y-6">
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Vendor / Payee *</label>
+                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">
+                                Vendor / Payee *
+                            </label>
                             <input
                                 required
                                 type="text"
@@ -90,61 +123,78 @@ export default function NewExpensePage() {
                         </div>
 
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Date Incurred *</label>
+                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">
+                                Date Incurred *
+                            </label>
                             <input
                                 required
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Cost Category *</label>
+                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">
+                                Cost Category *
+                            </label>
                             <select
                                 required
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                                 className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             >
-                                <option value="" disabled>Select Category...</option>
+                                <option value="" disabled>
+                                    Select Category...
+                                </option>
                                 <option value="Materials">Materials</option>
-                                <option value="Equipment Rental">Equipment Rental</option>
-                                <option value="Permits & Fees">Permits & Fees</option>
-                                <option value="Disposal/Dumpster">Disposal/Dumpster</option>
-                                <option value="Labor (Temporary)">Labor (Temporary)</option>
-                                <option value="Office/Overhead">Office/Overhead</option>
-                                <option value="Other">Other</option>
+                                <option value="Equipment">Equipment</option>
+                                <option value="Permits">Permits</option>
+                                <option value="Disposal">Disposal</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Design">Design</option>
+                                <option value="Miscellaneous">Miscellaneous</option>
                             </select>
                         </div>
                     </div>
 
-                    {/* Right Column */}
                     <div className="space-y-6">
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Project Allocation</label>
+                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">
+                                Project Allocation
+                            </label>
                             <select
                                 value={projectId}
                                 onChange={(e) => setProjectId(e.target.value)}
                                 className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             >
-                                <option value="none">Overhead / Unassigned</option>
-                                <optgroup label="Active Projects">
-                                    {SAMPLE_PROJECTS.filter(p => p.status === 'Active').map(p => (
-                                        <option key={p.id} value={p.id}>{p.name}</option>
-                                    ))}
-                                </optgroup>
-                                <optgroup label="Other Projects">
-                                    {SAMPLE_PROJECTS.filter(p => p.status !== 'Active').map(p => (
-                                        <option key={p.id} value={p.id}>{p.name}</option>
-                                    ))}
-                                </optgroup>
+                                <option value="">Overhead / Unassigned</option>
+                                {active.length > 0 && (
+                                    <optgroup label="Active Projects">
+                                        {active.map((p) => (
+                                            <option key={p.id} value={p.id}>
+                                                {p.name}
+                                            </option>
+                                        ))}
+                                    </optgroup>
+                                )}
+                                {others.length > 0 && (
+                                    <optgroup label="Other Projects">
+                                        {others.map((p) => (
+                                            <option key={p.id} value={p.id}>
+                                                {p.name}
+                                            </option>
+                                        ))}
+                                    </optgroup>
+                                )}
                             </select>
                         </div>
 
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Payment Method</label>
+                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">
+                                Payment Method
+                            </label>
                             <select
                                 value={paymentMethod}
                                 onChange={(e) => setPaymentMethod(e.target.value)}
@@ -159,7 +209,9 @@ export default function NewExpensePage() {
                         </div>
 
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Ref / Receipt #</label>
+                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">
+                                Ref / Receipt #
+                            </label>
                             <input
                                 type="text"
                                 value={reference}
@@ -170,10 +222,11 @@ export default function NewExpensePage() {
                         </div>
                     </div>
 
-                    {/* Full Width */}
                     <div className="md:col-span-2 space-y-6">
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Description / Notes</label>
+                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">
+                                Description / Notes
+                            </label>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -182,8 +235,7 @@ export default function NewExpensePage() {
                             />
                         </div>
 
-                        {/* Reimbursable Toggle */}
-                        {projectId !== 'none' && (
+                        {projectId && (
                             <label className="flex items-center gap-3 p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl cursor-pointer hover:bg-blue-500/10 transition-colors">
                                 <input
                                     type="checkbox"
@@ -193,19 +245,25 @@ export default function NewExpensePage() {
                                 />
                                 <div>
                                     <p className="text-sm font-medium text-white">Billable to Customer (Reimbursable)</p>
-                                    <p className="text-xs text-white/40 mt-1">This expense will be added to the next customer invoice as a reimbursable cost.</p>
+                                    <p className="text-xs text-white/40 mt-1">
+                                        Mark this expense as reimbursable to the customer.
+                                    </p>
                                 </div>
                             </label>
                         )}
 
-                        {/* Receipt Upload Mock */}
-                        <div className="border-2 border-dashed border-white/10 rounded-xl p-6 text-center hover:border-white/20 hover:bg-white/5 cursor-pointer transition-colors">
-                            <Receipt size={32} className="mx-auto text-white/30 mb-3" />
-                            <p className="text-sm font-semibold text-white mb-1">Click to upload receipt</p>
-                            <p className="text-xs text-white/40">PDF, JPG, or PNG (max 5MB)</p>
+                        <div className="border-2 border-dashed border-white/10 rounded-xl p-6 text-center text-white/40 text-xs">
+                            <Receipt size={24} className="mx-auto mb-2" />
+                            Receipt upload not connected — paste a URL into Description if needed.
                         </div>
                     </div>
                 </div>
+
+                {error && (
+                    <div className="mt-6 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-sm">
+                        {error}
+                    </div>
+                )}
 
                 <div className="mt-8 pt-6 border-t border-white/10 flex justify-end gap-4 relative z-10">
                     <Link

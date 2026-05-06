@@ -6,9 +6,10 @@ import Link from 'next/link';
 import { ArrowLeft, Plus, Trash2, ShieldCheck, Info } from 'lucide-react';
 import { TradeCategory } from '@/lib/subcontractors';
 
-const TRADES: TradeCategory[] = [ // Hardcoded array of common trades for the dropdown
-    'Framing', 'Plumbing', 'Electrical', 'HVAC', 'Drywall',
-    'Painting', 'Flooring', 'Roofing', 'Landscaping', 'General'
+const TRADES: TradeCategory[] = [
+    'General', 'Demo / Abatement', 'Framing', 'Drywall', 'Drywall & Paint',
+    'Painting', 'Roofing', 'Landscaping', 'Trim & Finish Carpentry', 'Cabinetry',
+    'Flooring', 'Tile & Stone', 'Plumbing', 'Electrical', 'HVAC', 'Cleaning / Disposal',
 ];
 
 export default function NewSubcontractorPage() {
@@ -42,6 +43,7 @@ export default function NewSubcontractorPage() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
+            const today = new Date().toISOString().split('T')[0];
             const res = await fetch('/api/subcontractors', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -54,22 +56,28 @@ export default function NewSubcontractorPage() {
                     trades: selectedTrades,
                     status: 'Active',
                     insuranceExpiry: insuranceExpiry || null,
+                    notes: taxId ? `Tax ID / EIN: ${taxId}` : '',
                     documents: [
-                        ...(hasW9 ? [{ id: `doc-${Date.now()}-w9`, type: 'W-9', filename: 'w9.pdf', url: '#', uploadedDate: new Date().toISOString().split('T')[0], verified: false }] : []),
-                        ...(hasCOI ? [{ id: `doc-${Date.now()}-coi`, type: 'COI', filename: 'coi.pdf', url: '#', uploadedDate: new Date().toISOString().split('T')[0], expiryDate: insuranceExpiry || null, verified: false }] : []),
-                        ...(hasMSA ? [{ id: `doc-${Date.now()}-msa`, type: 'Agreement', filename: 'msa.pdf', url: '#', uploadedDate: new Date().toISOString().split('T')[0], verified: false }] : []),
+                        ...(hasW9 ? [{ id: `doc-${Date.now()}-w9`, type: 'W-9', filename: 'w9.pdf', url: '#', uploadedDate: today, verified: false }] : []),
+                        ...(hasCOI ? [{ id: `doc-${Date.now()}-coi`, type: 'COI', filename: 'coi.pdf', url: '#', uploadedDate: today, expiryDate: insuranceExpiry || null, verified: false }] : []),
+                        ...(hasMSA ? [{ id: `doc-${Date.now()}-msa`, type: 'Agreement', filename: 'msa.pdf', url: '#', uploadedDate: today, verified: false }] : []),
                     ],
-                    metrics: { averageRating: 4.0, totalJobsCompleted: 0, reliabilityScore: 100 },
                 }),
             });
-            const data = await res.json();
+            const data = (await res.json()) as { id?: string; error?: string };
+            if (!res.ok) {
+                alert(data.error ?? 'Failed to create subcontractor');
+                setIsSubmitting(false);
+                return;
+            }
             if (data.id) {
                 router.push(`/admin/subcontractors/${data.id}`);
             } else {
                 router.push('/admin/subcontractors');
             }
-        } catch {
-            router.push('/admin/subcontractors');
+        } catch (err) {
+            alert(err instanceof Error ? err.message : 'Failed to create');
+            setIsSubmitting(false);
         }
     };
 

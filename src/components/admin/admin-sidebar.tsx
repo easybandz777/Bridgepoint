@@ -2,24 +2,60 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Receipt, LogOut, Phone, X, Hammer, Users, CreditCard, TrendingUp } from 'lucide-react';
+import {
+    LayoutDashboard,
+    Activity,
+    FileText,
+    Receipt,
+    LogOut,
+    Phone,
+    X,
+    Hammer,
+    Users,
+    User,
+    CreditCard,
+    TrendingUp,
+    BarChart3,
+    DollarSign,
+    LineChart,
+    ShieldAlert,
+    Clock,
+} from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
-const NAV_MANAGEMENT = [
-    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+interface NavLink {
+    href: string;
+    label: string;
+    icon: typeof LayoutDashboard;
+    exact?: boolean;
+}
+
+const NAV_DASHBOARD: NavLink[] = [
+    { href: '/admin', label: 'Overview', icon: LayoutDashboard, exact: true },
+    { href: '/admin/activity', label: 'Activity', icon: Activity, exact: false },
+];
+
+const NAV_OPERATIONS: NavLink[] = [
+    { href: '/admin/projects', label: 'Projects', icon: Hammer, exact: false },
     { href: '/admin/estimates', label: 'Estimates', icon: FileText, exact: false },
     { href: '/admin/invoices', label: 'Invoices', icon: Receipt, exact: false },
-];
-
-const NAV_OPERATIONS = [
-    { href: '/admin/projects', label: 'Projects', icon: Hammer, exact: false },
-    { href: '/admin/subcontractors', label: 'Subcontractors', icon: Users, exact: false },
-];
-
-const NAV_FINANCIALS = [
     { href: '/admin/expenses', label: 'Expenses', icon: CreditCard, exact: false },
-    { href: '/admin/reports', label: 'Reports', icon: TrendingUp, exact: false },
+];
+
+const NAV_PEOPLE: NavLink[] = [
+    { href: '/admin/subcontractors', label: 'Subcontractors', icon: Users, exact: true },
+    { href: '/admin/subcontractors/compliance', label: 'Sub Compliance', icon: ShieldAlert, exact: false },
+    { href: '/admin/employees', label: 'Employees', icon: User, exact: false },
+    { href: '/admin/timesheets', label: 'Timesheets', icon: Clock, exact: false },
+];
+
+const NAV_REPORTS: NavLink[] = [
+    { href: '/admin/reports/profitability', label: 'Profitability', icon: TrendingUp, exact: false },
+    { href: '/admin/reports/estimate-vs-actual', label: 'Estimate vs Actual', icon: BarChart3, exact: false },
+    { href: '/admin/reports/subcontractors', label: 'Subcontractor Spend', icon: DollarSign, exact: false },
+    { href: '/admin/reports/employees', label: 'Labor / Employees', icon: Users, exact: false },
+    { href: '/admin/reports/cash-flow', label: 'Cash Flow / A-R', icon: LineChart, exact: false },
 ];
 
 interface AdminSidebarProps {
@@ -38,7 +74,7 @@ export function AdminSidebar({ onClose }: AdminSidebarProps) {
         onClose?.();
     }
 
-    function renderNavSection(title: string, links: typeof NAV_MANAGEMENT) {
+    function renderNavSection(title: string, links: NavLink[]) {
         return (
             <div className="mb-6 last:mb-0">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/25 px-3 mb-2">
@@ -46,7 +82,7 @@ export function AdminSidebar({ onClose }: AdminSidebarProps) {
                 </p>
                 <ul className="space-y-0.5">
                     {links.map(({ href, label, icon: Icon, exact }) => {
-                        const active = exact ? pathname === href : pathname.startsWith(href);
+                        const active = exact ? pathname === href : pathname === href || pathname.startsWith(href + '/');
                         return (
                             <li key={href}>
                                 <Link
@@ -102,9 +138,10 @@ export function AdminSidebar({ onClose }: AdminSidebarProps) {
 
             {/* Navigation */}
             <nav className="flex-1 px-3 py-5 overflow-y-auto">
-                {renderNavSection('Sales & Billing', NAV_MANAGEMENT)}
-                {renderNavSection('Production', NAV_OPERATIONS)}
-                {renderNavSection('Financials', NAV_FINANCIALS)}
+                {renderNavSection('Dashboard', NAV_DASHBOARD)}
+                {renderNavSection('Operations', NAV_OPERATIONS)}
+                {renderNavSection('People', NAV_PEOPLE)}
+                {renderNavSection('Reports', NAV_REPORTS)}
 
                 <div className="my-5 h-px bg-white/6 mx-3" />
 
