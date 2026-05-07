@@ -9,6 +9,8 @@ import { NextResponse } from 'next/server';
 import sql, { initDB } from '@/lib/db';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
 
+export const dynamic = 'force-dynamic';
+
 interface CountRow {
     count: number | string;
 }

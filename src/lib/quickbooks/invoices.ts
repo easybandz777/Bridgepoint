@@ -18,8 +18,8 @@ import sql, { initDB, logActivity } from '@/lib/db';
 import { qbCreate, qbGet, qbQuery, qbUpdate } from './client';
 import type { QbInvoice, QbInvoiceLine } from './types';
 import { clean, emailField, moneyRound, ymd } from './mappers';
+import { getDefaultItemId } from './refs';
 
-const DEFAULT_ITEM_REF = '1';
 const DEFAULT_ITEM_NAME = 'Services';
 
 interface DbInvoiceLineItem {
@@ -123,8 +123,9 @@ async function resolveCustomerRef(invoice: DbInvoiceRow): Promise<string> {
     return customer.Id;
 }
 
-function buildLines(invoice: DbInvoiceRow): QbInvoiceLine[] {
+async function buildLines(invoice: DbInvoiceRow): Promise<QbInvoiceLine[]> {
     const items = invoice.line_items ?? [];
+    const itemId = await getDefaultItemId();
     return items.map((li) => {
         const qty = li.quantity ?? 1;
         const unitPrice = moneyRound(li.unit_price ?? li.unitPrice ?? li.amount ?? li.total ?? 0);
@@ -134,7 +135,7 @@ function buildLines(invoice: DbInvoiceRow): QbInvoiceLine[] {
             Amount: amount,
             Description: clean(li.description ?? ''),
             SalesItemLineDetail: {
-                ItemRef: { value: DEFAULT_ITEM_REF, name: DEFAULT_ITEM_NAME },
+                ItemRef: { value: itemId, name: DEFAULT_ITEM_NAME },
                 Qty: qty,
                 UnitPrice: unitPrice,
             },
@@ -156,8 +157,11 @@ export async function mapInvoiceToQb(invoiceRow: DbInvoiceRow, customerRef: stri
         BillEmail: emailField(client.email),
         PrivateNote: notes || undefined,
         CustomerMemo: notes ? { value: notes } : undefined,
-        Line: buildLines(invoiceRow),
+        Line: await buildLines(invoiceRow),
     };
+    if (Number(invoiceRow.tax_amount ?? 0) > 0) {
+        body.TxnTaxDetail = { TotalTax: moneyRound(Number(invoiceRow.tax_amount)) };
+    }
     return body;
 }
 

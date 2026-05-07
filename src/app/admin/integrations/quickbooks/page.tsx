@@ -7,6 +7,8 @@ import { QbStatusCard, type QbStatusResponse } from '@/components/admin/qb-statu
 import { QbStatsRow } from '@/components/admin/qb-stats-row';
 import { QbActionsCard } from '@/components/admin/qb-actions-card';
 import { QbSyncLogTable, type QbSyncLogEntry } from '@/components/admin/qb-sync-log-table';
+import { QbDefaultsCard } from '@/components/admin/qb-defaults-card';
+import { QbHowItWorks } from '@/components/admin/qb-how-it-works';
 
 interface FlashMessage {
     kind: 'success' | 'error';
@@ -152,10 +154,21 @@ export default function QuickBooksIntegrationPage() {
             )}
 
             {error && (
-                <div className="mb-6 p-4 rounded-2xl border border-red-500/20 bg-red-500/5 text-sm text-red-300">
-                    Failed to load status: {error}
+                <div className="mb-6 p-4 rounded-2xl border border-red-500/20 bg-red-500/5 text-sm text-red-300 flex items-center justify-between gap-3">
+                    <span>Failed to load status: {error}</span>
+                    <button
+                        onClick={() => {
+                            setLoading(true);
+                            void load().finally(() => setLoading(false));
+                        }}
+                        className="h-8 px-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-200 text-xs font-semibold hover:bg-red-500/20 transition-colors shrink-0"
+                    >
+                        Retry
+                    </button>
                 </div>
             )}
+
+            <QbHowItWorks />
 
             <div className="space-y-6">
                 <QbStatusCard
@@ -175,6 +188,8 @@ export default function QuickBooksIntegrationPage() {
                         refreshExpiresAt={data?.refreshExpiresAt}
                     />
                 )}
+
+                <QbDefaultsCard enabled={Boolean(connected)} />
 
                 <QbActionsCard disabled={!connected} onAfter={load} />
 

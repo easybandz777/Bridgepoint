@@ -16,8 +16,8 @@ import sql, { initDB, logActivity } from '@/lib/db';
 import { qbCreate, qbQuery, qbUpdate } from './client';
 import type { QbEstimate, QbInvoiceLine } from './types';
 import { clean, moneyRound, ymd } from './mappers';
+import { getDefaultItemId } from './refs';
 
-const DEFAULT_ITEM_REF = '1';
 const DEFAULT_ITEM_NAME = 'Services';
 
 interface DbEstimateLineItem {
@@ -121,8 +121,9 @@ async function resolveCustomerRef(estimate: DbEstimateRow): Promise<string> {
     return customer.Id;
 }
 
-function buildLines(estimate: DbEstimateRow): QbInvoiceLine[] {
+async function buildLines(estimate: DbEstimateRow): Promise<QbInvoiceLine[]> {
     const items = estimate.line_items ?? [];
+    const itemId = await getDefaultItemId();
     return items.map((li) => {
         const qty = li.quantity ?? 1;
         const unitPrice = moneyRound(li.unit_price ?? li.unitPrice ?? li.amount ?? li.total ?? 0);
@@ -132,7 +133,7 @@ function buildLines(estimate: DbEstimateRow): QbInvoiceLine[] {
             Amount: amount,
             Description: clean(li.description ?? ''),
             SalesItemLineDetail: {
-                ItemRef: { value: DEFAULT_ITEM_REF, name: DEFAULT_ITEM_NAME },
+                ItemRef: { value: itemId, name: DEFAULT_ITEM_NAME },
                 Qty: qty,
                 UnitPrice: unitPrice,
             },
@@ -163,11 +164,14 @@ export async function mapEstimateToQb(row: DbEstimateRow, customerRef: string): 
         TxnDate: ymd(row.created_date),
         ExpirationDate: ymd(row.valid_until),
         CustomerRef: { value: customerRef },
-        Line: buildLines(row),
+        Line: await buildLines(row),
         PrivateNote: notes || undefined,
         CustomerMemo: notes ? { value: notes } : undefined,
         TxnStatus: mapStatus(row.status),
     };
+    if (Number(row.tax_amount ?? 0) > 0) {
+        body.TxnTaxDetail = { TotalTax: moneyRound(Number(row.tax_amount)) };
+    }
     return body;
 }
 

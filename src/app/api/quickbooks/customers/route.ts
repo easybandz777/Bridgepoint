@@ -3,6 +3,8 @@ import { initDB } from '@/lib/db';
 import { qbQuery } from '@/lib/quickbooks/client';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/quickbooks/customers
  *

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getActiveConnectionRow, refreshConnection } from '@/lib/quickbooks/connection';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/quickbooks/refresh
  *

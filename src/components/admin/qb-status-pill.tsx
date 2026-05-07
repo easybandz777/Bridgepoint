@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { CheckCircle, Clock } from 'lucide-react';
 
 interface QbStatusPillProps {
@@ -22,6 +25,14 @@ function formatRelative(iso: string | null | undefined): string {
 }
 
 export function QbStatusPill({ qbId, lastSyncedAt, size = 'sm' }: QbStatusPillProps) {
+    // Re-render every 60s so "5m ago" stays fresh on long-open admin pages.
+    const [, setTick] = useState(0);
+    useEffect(() => {
+        if (!lastSyncedAt) return;
+        const id = setInterval(() => setTick((t) => t + 1), 60_000);
+        return () => clearInterval(id);
+    }, [lastSyncedAt]);
+
     const synced = Boolean(qbId);
     const padding = size === 'md' ? 'px-2.5 py-1' : 'px-2 py-0.5';
     const text = size === 'md' ? 'text-[11px]' : 'text-[10px]';

@@ -4,6 +4,8 @@ import { qbGet, QbApiError } from '@/lib/quickbooks/client';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
 import type { QbCustomer } from '@/lib/quickbooks/types';
 
+export const dynamic = 'force-dynamic';
+
 type Ctx = { params: Promise<{ qbId: string }> };
 
 /**

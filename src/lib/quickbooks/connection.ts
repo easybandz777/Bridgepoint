@@ -18,6 +18,12 @@ import type {
 
 const REFRESH_LEEWAY_MS = 5 * 60 * 1000; // refresh 5 min before access expiry
 
+// If another caller bumped `last_refreshed_at` within this window we treat
+// the new tokens as fresh and skip a duplicate refresh — Intuit invalidates
+// the old refresh_token on each rotation, so two concurrent refreshes will
+// fight and one will fail.
+const RECENT_REFRESH_MS = 30 * 1000;
+
 function rowToActive(r: QbConnectionRow): QbActiveConnection {
     return {
         id: r.id,
@@ -127,6 +133,19 @@ export async function refreshConnection(connectionId: string): Promise<QbActiveC
     if (rows.length === 0) throw new Error(`Connection ${connectionId} not found`);
     const row = rows[0];
 
+    // Race protection: if another concurrent caller already refreshed this
+    // connection moments ago, skip the duplicate refresh. Intuit returns a
+    // new refresh_token each time and invalidates the old one, so racing
+    // refreshes will result in one branch failing with `invalid_grant`.
+    // We check `last_refreshed_at` rather than comparing tokens because the
+    // post-refresh access token is what callers actually need.
+    if (row.last_refreshed_at) {
+        const lastRefreshedMs = new Date(row.last_refreshed_at).getTime();
+        if (Date.now() - lastRefreshedMs < RECENT_REFRESH_MS) {
+            return rowToActive(row);
+        }
+    }
+
     const tokens = await refreshTokens(row.refresh_token);
     const now = Date.now();
     const accessExpiresAt = new Date(now + tokens.expires_in * 1000);
@@ -177,6 +196,20 @@ async function markStatus(connectionId: string, status: 'active' | 'disconnected
 export async function maybeUpdateCompanyName(connectionId: string, name: string) {
     if (!name) return;
     await sql`UPDATE qb_connections SET company_name = ${name} WHERE id = ${connectionId}`;
+}
+
+export async function readConnectionMetadata(): Promise<Record<string, unknown>> {
+    await initDB();
+    const r = await getActiveConnectionRow();
+    return (r?.metadata as Record<string, unknown>) ?? {};
+}
+
+export async function writeConnectionMetadata(patch: Record<string, unknown>) {
+    await initDB();
+    const r = await getActiveConnectionRow();
+    if (!r) throw new Error('No active QuickBooks connection');
+    const merged = { ...(r.metadata as Record<string, unknown>), ...patch };
+    await sql`UPDATE qb_connections SET metadata = ${JSON.stringify(merged)}::jsonb WHERE id = ${r.id}`;
 }
 
 // ─── OAuth state CSRF helpers ─────────────────────────────────────────────

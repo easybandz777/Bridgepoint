@@ -24,7 +24,7 @@ import {
 } from './mappers';
 import type { QbCustomer } from './types';
 
-const QB_LOG_ENTITY = 'qb_customer';
+const QB_LOG_ENTITY = 'quickbooks_customer';
 
 interface ProjectRow {
     id: string;

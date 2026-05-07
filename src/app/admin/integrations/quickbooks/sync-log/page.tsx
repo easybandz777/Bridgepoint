@@ -202,40 +202,36 @@ export default function QbSyncLogPage() {
                             ))}
                         </select>
                     </div>
-                    <div className="flex gap-3">
-                        <div>
+                    <div className="grid grid-cols-2 sm:flex gap-3">
+                        <div className="min-w-0">
                             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35 mb-2">From</p>
                             <input
                                 type="date"
                                 value={from}
                                 onChange={(e) => setFrom(e.target.value)}
-                                className="h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#b8956a]/50 transition-all"
+                                className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#b8956a]/50 transition-all"
                             />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35 mb-2">To</p>
                             <input
                                 type="date"
                                 value={to}
                                 onChange={(e) => setTo(e.target.value)}
-                                className="h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#b8956a]/50 transition-all"
+                                className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#b8956a]/50 transition-all"
                             />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {error && (
-                <div className="mb-6 p-4 rounded-2xl border border-red-500/20 bg-red-500/5 text-sm text-red-300">
-                    Failed to load sync log: {error}
-                </div>
-            )}
-
             <QbSyncLogTable
                 rows={rows}
                 loading={loading}
                 showRawJson
                 emptyLabel="No sync entries match these filters."
+                error={error}
+                onRetry={() => void load()}
             />
 
             {total > 0 && (

@@ -165,6 +165,10 @@ export interface QbEstimate {
     CustomerMemo?: { value: string };
     TotalAmt?: number;
     TxnStatus?: 'Pending' | 'Accepted' | 'Closed' | 'Rejected';
+    TxnTaxDetail?: {
+        TotalTax?: number;
+        TaxLine?: unknown[];
+    };
 }
 
 // ─── Bill (vendor bills — subcontractor invoices to us) ────────────────────

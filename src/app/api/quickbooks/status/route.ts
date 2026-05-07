@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import sql, { initDB } from '@/lib/db';
 import { getActiveConnectionRow } from '@/lib/quickbooks/connection';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/quickbooks/status
  *

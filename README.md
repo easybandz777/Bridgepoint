@@ -34,3 +34,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## QuickBooks Integration
+
+The CRM syncs customers, invoices, estimates, vendors, bills, and payment
+state with QuickBooks Online (sandbox + production). Connection status,
+manual pushes, the sync log, and webhook event queue all live under
+`/admin/integrations/quickbooks`.
+
+Full operations docs — environment variables, OAuth + Vercel Cron setup,
+routes inventory, sync semantics, common errors, and the production
+go-live checklist — are in [`QUICKBOOKS.md`](./QUICKBOOKS.md).
+
+A quick CLI smoke test is at [`scripts/qb-smoke-test.sh`](./scripts/qb-smoke-test.sh):
+
+```bash
+./scripts/qb-smoke-test.sh
+BASE_URL=https://bridgepointepainting.com ./scripts/qb-smoke-test.sh
+```

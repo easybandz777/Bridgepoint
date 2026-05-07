@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { listRecentPayments } from '@/lib/quickbooks/payments';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
     try {
         const url = new URL(req.url);

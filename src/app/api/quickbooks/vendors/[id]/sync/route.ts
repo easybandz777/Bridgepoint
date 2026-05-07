@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { pushVendor } from '@/lib/quickbooks/vendors';
+import { safeQbErrorMessage } from '@/lib/quickbooks/client';
+
+export const dynamic = 'force-dynamic';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -18,6 +21,7 @@ export async function POST(req: Request, ctx: Ctx) {
         if (msg.includes('not connected')) {
             return NextResponse.json({ error: msg }, { status: 412 });
         }
-        return NextResponse.json({ error: msg }, { status: 500 });
+        console.warn('[qb] vendor sync failed:', e);
+        return NextResponse.json({ error: safeQbErrorMessage(e) }, { status: 500 });
     }
 }

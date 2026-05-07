@@ -53,12 +53,17 @@ export function QbStatusCard({ data, loading, busy, onConnect, onDisconnect, onR
 
     if (loading || !data) {
         return (
-            <div className="bg-[#1a1a1a] border border-white/6 rounded-2xl p-6 animate-pulse">
-                <div className="h-6 w-40 bg-white/5 rounded mb-3" />
-                <div className="h-4 w-72 bg-white/5 rounded mb-6" />
-                <div className="flex gap-3">
-                    <div className="h-11 w-44 bg-white/5 rounded-xl" />
-                    <div className="h-11 w-32 bg-white/5 rounded-xl" />
+            <div className="bg-[#1a1a1a] border border-white/6 rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-5">
+                    <Loader2 size={18} className="animate-spin text-[#b8956a]" />
+                    <span className="text-sm text-white/65 font-medium">Checking connection…</span>
+                </div>
+                <div className="space-y-3 animate-pulse">
+                    <div className="h-4 w-72 max-w-full bg-white/5 rounded" />
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="h-11 w-full sm:w-44 bg-white/5 rounded-xl" />
+                        <div className="h-11 w-full sm:w-32 bg-white/5 rounded-xl" />
+                    </div>
                 </div>
             </div>
         );
@@ -151,20 +156,32 @@ export function QbStatusCard({ data, loading, busy, onConnect, onDisconnect, onR
 
                 <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/6">
                     {!connected ? (
-                        <button
-                            onClick={onConnect}
-                            disabled={busy || data.hasCredentialsConfigured === false}
-                            className="h-11 px-5 rounded-xl bg-[#b8956a] text-black text-sm font-semibold hover:bg-[#cbb08c] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <PlugZap size={14} />
-                            {isExpired ? 'Reconnect to QuickBooks' : 'Connect to QuickBooks'}
-                        </button>
+                        <>
+                            <button
+                                onClick={onConnect}
+                                disabled={busy || data.hasCredentialsConfigured === false}
+                                className="h-11 w-full sm:w-auto px-5 rounded-xl bg-[#b8956a] text-black text-sm font-semibold hover:bg-[#cbb08c] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <PlugZap size={14} />
+                                {isExpired ? 'Reconnect to QuickBooks' : 'Connect to QuickBooks'}
+                            </button>
+                            {isError && (
+                                <button
+                                    onClick={onRefresh}
+                                    disabled={busy}
+                                    className="h-11 w-full sm:w-auto px-4 rounded-xl bg-white/5 border border-white/10 text-white/80 text-sm font-semibold hover:text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                                >
+                                    {busy ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+                                    Retry
+                                </button>
+                            )}
+                        </>
                     ) : (
                         <>
                             <button
                                 onClick={onRefresh}
                                 disabled={busy}
-                                className="h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white/80 text-sm font-semibold hover:text-white hover:bg-white/10 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                className="h-11 w-full sm:w-auto px-4 rounded-xl bg-white/5 border border-white/10 text-white/80 text-sm font-semibold hover:text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {busy ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
                                 Test connection
@@ -173,7 +190,7 @@ export function QbStatusCard({ data, loading, busy, onConnect, onDisconnect, onR
                                 <button
                                     onClick={() => setConfirmDisconnect(true)}
                                     disabled={busy}
-                                    className="h-11 px-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm font-semibold hover:bg-red-500/20 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    className="h-11 w-full sm:w-auto px-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm font-semibold hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
                                     <Power size={14} />
                                     Disconnect

@@ -32,6 +32,33 @@ export class QbApiError extends Error {
     }
 }
 
+/**
+ * Build a short, user-safe error message for surfacing QB failures to the
+ * browser. Strips the verbose QB Fault body (which may include realm
+ * identifiers and API-internal hints) and instead returns a generic message
+ * referencing the latest sync-log row the admin can inspect.
+ */
+export function safeQbErrorMessage(e: unknown): string {
+    if (e instanceof QbApiError) {
+        return `QuickBooks request failed (HTTP ${e.status}). See sync log for details.`;
+    }
+    const msg = e instanceof Error ? e.message : String(e);
+    // Preserve a short list of "expected" preconditions that the UI
+    // matches on for status-code mapping. Anything else is sanitized.
+    const safePatterns = [
+        'not connected',
+        'not yet synced',
+        'Customer not yet synced',
+        'Vendor not synced',
+        'no qb_id',
+        'refresh token expired',
+    ];
+    for (const p of safePatterns) {
+        if (msg.includes(p)) return msg.length > 200 ? msg.slice(0, 200) : msg;
+    }
+    return 'QuickBooks request failed. See sync log for details.';
+}
+
 function baseUrl(conn: QbActiveConnection): string {
     return conn.environment === 'production' ? PROD_BASE : SANDBOX_BASE;
 }

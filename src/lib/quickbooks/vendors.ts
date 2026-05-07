@@ -24,7 +24,7 @@ import {
 } from './mappers';
 import type { QbVendor } from './types';
 
-const QB_LOG_ENTITY = 'qb_vendor';
+const QB_LOG_ENTITY = 'quickbooks_vendor';
 
 export interface DbSubRow {
     id: string;

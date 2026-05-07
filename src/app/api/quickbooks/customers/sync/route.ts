@@ -3,6 +3,8 @@ import { initDB } from '@/lib/db';
 import { resolveOrCreateCustomerForProject } from '@/lib/quickbooks/customers';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/quickbooks/customers/sync
  * Body: { projectId: string, actor?: string }

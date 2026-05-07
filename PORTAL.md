@@ -230,3 +230,17 @@ The selected locale is stored in `localStorage` under
 - Authorization is per-user-per-project: employees see projects they
   have time entries on (or are leads/PMs for); subcontractors see
   projects they're assigned to.
+
+---
+
+## Related integrations
+
+The portal reads from the same Postgres database that backs the back-office
+admin app and the QuickBooks Online sync. If a crew posts an update or
+clocks in, the office sees it on the same project record they sync to QB.
+
+- **QuickBooks Online** — invoice, estimate, customer, vendor, bill, and
+  payment sync between the CRM and QB. Operations runbook, env vars,
+  routes, and failure modes are documented in
+  [`QUICKBOOKS.md`](./QUICKBOOKS.md). Admin UI lives at
+  `/admin/integrations/quickbooks`.

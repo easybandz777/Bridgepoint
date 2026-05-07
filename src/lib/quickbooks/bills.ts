@@ -15,10 +15,10 @@ import sql, { initDB, logActivity } from '@/lib/db';
 import { qbCreate, qbUpdate } from './client';
 import { getActiveConnection } from './connection';
 import { clean, moneyRound, ymd } from './mappers';
+import { getDefaultExpenseAccountId } from './refs';
 import type { QbBill, QbBillLine } from './types';
 
-const QB_LOG_ENTITY = 'qb_bill';
-const DEFAULT_ACCOUNT_REF = '7';
+const QB_LOG_ENTITY = 'quickbooks_bill';
 
 export interface DbBillRow {
     id: string;
@@ -63,13 +63,14 @@ async function loadVendorQbId(subcontractorId: string): Promise<string | null> {
 export async function mapBillToQb(bill: DbBillRow, vendorRef: string): Promise<QbBill> {
     const amount = moneyRound(bill.amount);
     const description = clean(bill.description ?? '') || 'Subcontractor work';
+    const accountId = await getDefaultExpenseAccountId();
 
     const line: QbBillLine = {
         DetailType: 'AccountBasedExpenseLineDetail',
         Amount: amount,
         Description: description,
         AccountBasedExpenseLineDetail: {
-            AccountRef: { value: DEFAULT_ACCOUNT_REF },
+            AccountRef: { value: accountId },
             BillableStatus: 'Billable',
         },
     };

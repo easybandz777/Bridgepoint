@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { pullInvoiceStatus } from '@/lib/quickbooks/invoices';
 
+export const dynamic = 'force-dynamic';
+
 type Ctx = { params: Promise<{ id: string }> };
 
 export async function POST(_req: Request, ctx: Ctx) {

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { qbQuery } from '@/lib/quickbooks/client';
 import type { QbInvoice } from '@/lib/quickbooks/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
     try {
         const url = new URL(req.url);

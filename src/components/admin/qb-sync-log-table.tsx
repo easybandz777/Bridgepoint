@@ -37,6 +37,9 @@ interface QbSyncLogTableProps {
     loading?: boolean;
     showRawJson?: boolean;
     emptyLabel?: string;
+    /** When set, renders an error block (with optional Retry CTA) instead of the table. */
+    error?: string | null;
+    onRetry?: () => void;
 }
 
 function normalize(row: QbSyncLogEntry) {
@@ -106,8 +109,16 @@ function DirectionPill({ direction }: { direction: string }) {
     );
 }
 
-export function QbSyncLogTable({ rows, loading, showRawJson = false, emptyLabel }: QbSyncLogTableProps) {
+export function QbSyncLogTable({
+    rows,
+    loading,
+    showRawJson = false,
+    emptyLabel,
+    error,
+    onRetry,
+}: QbSyncLogTableProps) {
     const [expanded, setExpanded] = useState<string | null>(null);
+    const [showFullError, setShowFullError] = useState<string | null>(null);
 
     if (loading) {
         return (
@@ -125,11 +136,31 @@ export function QbSyncLogTable({ rows, loading, showRawJson = false, emptyLabel 
         );
     }
 
+    if (error) {
+        return (
+            <div className="bg-[#1a1a1a] border border-red-500/20 rounded-2xl px-6 py-10 text-center">
+                <AlertCircle size={28} className="mx-auto text-red-400/70 mb-3" />
+                <p className="text-sm text-red-200 max-w-md mx-auto">Failed to load sync activity.</p>
+                <p className="text-[11px] text-red-300/70 mt-1.5 max-w-md mx-auto break-words">{error}</p>
+                {onRetry && (
+                    <button
+                        onClick={onRetry}
+                        className="mt-4 h-9 px-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-200 text-xs font-semibold hover:bg-red-500/20 transition-colors"
+                    >
+                        Retry
+                    </button>
+                )}
+            </div>
+        );
+    }
+
     if (!rows || rows.length === 0) {
         return (
             <div className="bg-[#1a1a1a] border border-white/6 rounded-2xl px-6 py-12 text-center">
                 <Clock size={28} className="mx-auto text-white/15 mb-3" />
-                <p className="text-sm text-white/55">{emptyLabel ?? 'No sync activity yet.'}</p>
+                <p className="text-sm text-white/55">
+                    {emptyLabel ?? 'No sync activity yet — push an invoice to start.'}
+                </p>
                 <p className="text-[11px] text-white/30 mt-1">
                     Logs will show up here as soon as the integration starts pushing or pulling data.
                 </p>
@@ -184,13 +215,13 @@ export function QbSyncLogTable({ rows, loading, showRawJson = false, emptyLabel 
                             <div className="col-span-1 md:col-span-1">
                                 <StatusPill status={r.status} />
                             </div>
-                            <div className="col-span-1 md:col-span-2">
+                            <div className="col-span-1 md:col-span-2 min-w-0">
                                 <p className="text-[11px] text-white/45">
                                     {r.durationMs != null ? `${r.durationMs}ms` : '—'}
                                 </p>
                                 {r.error && (
                                     <p className="text-[10px] text-red-300 truncate" title={r.error}>
-                                        {r.error}
+                                        {r.error.length > 200 ? `${r.error.slice(0, 200)}…` : r.error}
                                     </p>
                                 )}
                             </div>
@@ -214,8 +245,20 @@ export function QbSyncLogTable({ rows, loading, showRawJson = false, emptyLabel 
                                             Error
                                         </p>
                                         <pre className="text-[11px] text-red-200 bg-red-500/5 border border-red-500/20 rounded-xl p-3 overflow-x-auto whitespace-pre-wrap break-words">
-                                            {r.error}
+                                            {r.error.length > 200 && showFullError !== r.id
+                                                ? `${r.error.slice(0, 200)}…`
+                                                : r.error}
                                         </pre>
+                                        {r.error.length > 200 && (
+                                            <button
+                                                onClick={() =>
+                                                    setShowFullError(showFullError === r.id ? null : r.id)
+                                                }
+                                                className="mt-1.5 text-[11px] font-semibold text-red-300/80 hover:text-red-200 transition-colors"
+                                            >
+                                                {showFullError === r.id ? 'Show less' : 'View full'}
+                                            </button>
+                                        )}
                                     </div>
                                 )}
                                 {r.request != null && (

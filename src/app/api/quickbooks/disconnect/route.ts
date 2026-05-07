@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { disconnect } from '@/lib/quickbooks/connection';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST() {
     try {
         await disconnect('admin');

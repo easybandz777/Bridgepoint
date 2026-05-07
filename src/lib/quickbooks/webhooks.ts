@@ -14,7 +14,15 @@ import type {
 export function verifyWebhookSignature(rawBody: string, signature: string | null): boolean {
     const verifier = process.env.QUICKBOOKS_WEBHOOK_VERIFIER_TOKEN;
     if (!verifier) {
-        console.warn('[qb-webhook] QUICKBOOKS_WEBHOOK_VERIFIER_TOKEN not set — accepting all webhooks');
+        // SECURITY: in production we MUST refuse webhooks when the verifier
+        // token is unset — otherwise anyone on the internet can post fake
+        // events and trigger DB writes / outbound QB API calls. In dev we
+        // keep the permissive behavior so local testing isn't blocked.
+        if (process.env.NODE_ENV === 'production') {
+            console.error('[qb-webhook] CRITICAL: QUICKBOOKS_WEBHOOK_VERIFIER_TOKEN is not set in production — denying webhook');
+            return false;
+        }
+        console.warn('[qb-webhook] QUICKBOOKS_WEBHOOK_VERIFIER_TOKEN not set — accepting all webhooks (dev only)');
         return true;
     }
     if (!signature) return false;
@@ -41,8 +49,27 @@ export async function persistWebhookEvents(envelope: QbWebhookEnvelope): Promise
     const notifications = envelope?.eventNotifications ?? [];
     for (const note of notifications) {
         const realmId = note.realmId;
+        if (!realmId || typeof realmId !== 'string') continue;
         const entities = note?.dataChangeEvent?.entities ?? [];
         for (const ent of entities) {
+            // Validate envelope shape before persisting — Intuit always sends
+            // these fields, but we don't trust an inbound JSON blob blindly.
+            if (!ent || typeof ent !== 'object') continue;
+            if (!ent.name || !ent.id || !ent.operation || !ent.lastUpdated) continue;
+
+            // Replay/dedupe: if Intuit retries a delivery (or the same event
+            // arrives twice for any reason), skip if we already have the
+            // exact same (realm, entity, lastUpdated) tuple.
+            const exists = (await sql`
+                SELECT 1 FROM qb_webhook_events
+                WHERE realm_id = ${realmId}
+                  AND entity_name = ${ent.name}
+                  AND entity_id = ${ent.id}
+                  AND last_updated = ${ent.lastUpdated}
+                LIMIT 1
+            `) as unknown as unknown[];
+            if (exists.length > 0) continue;
+
             try {
                 await sql`
                     INSERT INTO qb_webhook_events (
@@ -382,6 +409,37 @@ async function dispatchEvent(ev: QbWebhookEventRow): Promise<void> {
     }
 }
 
+// Chunk size for parallel webhook processing. Each event hits QB's API and
+// updates the DB; capping at 5 concurrent gives a meaningful speedup over a
+// pure serial loop without exhausting QB's per-realm rate limits or our
+// Postgres connection pool.
+const WEBHOOK_PROCESS_CHUNK = 5;
+
+async function processOneEvent(ev: QbWebhookEventRow): Promise<'ok' | 'error'> {
+    try {
+        await dispatchEvent(ev);
+        await sql`
+            UPDATE qb_webhook_events
+            SET processed_at = NOW(), error = NULL
+            WHERE id = ${ev.id}
+        `;
+        return 'ok';
+    } catch (e) {
+        const msg = String(e);
+        try {
+            await sql`
+                UPDATE qb_webhook_events
+                SET processed_at = NOW(), error = ${msg}
+                WHERE id = ${ev.id}
+            `;
+        } catch (innerE) {
+            console.warn('[qb-webhook] failed to mark event errored', ev.id, innerE);
+        }
+        console.warn('[qb-webhook] processing failed for event', ev.id, msg);
+        return 'error';
+    }
+}
+
 export async function processUnprocessedEvents(limit = 50): Promise<{ processed: number; errors: number }> {
     await initDB();
     const events = (await sql`
@@ -394,28 +452,15 @@ export async function processUnprocessedEvents(limit = 50): Promise<{ processed:
 
     let processed = 0;
     let errors = 0;
-    for (const ev of events) {
-        try {
-            await dispatchEvent(ev);
-            await sql`
-                UPDATE qb_webhook_events
-                SET processed_at = NOW(), error = NULL
-                WHERE id = ${ev.id}
-            `;
-            processed += 1;
-        } catch (e) {
-            errors += 1;
-            const msg = String(e);
-            try {
-                await sql`
-                    UPDATE qb_webhook_events
-                    SET processed_at = NOW(), error = ${msg}
-                    WHERE id = ${ev.id}
-                `;
-            } catch (innerE) {
-                console.warn('[qb-webhook] failed to mark event errored', ev.id, innerE);
-            }
-            console.warn('[qb-webhook] processing failed for event', ev.id, msg);
+    // Process in chunks of WEBHOOK_PROCESS_CHUNK so the overall throughput
+    // is N/CHUNK trips instead of N. allSettled keeps a poison-pill event
+    // from blocking siblings in the same chunk.
+    for (let i = 0; i < events.length; i += WEBHOOK_PROCESS_CHUNK) {
+        const chunk = events.slice(i, i + WEBHOOK_PROCESS_CHUNK);
+        const results = await Promise.allSettled(chunk.map(processOneEvent));
+        for (const r of results) {
+            if (r.status === 'fulfilled' && r.value === 'ok') processed += 1;
+            else errors += 1;
         }
     }
     return { processed, errors };

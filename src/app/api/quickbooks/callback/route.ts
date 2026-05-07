@@ -10,6 +10,8 @@ import { getQbCredentials } from '@/lib/quickbooks/oauth';
 import { qbGet } from '@/lib/quickbooks/client';
 import type { QbCompanyInfo } from '@/lib/quickbooks/types';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/quickbooks/callback
  *
@@ -71,11 +73,21 @@ export async function GET(req: Request) {
         // Best-effort user info (for connected_by display).
         try { await fetchUserInfo(tokens.access_token, environment); } catch {}
 
-        const dest = stateRow.redirect_after ?? '/admin/integrations/quickbooks';
+        // SECURITY: only allow same-origin relative paths. An attacker who
+        // could prefill the connect-state row with an absolute URL would
+        // otherwise turn the OAuth callback into an open redirect.
+        const rawDest = stateRow.redirect_after ?? '/admin/integrations/quickbooks';
+        const dest = rawDest.startsWith('/') && !rawDest.startsWith('//')
+            ? rawDest
+            : '/admin/integrations/quickbooks';
         const sep = dest.includes('?') ? '&' : '?';
         return redirectWithFlash(`${dest}${sep}qb_connected=1`);
     } catch (e) {
-        return redirectWithFlash(`/admin/integrations/quickbooks?qb_error=${encodeURIComponent(String(e))}`);
+        // Don't leak the raw exception (which could include the QB error
+        // body) into the URL. Show a stable code; the admin can look up
+        // details in the sync log.
+        console.warn('[qb] callback error:', e);
+        return redirectWithFlash('/admin/integrations/quickbooks?qb_error=connect_failed');
     }
 }
 

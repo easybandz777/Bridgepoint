@@ -24,6 +24,10 @@ import { pushVendor } from '@/lib/quickbooks/vendors';
 import { pushBill } from '@/lib/quickbooks/bills';
 import { refreshAllInvoicePayments } from '@/lib/quickbooks/payments';
 
+export const dynamic = 'force-dynamic';
+
+const NO_STORE = { 'Cache-Control': 'no-store' };
+
 interface RunError {
     entity: string;
     id: string;
@@ -34,12 +38,28 @@ interface PendingRow {
     id: string;
 }
 
-export async function POST() {
+export async function POST(req: Request) {
+    // Optional shared-secret protection. If ADMIN_CRON_SECRET is set in the
+    // environment, the request must include a matching X-Admin-Key header.
+    // This lets Vercel Cron (configured with the header) hit the route while
+    // blocking arbitrary internet callers from racking up QB API quota. If
+    // the env var is unset (e.g., in development), we fall back to the
+    // previous behavior — the CRM admin UI's button still works.
+    const secret = process.env.ADMIN_CRON_SECRET;
+    if (secret) {
+        const provided = req.headers.get('x-admin-key');
+        if (provided !== secret) {
+            return NextResponse.json({ error: 'unauthorized' }, { status: 401, headers: NO_STORE });
+        }
+    }
+
     const conn = await getActiveConnection().catch(() => null);
     if (!conn) {
+        // Cron-friendly: return 200 with skipped flag rather than 5xx so the
+        // scheduled job doesn't show as failing when QB simply isn't connected.
         return NextResponse.json(
-            { error: 'QuickBooks is not connected' },
-            { status: 412 },
+            { ok: true, skipped: true, reason: 'QuickBooks is not connected' },
+            { status: 200, headers: NO_STORE },
         );
     }
 
@@ -126,5 +146,5 @@ export async function POST() {
         billsPushed,
         paymentsRefreshed,
         errors,
-    });
+    }, { headers: NO_STORE });
 }
