@@ -20,6 +20,9 @@ import {
     LineChart,
     ShieldAlert,
     Clock,
+    Smartphone,
+    KeyRound,
+    Image as ImageIcon,
 } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -48,6 +51,13 @@ const NAV_PEOPLE: NavLink[] = [
     { href: '/admin/subcontractors/compliance', label: 'Sub Compliance', icon: ShieldAlert, exact: false },
     { href: '/admin/employees', label: 'Employees', icon: User, exact: false },
     { href: '/admin/timesheets', label: 'Timesheets', icon: Clock, exact: false },
+];
+
+const NAV_CREW_PORTAL: NavLink[] = [
+    { href: '/admin/portal', label: 'Portal Accounts', icon: KeyRound, exact: true },
+    { href: '/admin/portal/activity', label: 'Crew Activity', icon: Activity, exact: false },
+    { href: '/admin/portal/photos', label: 'Crew Photos', icon: ImageIcon, exact: false },
+    { href: '/admin/portal/messages', label: 'Announcements', icon: Smartphone, exact: false },
 ];
 
 const NAV_REPORTS: NavLink[] = [
@@ -141,6 +151,7 @@ export function AdminSidebar({ onClose }: AdminSidebarProps) {
                 {renderNavSection('Dashboard', NAV_DASHBOARD)}
                 {renderNavSection('Operations', NAV_OPERATIONS)}
                 {renderNavSection('People', NAV_PEOPLE)}
+                {renderNavSection('Crew Portal', NAV_CREW_PORTAL)}
                 {renderNavSection('Reports', NAV_REPORTS)}
 
                 <div className="my-5 h-px bg-white/6 mx-3" />
@@ -148,6 +159,15 @@ export function AdminSidebar({ onClose }: AdminSidebarProps) {
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/25 px-3 mb-2">
                     Public
                 </p>
+                <Link
+                    href="/portal"
+                    target="_blank"
+                    onClick={handleNavClick}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/35 hover:text-white/65 hover:bg-white/5 transition-all"
+                >
+                    <Smartphone size={14} className="text-white/25" />
+                    Crew Portal ↗
+                </Link>
                 <Link
                     href="/"
                     target="_blank"

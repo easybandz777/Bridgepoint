@@ -372,6 +372,135 @@ export async function initDB() {
     `;
     await sql`CREATE INDEX IF NOT EXISTS idx_activity_entity ON activity_log(entity_type, entity_id)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_activity_created ON activity_log(created_at DESC)`;
+
+    // ─── Portal Credentials (login for employees + subcontractors) ──────────
+    // user_type ∈ {'employee','subcontractor'}; user_id references the
+    // appropriate row in employees(id) or subcontractors(id). PIN is stored
+    // as a salted SHA-256 hex digest. We never store plaintext.
+    await sql`
+        CREATE TABLE IF NOT EXISTS portal_credentials (
+            id TEXT PRIMARY KEY,
+            user_type TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            email_lower TEXT NOT NULL,
+            pin_hash TEXT NOT NULL,
+            pin_salt TEXT NOT NULL,
+            enabled BOOLEAN NOT NULL DEFAULT true,
+            must_change_pin BOOLEAN NOT NULL DEFAULT false,
+            last_login_at TIMESTAMPTZ,
+            failed_attempts INTEGER NOT NULL DEFAULT 0,
+            locked_until TIMESTAMPTZ,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_portal_creds_email ON portal_credentials(email_lower)`;
+    await sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_portal_creds_user ON portal_credentials(user_type, user_id)`;
+
+    // ─── Portal Sessions (server-issued tokens) ─────────────────────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS portal_sessions (
+            id TEXT PRIMARY KEY,
+            credential_id TEXT NOT NULL,
+            user_type TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            token_hash TEXT NOT NULL,
+            user_agent TEXT,
+            ip_address TEXT,
+            expires_at TIMESTAMPTZ NOT NULL,
+            revoked_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            last_used_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_portal_sessions_token ON portal_sessions(token_hash)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_portal_sessions_user ON portal_sessions(user_type, user_id)`;
+
+    // ─── Project Photos (crew uploads, served via API) ──────────────────────
+    // Stores binary directly in BYTEA so deployment is portable across Vercel
+    // serverless without object storage. Caller is expected to compress
+    // client-side. mime_type is the original MIME (image/jpeg, etc).
+    await sql`
+        CREATE TABLE IF NOT EXISTS project_photos (
+            id TEXT PRIMARY KEY,
+            project_id TEXT NOT NULL,
+            phase_id TEXT,
+            uploaded_by_type TEXT NOT NULL,
+            uploaded_by_id TEXT NOT NULL,
+            uploaded_by_name TEXT NOT NULL DEFAULT '',
+            filename TEXT NOT NULL,
+            mime_type TEXT NOT NULL DEFAULT 'image/jpeg',
+            width INTEGER,
+            height INTEGER,
+            size_bytes INTEGER NOT NULL DEFAULT 0,
+            caption TEXT NOT NULL DEFAULT '',
+            tag TEXT,
+            taken_at TIMESTAMPTZ,
+            image_data BYTEA NOT NULL,
+            thumbnail_data BYTEA,
+            created_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_photos_project ON project_photos(project_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_photos_phase ON project_photos(phase_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_photos_uploader ON project_photos(uploaded_by_type, uploaded_by_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_photos_created ON project_photos(created_at DESC)`;
+
+    // ─── Project Updates (crew-authored timeline entries) ───────────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS project_updates (
+            id TEXT PRIMARY KEY,
+            project_id TEXT NOT NULL,
+            phase_id TEXT,
+            author_type TEXT NOT NULL,
+            author_id TEXT NOT NULL,
+            author_name TEXT NOT NULL DEFAULT '',
+            kind TEXT NOT NULL DEFAULT 'note',
+            body TEXT NOT NULL,
+            status_change TEXT,
+            completion_pct NUMERIC,
+            attachments JSONB NOT NULL DEFAULT '[]',
+            created_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_updates_project ON project_updates(project_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_updates_phase ON project_updates(phase_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_updates_created ON project_updates(created_at DESC)`;
+
+    // ─── Crew Messages (broadcast announcements + per-user messages) ────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS crew_messages (
+            id TEXT PRIMARY KEY,
+            audience TEXT NOT NULL DEFAULT 'all',
+            recipient_type TEXT,
+            recipient_id TEXT,
+            subject TEXT NOT NULL DEFAULT '',
+            body TEXT NOT NULL,
+            level TEXT NOT NULL DEFAULT 'info',
+            sender TEXT NOT NULL DEFAULT 'admin',
+            created_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_messages_audience ON crew_messages(audience)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_messages_recipient ON crew_messages(recipient_type, recipient_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_messages_created ON crew_messages(created_at DESC)`;
+
+    // ─── Message Reads (which users have seen which messages) ───────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS crew_message_reads (
+            message_id TEXT NOT NULL,
+            user_type TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            read_at TIMESTAMPTZ DEFAULT NOW(),
+            PRIMARY KEY (message_id, user_type, user_id)
+        )
+    `;
+
+    // ─── Backfill: ensure pre-existing photo/document buckets exist ─────────
+    // Make sure project_files and employee_documents have the columns we
+    // expect — if any earlier deploy missed them, ALTER will be a no-op.
+    await sql`ALTER TABLE project_files ADD COLUMN IF NOT EXISTS uploaded_by_type TEXT`;
+    await sql`ALTER TABLE project_files ADD COLUMN IF NOT EXISTS uploaded_by_id TEXT`;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────

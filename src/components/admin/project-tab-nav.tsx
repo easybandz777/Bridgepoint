@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, FileText, SplitSquareHorizontal, Users, RefreshCcw, HandCoins, Folder, Activity, Receipt } from 'lucide-react';
+import { LayoutDashboard, FileText, SplitSquareHorizontal, Users, RefreshCcw, HandCoins, Folder, Activity, Receipt, Image as ImageIcon, MessageSquare } from 'lucide-react';
 
 interface ProjectTabNavProps {
     projectId: string;
@@ -19,6 +19,8 @@ const TABS = [
     { label: 'Bills/Payouts', icon: HandCoins, segment: 'bills' },
     { label: 'Expenses', icon: Receipt, segment: 'expenses' },
     { label: 'Files', icon: Folder, segment: 'files' },
+    { label: 'Photos', icon: ImageIcon, segment: 'photos' },
+    { label: 'Updates', icon: MessageSquare, segment: 'updates' },
     { label: 'Activity', icon: Activity, segment: 'activity' },
 ];
 

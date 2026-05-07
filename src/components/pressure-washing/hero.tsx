@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronDown, Phone } from 'lucide-react';
 
@@ -22,23 +22,41 @@ const STEAM_PUFFS = [
 ] as const;
 
 export function PWHero() {
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    // Honor prefers-reduced-motion: pause the video and rely on the poster.
+    useEffect(() => {
+        const v = videoRef.current;
+        if (!v) return;
+        const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const apply = () => {
+            if (mq.matches) v.pause();
+            else v.play().catch(() => {});
+        };
+        apply();
+        mq.addEventListener?.('change', apply);
+        return () => mq.removeEventListener?.('change', apply);
+    }, []);
+
     return (
         <section
             className="relative min-h-[90vh] flex items-end pb-20 pt-36 overflow-hidden bg-[#0a0a0a]"
             aria-label="Bridgepointe Pressure Washing — hot water exterior cleaning, Metro Atlanta"
         >
-            {/* Layer 1 — Real photo with ken-burns */}
+            {/* Layer 1 — Cinematic hot-water video loop */}
             <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 origin-center pw-ken-burns">
-                    <Image
-                        src="/images/gallery/painting/52.jpg"
-                        alt="Atlanta home exterior being cleaned with hot water pressure washing"
-                        fill
-                        priority
-                        sizes="100vw"
-                        className="object-cover opacity-30"
-                    />
-                </div>
+                <video
+                    ref={videoRef}
+                    src="/video/pressure-washing-hero.mp4"
+                    poster="/video/pressure-washing-hero-poster.jpg"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-hidden="true"
+                    className="h-full w-full object-cover opacity-55"
+                />
             </div>
 
             {/* Layer 2 — Cyan radial gradient (water glow) */}

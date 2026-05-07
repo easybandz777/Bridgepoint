@@ -155,9 +155,17 @@ export function Footer() {
           <p className="text-xs text-warm-white/40">
             &copy; {currentYear} {SITE_CONFIG.name}. All rights reserved.
           </p>
-          <p className="text-xs text-warm-white/25 tracking-wider">
-            Crafted with intention.
-          </p>
+          <div className="flex items-center gap-5 text-xs">
+            <Link
+              href="/portal"
+              className="text-warm-white/25 tracking-wider transition-colors duration-300 hover:text-warm-white/60"
+            >
+              Crew
+            </Link>
+            <p className="text-warm-white/25 tracking-wider">
+              Crafted with intention.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

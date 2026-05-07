@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { User, Briefcase, HandCoins, FileText, Star, Activity } from 'lucide-react';
+import { User, Briefcase, HandCoins, FileText, Star, Activity, KeyRound } from 'lucide-react';
 
 interface SubTabNavProps {
     subId: string;
@@ -16,6 +16,7 @@ const TABS = [
     { label: 'Documents', icon: FileText, segment: 'documents' },
     { label: 'Performance', icon: Star, segment: 'performance' },
     { label: 'Notes', icon: Activity, segment: 'notes' },
+    { label: 'Portal Access', icon: KeyRound, segment: 'portal' },
 ];
 
 export function SubTabNav({ subId }: SubTabNavProps) {

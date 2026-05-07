@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { User, Clock, FileText, Star, Wallet } from 'lucide-react';
+import { User, Clock, FileText, Star, Wallet, KeyRound } from 'lucide-react';
 
 interface EmployeeTabNavProps {
     employeeId: string;
@@ -15,6 +15,7 @@ const TABS = [
     { label: 'Documents', icon: FileText, segment: 'documents' },
     { label: 'Performance', icon: Star, segment: 'performance' },
     { label: 'Pay', icon: Wallet, segment: 'pay' },
+    { label: 'Portal Access', icon: KeyRound, segment: 'portal' },
 ];
 
 export function EmployeeTabNav({ employeeId }: EmployeeTabNavProps) {
