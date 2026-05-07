@@ -42,10 +42,48 @@ function escapeXml(s: string): string {
 export const dynamic = 'force-static';
 export const revalidate = 3600;
 
+const PRESSURE_WASHING_IMAGES: { src: string; title: string; caption: string }[] = [
+    {
+        src: '/images/gallery/painting/52.jpg',
+        title: 'Atlanta hot-water pressure washing — exterior siding restoration',
+        caption: 'Hot-water pressure washing by Bridgepointe — Metro Atlanta home exterior siding restoration.',
+    },
+    {
+        src: '/images/gallery/painting/14.jpg',
+        title: 'Atlanta pressure washing — driveway and walkway cleaning',
+        caption: 'Driveway and walkway pressure washing by Bridgepointe — Metro Atlanta concrete restoration.',
+    },
+    {
+        src: '/images/gallery/painting/47.jpg',
+        title: 'Atlanta pressure washing — deck and patio cleaning',
+        caption: 'Deck and patio pressure washing by Bridgepointe — Metro Atlanta wood and stone surfaces.',
+    },
+    {
+        src: '/images/gallery/painting/22.jpg',
+        title: 'Atlanta pressure washing — house wash with soft-wash technique',
+        caption: 'Soft-wash exterior cleaning by Bridgepointe — Metro Atlanta painted siding and trim.',
+    },
+    {
+        src: '/images/gallery/painting/25.jpg',
+        title: 'Atlanta pressure washing — roof and gutter cleaning',
+        caption: 'Roof and gutter cleaning by Bridgepointe — Metro Atlanta low-pressure soft wash.',
+    },
+    {
+        src: '/images/gallery/painting/37.jpg',
+        title: 'Atlanta pressure washing — fence and exterior trim restoration',
+        caption: 'Fence and exterior trim cleaning by Bridgepointe — Metro Atlanta hot-water pressure washing.',
+    },
+    {
+        src: '/images/gallery/painting/11.jpg',
+        title: 'Atlanta pressure washing — pre-paint exterior preparation',
+        caption: 'Pre-paint pressure wash by Bridgepointe — Metro Atlanta exterior surface preparation.',
+    },
+];
+
 export async function GET() {
     const collections = getGalleryCollections();
 
-    const urls = collections
+    const galleryUrls = collections
         .filter((col) => CATEGORY_PAGES[col.id])
         .map((col) => {
             const meta = CATEGORY_PAGES[col.id];
@@ -65,6 +103,21 @@ ${images}
   </url>`;
         })
         .join('\n');
+
+    const pressureWashingImages = PRESSURE_WASHING_IMAGES
+        .map((img) => `    <image:image>
+      <image:loc>${escapeXml(`${BASE}${img.src}`)}</image:loc>
+      <image:title>${escapeXml(img.title)}</image:title>
+      <image:caption>${escapeXml(img.caption)}</image:caption>
+    </image:image>`)
+        .join('\n');
+
+    const pressureWashingUrl = `  <url>
+    <loc>${escapeXml(`${BASE}/pressure-washing-atlanta`)}</loc>
+${pressureWashingImages}
+  </url>`;
+
+    const urls = [galleryUrls, pressureWashingUrl].filter(Boolean).join('\n');
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"

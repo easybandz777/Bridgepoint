@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Hero } from '@/components/home/hero';
 import { ServiceStrip } from '@/components/home/service-strip';
 import { CoreServices } from '@/components/home/core-services';
@@ -73,6 +74,16 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Hero />
+      {/* New service announcement strip */}
+      <Link
+        href="/pressure-washing-atlanta"
+        className="block border-y border-gold/20 bg-gradient-to-r from-charcoal via-[#1a1612] to-charcoal text-center transition-colors hover:from-[#1a1612] hover:via-[#221b13] hover:to-[#1a1612]"
+      >
+        <p className="px-6 py-4 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-warm-white/85 md:text-sm">
+          <span className="text-gold">New:</span> Hot-water pressure washing now booking
+          <span className="ml-2 text-gold">&rarr; Learn more &rarr;</span>
+        </p>
+      </Link>
       <ServiceStrip />
       <CoreServices />
       <FeaturedWork />

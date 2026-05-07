@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${base}/exterior-painting-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.95 },
         { url: `${base}/cabinet-painting-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.90 },
         { url: `${base}/luxury-home-painting`, lastModified: now, changeFrequency: 'monthly', priority: 0.90 },
+        { url: `${base}/pressure-washing-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.92 },
         { url: `${base}/cost-of-cabinet-painting-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
         { url: `${base}/cost-of-house-painting-atlanta`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
         { url: `${base}/paint-or-replace-kitchen-cabinets`, lastModified: now, changeFrequency: 'monthly', priority: 0.80 },

@@ -80,6 +80,7 @@ export function Footer() {
                 { href: '/exterior-painting-atlanta', label: 'Exterior Painting' },
                 { href: '/cabinet-painting-atlanta', label: 'Cabinet Refinishing' },
                 { href: '/luxury-home-painting', label: 'Luxury Home Painting' },
+                { href: '/pressure-washing-atlanta', label: 'Pressure Washing' },
                 { href: '/before-and-after', label: 'Before & After' },
                 { href: '/portfolio', label: 'Portfolio' },
                 { href: '/gallery', label: 'Photo Gallery' },

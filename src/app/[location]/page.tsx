@@ -122,6 +122,28 @@ export default async function LocationPage({ params }: { params: Promise<{ locat
         </div>
       </section>
 
+      {/* We also pressure wash */}
+      <section className="py-12 bg-[#0f0f0f] border-t border-white/5">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 rounded-2xl border border-[#b8956a]/25 bg-[#1a1a1a] p-6">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#b8956a] mb-2">We Also Pressure Wash</p>
+              <h3 className="font-serif text-xl md:text-2xl font-bold text-white">Hot-water pressure washing in {name}, GA</h3>
+              <p className="mt-2 text-sm text-white/55 max-w-2xl leading-relaxed">
+                Driveways, siding, decks, fences, and pre-paint exterior prep. Same crew, same standards, now booking across Metro Atlanta.
+              </p>
+            </div>
+            <Link
+              href="/pressure-washing-atlanta"
+              className="shrink-0 inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-sm uppercase tracking-wider"
+              style={{ background: 'linear-gradient(135deg, #b8956a, #9a7a54)', color: 'white' }}
+            >
+              Learn More &rarr;
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Nearby locations for internal linking */}
       <section className="py-16 bg-[#111] border-t border-white/5">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">

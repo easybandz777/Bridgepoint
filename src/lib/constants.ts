@@ -27,6 +27,7 @@
 export const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/painting', label: 'Painting' },
+  { href: '/pressure-washing-atlanta', label: 'Pressure Washing' },
   { href: '/portfolio', label: 'Portfolio' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/about', label: 'About' },
