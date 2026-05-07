@@ -135,7 +135,7 @@ export async function GET() {
         }
 
         // ─── For subs: pull primary assignment per project ─────────────────
-        let assignmentsByProject = new Map<string, AssignmentRow>();
+        const assignmentsByProject = new Map<string, AssignmentRow>();
         if (userType === 'subcontractor') {
             const rows = (await sql`
                 SELECT project_id, scope_of_work, agreed_amount, billed_amount,

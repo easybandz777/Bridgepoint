@@ -17,6 +17,7 @@ interface DocumentsPayload {
 export default function PortalDocumentsPage() {
     const t = useT();
     const { user } = usePortalUser();
+    const userType = user.userType;
     const [data, setData] = useState<DocumentsPayload | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -92,7 +93,7 @@ export default function PortalDocumentsPage() {
 
             <DocumentUploadDialog
                 open={uploadOpen}
-                userType={user.userType}
+                userType={userType}
                 onClose={() => setUploadOpen(false)}
                 onSuccess={() => {
                     setUploadOpen(false);

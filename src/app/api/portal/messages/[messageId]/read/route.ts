@@ -16,11 +16,13 @@ export async function POST(
     try {
         await initDB();
 
+        const audienceMatch = user.userType === 'employee' ? 'employees' : 'subcontractors';
         const rows = (await sql`
             SELECT id FROM crew_messages
             WHERE id = ${messageId}
               AND (audience = 'all'
-                OR (recipient_type = ${user.userType} AND recipient_id = ${user.userId}))
+                OR audience = ${audienceMatch}
+                OR (audience = 'individual' AND recipient_type = ${user.userType} AND recipient_id = ${user.userId}))
             LIMIT 1
         `) as unknown as { id: string }[];
 

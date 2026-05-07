@@ -34,6 +34,7 @@ export async function GET() {
 
     try {
         await initDB();
+        const audienceMatch = user.userType === 'employee' ? 'employees' : 'subcontractors';
         const rows = (await sql`
             SELECT
                 cm.id, cm.audience, cm.recipient_type, cm.recipient_id,
@@ -46,7 +47,8 @@ export async function GET() {
                 ) AS is_read
             FROM crew_messages cm
             WHERE cm.audience = 'all'
-               OR (cm.recipient_type = ${user.userType} AND cm.recipient_id = ${user.userId})
+               OR cm.audience = ${audienceMatch}
+               OR (cm.audience = 'individual' AND cm.recipient_type = ${user.userType} AND cm.recipient_id = ${user.userId})
             ORDER BY cm.created_at DESC
             LIMIT 200
         `) as unknown as MessageRow[];
@@ -83,10 +85,12 @@ export async function POST(req: Request) {
 
     try {
         await initDB();
+        const audienceMatch = user.userType === 'employee' ? 'employees' : 'subcontractors';
         const rows = (await sql`
             SELECT cm.id FROM crew_messages cm
             WHERE (cm.audience = 'all'
-               OR (cm.recipient_type = ${user.userType} AND cm.recipient_id = ${user.userId}))
+               OR cm.audience = ${audienceMatch}
+               OR (cm.audience = 'individual' AND cm.recipient_type = ${user.userType} AND cm.recipient_id = ${user.userId}))
               AND NOT EXISTS (
                   SELECT 1 FROM crew_message_reads cmr
                   WHERE cmr.message_id = cm.id

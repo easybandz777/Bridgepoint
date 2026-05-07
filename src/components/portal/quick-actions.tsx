@@ -36,8 +36,8 @@ export function QuickActions({ userType, onShift }: QuickActionsProps) {
         });
     }
     actions.push({ href: '/portal/jobs', icon: Hammer, label: t('qa.viewJobs') });
-    actions.push({ href: '/portal/photos', icon: Camera, label: t('qa.uploadPhoto') });
-    actions.push({ href: '/portal/updates', icon: MessageSquare, label: t('qa.postUpdate') });
+    actions.push({ href: '/portal/jobs', icon: Camera, label: t('qa.uploadPhoto') });
+    actions.push({ href: '/portal/jobs', icon: MessageSquare, label: t('qa.postUpdate') });
     actions.push({
         href: '/portal/pay',
         icon: Wallet,

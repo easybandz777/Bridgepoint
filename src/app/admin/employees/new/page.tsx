@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, KeyRound } from 'lucide-react';
 import { EMPLOYEE_ROLES, EmployeeRole, EmploymentType } from '@/lib/employees';
 
 export default function NewEmployeePage() {
@@ -24,16 +24,18 @@ export default function NewEmployeePage() {
     const [skills, setSkills] = useState('');
     const [certifications, setCertifications] = useState('');
     const [notes, setNotes] = useState('');
+    const [grantPortal, setGrantPortal] = useState(true);
 
     async function handleSave(e: React.FormEvent) {
         e.preventDefault();
         setSubmitting(true);
         setError(null);
         try {
+            const trimmedEmail = email.trim();
             const body = {
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
-                email: email.trim() || null,
+                email: trimmedEmail || null,
                 phone: phone.trim() || null,
                 role,
                 employmentType,
@@ -54,6 +56,32 @@ export default function NewEmployeePage() {
             });
             const data = await res.json();
             if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+
+            const wantPortal = grantPortal && Boolean(trimmedEmail);
+            if (wantPortal) {
+                const newPin = `${Math.floor(100000 + Math.random() * 900000)}`;
+                const credRes = await fetch(`/api/admin/portal/credentials/by-user/employee/${data.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin: newPin, enabled: true, mustChangePin: true }),
+                });
+                if (credRes.ok) {
+                    try {
+                        sessionStorage.setItem(
+                            `bp_admin_issued_pin_employee_${data.id}`,
+                            newPin,
+                        );
+                    } catch {}
+                    router.push(`/admin/employees/${data.id}/portal`);
+                    return;
+                }
+                // Credential creation failed but employee was created — fall through.
+                const credBody = await credRes.json().catch(() => ({}));
+                setError(`Employee created, but portal access failed: ${credBody.error ?? credRes.statusText}`);
+                router.push(`/admin/employees/${data.id}/portal`);
+                return;
+            }
+
             router.push(`/admin/employees/${data.id}`);
         } catch (err) {
             setError(String(err));
@@ -135,6 +163,37 @@ export default function NewEmployeePage() {
                             <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={`${inputCls} resize-none`} />
                         </Field>
                     </Grid>
+                </Section>
+
+                <Section title="Crew Portal Access">
+                    <label
+                        className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
+                            grantPortal && email.trim()
+                                ? 'bg-[#b8956a]/5 border-[#b8956a]/30'
+                                : 'bg-white/5 border-white/10 hover:bg-white/10'
+                        }`}
+                    >
+                        <input
+                            type="checkbox"
+                            checked={grantPortal}
+                            onChange={e => setGrantPortal(e.target.checked)}
+                            className="w-5 h-5 mt-0.5 rounded border-white/20 bg-black/50 text-[#b8956a] focus:ring-[#b8956a] focus:ring-offset-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-white flex items-center gap-2">
+                                <KeyRound size={14} className="text-[#b8956a]" />
+                                Create login & PIN now
+                            </p>
+                            <p className="text-[12px] text-white/50 mt-1">
+                                Issues a 6-digit PIN they must change on first login. The PIN appears once on the next page so you can text or hand it to them.
+                            </p>
+                            {grantPortal && !email.trim() && (
+                                <p className="text-[12px] text-amber-400 mt-2">
+                                    Add an email above to enable portal access.
+                                </p>
+                            )}
+                        </div>
+                    </label>
                 </Section>
 
                 <div className="flex items-center justify-end gap-3 pt-2">

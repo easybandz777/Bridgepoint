@@ -62,7 +62,6 @@ const ToastContext = createContext<ToastFn | null>(null);
 
 const NOOP: ToastFn = () => {
     if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-        // eslint-disable-next-line no-console
         console.warn('[toast] useToast() called outside <ToastProvider>; toast suppressed.');
     }
 };

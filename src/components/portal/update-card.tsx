@@ -138,7 +138,7 @@ export function UpdateCard({ update, canModerate, onDeleted }: UpdateCardProps) 
                 <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
                         <span className="text-sm font-semibold text-white">
-                            {update.authorName || (isAdmin ? 'Admin' : 'Crew')}
+                            {update.authorName || (isAdmin ? t('common.author.admin') : t('common.author.crew'))}
                         </span>
                         <span
                             className={cn(

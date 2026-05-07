@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * ErrorState — shown when an API call fails. Optional retry handler.
  *
@@ -6,6 +8,7 @@
  */
 
 import { AlertCircle, RefreshCcw } from 'lucide-react';
+import { useT } from '@/lib/portal-i18n';
 import { cn } from '@/lib/utils';
 
 interface ErrorStateProps {
@@ -15,7 +18,8 @@ interface ErrorStateProps {
     className?: string;
 }
 
-export function ErrorState({ message, title = 'Something went wrong', onRetry, className }: ErrorStateProps) {
+export function ErrorState({ message, title, onRetry, className }: ErrorStateProps) {
+    const t = useT();
     return (
         <div
             className={cn(
@@ -30,7 +34,9 @@ export function ErrorState({ message, title = 'Something went wrong', onRetry, c
             >
                 <AlertCircle size={22} className="text-red-400" />
             </div>
-            <h3 className="font-serif text-base font-bold text-white mb-1.5 tracking-tight">{title}</h3>
+            <h3 className="font-serif text-base font-bold text-white mb-1.5 tracking-tight">
+                {title ?? t('common.somethingWrong')}
+            </h3>
             <p className="text-sm text-white/60 max-w-sm leading-relaxed">{message}</p>
             {onRetry && (
                 <button
@@ -39,7 +45,7 @@ export function ErrorState({ message, title = 'Something went wrong', onRetry, c
                     className="mt-5 inline-flex items-center gap-2 h-9 px-4 rounded-full text-xs font-semibold uppercase tracking-[0.12em] transition-all cursor-pointer bg-white/8 hover:bg-white/12 text-white"
                 >
                     <RefreshCcw size={13} />
-                    Try again
+                    {t('common.tryAgain')}
                 </button>
             )}
         </div>

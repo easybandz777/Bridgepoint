@@ -252,11 +252,13 @@ export async function GET() {
         const openTasks = myPhases.filter(p => p.status !== 'Completed' && p.status !== 'Skipped').length;
 
         // ─── Unread messages ────────────────────────────────────────────────
+        const audienceMatch = userType === 'employee' ? 'employees' : 'subcontractors';
         const unreadRows = (await sql`
             SELECT COUNT(*)::int AS n FROM crew_messages cm
             WHERE (
                 cm.audience = 'all'
-                OR (cm.recipient_type = ${userType} AND cm.recipient_id = ${userId})
+                OR cm.audience = ${audienceMatch}
+                OR (cm.audience = 'individual' AND cm.recipient_type = ${userType} AND cm.recipient_id = ${userId})
             )
             AND NOT EXISTS (
                 SELECT 1 FROM crew_message_reads cmr
@@ -328,7 +330,7 @@ export async function GET() {
         }
 
         // ─── Recent activity ────────────────────────────────────────────────
-        const relevantTypes = ['project', 'time_entry', 'photo', 'update', 'message'];
+        const relevantTypes = ['project', 'time_entry', 'photo', 'update', 'crew_message'];
         let activity: ActivityRow[] = [];
         if (lead) {
             activity = (await sql`
@@ -355,7 +357,7 @@ export async function GET() {
                             UNION ALL
                             SELECT id FROM project_updates WHERE project_id = ANY(${myProjectIds}::text[])
                         ))
-                        OR (entity_type = 'message')
+                        OR (entity_type = 'crew_message')
                       )
                     ORDER BY created_at DESC
                     LIMIT 10
@@ -364,7 +366,7 @@ export async function GET() {
                 activity = (await sql`
                     SELECT id, entity_type, entity_id, action, description, created_at
                     FROM activity_log
-                    WHERE entity_type = 'message'
+                    WHERE entity_type = 'crew_message'
                     ORDER BY created_at DESC
                     LIMIT 10
                 `) as unknown as ActivityRow[];

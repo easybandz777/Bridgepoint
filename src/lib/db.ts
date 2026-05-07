@@ -1,6 +1,32 @@
-import { neon } from '@neondatabase/serverless';
+import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
 
-const sql = neon(process.env.DATABASE_URL!);
+/**
+ * Lazy singleton wrapper around `neon()`. The Neon SDK throws if
+ * DATABASE_URL is missing the moment `neon()` is called, which would
+ * crash module load (and therefore the production build's page-data
+ * collection) on any environment that doesn't have the env var set.
+ *
+ * By deferring the call until the first SQL invocation, builds run
+ * cleanly even without a DB connection string while runtime requests
+ * still get a clear error if the env var is genuinely missing.
+ */
+let _client: NeonQueryFunction<false, false> | null = null;
+function getClient(): NeonQueryFunction<false, false> {
+    if (_client) return _client;
+    const url = process.env.DATABASE_URL;
+    if (!url) {
+        throw new Error('DATABASE_URL is not set');
+    }
+    _client = neon(url);
+    return _client;
+}
+
+// Tagged-template proxy that defers client creation until invocation.
+// Forwards both call signatures Neon supports: tag(strings, ...values)
+// and the unsafe(query, params?) form returned via `.query`.
+const sql = ((strings: TemplateStringsArray, ...values: unknown[]) => {
+    return getClient()(strings, ...values);
+}) as NeonQueryFunction<false, false>;
 
 export default sql;
 

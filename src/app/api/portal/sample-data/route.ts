@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import sql, { initDB, genId, logActivity } from '@/lib/db';
 import { mondayOf, weekDates } from '@/lib/employees';
+import { getPortalUserFromCookie, isLeadOrManager } from '@/lib/portal-auth';
 
 /**
  * POST /api/portal/sample-data
@@ -16,6 +17,11 @@ import { mondayOf, weekDates } from '@/lib/employees';
  * already present, so calling this endpoint repeatedly is safe.
  */
 export async function POST() {
+    const user = await getPortalUserFromCookie();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!(await isLeadOrManager(user))) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
     try {
         await initDB();
 

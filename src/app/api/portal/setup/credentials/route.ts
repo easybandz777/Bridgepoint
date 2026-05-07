@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import sql, { initDB } from '@/lib/db';
+import { getPortalUserFromCookie, isLeadOrManager } from '@/lib/portal-auth';
 
 /**
  * GET /api/portal/setup/credentials
@@ -26,6 +27,11 @@ interface CredRow {
 }
 
 export async function GET() {
+    const user = await getPortalUserFromCookie();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!(await isLeadOrManager(user))) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
     try {
         await initDB();
 

@@ -14,8 +14,17 @@ function buildMapsUrl(addressParts: string[]): string {
     return `https://www.google.com/maps/search/?api=1&query=${q}`;
 }
 
-function dateInfo(start: string | null, end: string | null): { label: string; tone: 'normal' | 'warn' | 'overdue' } {
-    if (!start && !end) return { label: '', tone: 'normal' };
+type DateTone = 'normal' | 'warn' | 'overdue';
+type DateInfoKey =
+    | { kind: 'overdue'; count: number }
+    | { kind: 'endsToday' }
+    | { kind: 'remaining'; count: number; warn: boolean }
+    | { kind: 'startsIn'; count: number }
+    | { kind: 'startsToday' }
+    | { kind: 'none' };
+
+function dateInfoKey(start: string | null, end: string | null): DateInfoKey {
+    if (!start && !end) return { kind: 'none' };
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     const todayMs = now.getTime();
@@ -24,13 +33,9 @@ function dateInfo(start: string | null, end: string | null): { label: string; to
         if (Number.isFinite(endDate.getTime())) {
             const dayMs = 24 * 60 * 60 * 1000;
             const diff = Math.round((endDate.getTime() - todayMs) / dayMs);
-            if (diff < 0) {
-                return { label: `${Math.abs(diff)} days overdue`, tone: 'overdue' };
-            }
-            if (diff === 0) {
-                return { label: 'Ends today', tone: 'warn' };
-            }
-            return { label: `${diff} days remaining`, tone: diff <= 5 ? 'warn' : 'normal' };
+            if (diff < 0) return { kind: 'overdue', count: Math.abs(diff) };
+            if (diff === 0) return { kind: 'endsToday' };
+            return { kind: 'remaining', count: diff, warn: diff <= 5 };
         }
     }
     if (start) {
@@ -38,11 +43,18 @@ function dateInfo(start: string | null, end: string | null): { label: string; to
         if (Number.isFinite(startDate.getTime())) {
             const dayMs = 24 * 60 * 60 * 1000;
             const diff = Math.round((startDate.getTime() - todayMs) / dayMs);
-            if (diff > 0) return { label: `Starts in ${diff} days`, tone: 'normal' };
-            if (diff === 0) return { label: 'Starts today', tone: 'warn' };
+            if (diff > 0) return { kind: 'startsIn', count: diff };
+            if (diff === 0) return { kind: 'startsToday' };
         }
     }
-    return { label: '', tone: 'normal' };
+    return { kind: 'none' };
+}
+
+function dateInfoToneFor(info: DateInfoKey): DateTone {
+    if (info.kind === 'overdue') return 'overdue';
+    if (info.kind === 'endsToday' || info.kind === 'startsToday') return 'warn';
+    if (info.kind === 'remaining' && info.warn) return 'warn';
+    return 'normal';
 }
 
 export default function JobOverviewPage() {
@@ -62,7 +74,15 @@ export default function JobOverviewPage() {
         .filter(Boolean)
         .join(' · ');
 
-    const di = dateInfo(project.startDate, project.endDate);
+    const di = dateInfoKey(project.startDate, project.endDate);
+    const diTone = dateInfoToneFor(di);
+    const diLabel: string =
+        di.kind === 'overdue'    ? t('jobDetail.daysOverdue', { count: di.count })
+      : di.kind === 'endsToday'  ? t('jobDetail.endsToday')
+      : di.kind === 'remaining'  ? t('jobDetail.daysRemaining', { count: di.count })
+      : di.kind === 'startsIn'   ? t('jobDetail.startsIn', { count: di.count })
+      : di.kind === 'startsToday'? t('jobDetail.startsToday')
+      : '';
 
     return (
         <div className="px-4 sm:px-6 pb-12 max-w-4xl mx-auto space-y-5">
@@ -101,16 +121,16 @@ export default function JobOverviewPage() {
                     <p className="text-sm text-white/85 mb-1">
                         {fmtShortDate(project.startDate)} → {fmtShortDate(project.endDate)}
                     </p>
-                    {di.label && (
+                    {diLabel && (
                         <p
                             className={[
                                 'text-xs',
-                                di.tone === 'overdue' ? 'text-red-300' :
-                                di.tone === 'warn' ? 'text-orange-300' :
+                                diTone === 'overdue' ? 'text-red-300' :
+                                diTone === 'warn' ? 'text-orange-300' :
                                 'text-white/45',
                             ].join(' ')}
                         >
-                            {di.label}
+                            {diLabel}
                         </p>
                     )}
                 </div>

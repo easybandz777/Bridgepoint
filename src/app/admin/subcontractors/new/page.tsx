@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Trash2, ShieldCheck, Info } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, ShieldCheck, Info, KeyRound } from 'lucide-react';
 import { TradeCategory } from '@/lib/subcontractors';
 
 const TRADES: TradeCategory[] = [
@@ -30,6 +30,9 @@ export default function NewSubcontractorPage() {
     const [hasCOI, setHasCOI] = useState(false);
     const [hasMSA, setHasMSA] = useState(false);
     const [insuranceExpiry, setInsuranceExpiry] = useState('');
+
+    // Portal Access
+    const [grantPortal, setGrantPortal] = useState(true);
 
     const toggleTrade = (trade: TradeCategory) => {
         if (selectedTrades.includes(trade)) {
@@ -70,11 +73,32 @@ export default function NewSubcontractorPage() {
                 setIsSubmitting(false);
                 return;
             }
-            if (data.id) {
-                router.push(`/admin/subcontractors/${data.id}`);
-            } else {
+            if (!data.id) {
                 router.push('/admin/subcontractors');
+                return;
             }
+
+            const wantPortal = grantPortal && Boolean(email.trim());
+            if (wantPortal) {
+                const newPin = `${Math.floor(100000 + Math.random() * 900000)}`;
+                const credRes = await fetch(`/api/admin/portal/credentials/by-user/subcontractor/${data.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin: newPin, enabled: true, mustChangePin: true }),
+                });
+                if (credRes.ok) {
+                    try {
+                        sessionStorage.setItem(
+                            `bp_admin_issued_pin_subcontractor_${data.id}`,
+                            newPin,
+                        );
+                    } catch {}
+                }
+                router.push(`/admin/subcontractors/${data.id}/portal`);
+                return;
+            }
+
+            router.push(`/admin/subcontractors/${data.id}`);
         } catch (err) {
             alert(err instanceof Error ? err.message : 'Failed to create');
             setIsSubmitting(false);
@@ -267,6 +291,45 @@ export default function NewSubcontractorPage() {
                                 </div>
                             </label>
                         </div>
+                    </div>
+                </div>
+
+                {/* 4. Crew Portal Access */}
+                <div className="bg-[#1a1a1a] border border-white/6 rounded-2xl p-6 sm:p-8">
+                    <h2 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs text-white/50 font-mono">4</span>
+                        Crew Portal Access
+                    </h2>
+
+                    <div className="pl-8">
+                        <label
+                            className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
+                                grantPortal && email.trim()
+                                    ? 'bg-[#b8956a]/5 border-[#b8956a]/30'
+                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                            }`}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={grantPortal}
+                                onChange={(e) => setGrantPortal(e.target.checked)}
+                                className="w-5 h-5 mt-0.5 rounded border-white/20 bg-black/50 text-[#b8956a] focus:ring-[#b8956a] focus:ring-offset-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-white flex items-center gap-2">
+                                    <KeyRound size={14} className="text-[#b8956a]" />
+                                    Create login & PIN now
+                                </p>
+                                <p className="text-[12px] text-white/50 mt-1">
+                                    Issues a 6-digit PIN they must change on first login. The PIN appears once on the next page so you can text or hand it to them.
+                                </p>
+                                {grantPortal && !email.trim() && (
+                                    <p className="text-[12px] text-amber-400 mt-2">
+                                        Add an email above to enable portal access.
+                                    </p>
+                                )}
+                            </div>
+                        </label>
                     </div>
                 </div>
 

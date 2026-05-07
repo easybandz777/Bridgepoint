@@ -77,6 +77,18 @@ export function PortalAccessCard({ userType, userId, recordEmail }: PortalAccess
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userType, userId]);
 
+    // Pick up a PIN that was just issued in the create-employee/sub flow.
+    useEffect(() => {
+        try {
+            const key = `bp_admin_issued_pin_${userType}_${userId}`;
+            const pin = sessionStorage.getItem(key);
+            if (pin) {
+                setIssuedPin(pin);
+                sessionStorage.removeItem(key);
+            }
+        } catch {}
+    }, [userType, userId]);
+
     async function createCredential() {
         if (!recordEmail) {
             setErr('Add an email to the record before issuing portal access.');

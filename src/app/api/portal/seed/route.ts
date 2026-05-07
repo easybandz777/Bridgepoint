@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import sql, { initDB, logActivity } from '@/lib/db';
-import { upsertCredential } from '@/lib/portal-auth';
+import { upsertCredential, getPortalUserFromCookie, isLeadOrManager } from '@/lib/portal-auth';
 
 /**
  * POST /api/portal/seed
@@ -14,12 +14,28 @@ import { upsertCredential } from '@/lib/portal-auth';
  * Safe to call repeatedly — existing credentials are not overwritten.
  *
  * Pass ?force=true to RESET PINs back to defaults for everyone.
+ *
+ * Bootstrap: if zero portal credentials exist yet, the endpoint allows
+ * an unauthenticated call (so a fresh deploy can seed the first PINs).
+ * After that, only logged-in lead/manager employees can seed.
  */
 export async function POST(req: Request) {
     try {
         await initDB();
         const url = new URL(req.url);
         const force = url.searchParams.get('force') === 'true';
+
+        const credCountRows = (await sql`
+            SELECT COUNT(*)::int AS n FROM portal_credentials
+        `) as unknown as { n: number }[];
+        const hasCreds = (credCountRows[0]?.n ?? 0) > 0;
+        if (hasCreds) {
+            const user = await getPortalUserFromCookie();
+            if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            if (!(await isLeadOrManager(user))) {
+                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+            }
+        }
 
         const employees = (await sql`
             SELECT id, first_name, last_name, email, phone FROM employees
