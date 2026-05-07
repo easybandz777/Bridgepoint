@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { initDB } from '@/lib/db';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
+import { importAllAccountsFromQb } from '@/lib/quickbooks/accounts-import';
+import { importAllCustomersFromQb } from '@/lib/quickbooks/customers-import';
+import { importAllVendorsFromQb } from '@/lib/quickbooks/vendors-import';
+import { importAllItemsFromQb } from '@/lib/quickbooks/items-import';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,29 +29,12 @@ interface ImportAllResponse {
     items: EntityResult;
 }
 
-interface RunOpts {
-    actor?: string;
-}
-
-/**
- * Dynamically loads each per-entity import lib and runs it. We use dynamic
- * `await import()` so that this route still type-checks and runs even when
- * the underlying lib module hasn't been shipped by the sibling agent yet —
- * the missing module surfaces as an `error` field in the response rather
- * than crashing the whole orchestration.
- */
-async function runEntityImport(
-    moduleSpec: string,
-    fnName: string,
-    opts: RunOpts,
+async function safeRun(
+    fn: (opts: { actor?: string }) => Promise<ImportResult>,
+    actor: string,
 ): Promise<EntityResult> {
     try {
-        const mod = (await import(moduleSpec)) as Record<string, unknown>;
-        const fn = mod[fnName];
-        if (typeof fn !== 'function') {
-            return { error: `Import function ${fnName} is not available yet (module loaded but export missing)` };
-        }
-        const result = (await (fn as (o: RunOpts) => Promise<ImportResult>)(opts)) ?? null;
+        const result = await fn({ actor });
         if (!result || typeof result !== 'object') {
             return { error: 'Import returned no result' };
         }
@@ -65,13 +52,7 @@ async function runEntityImport(
  * POST /api/quickbooks/import-all
  *
  * Orchestrates the four bulk imports in sequence (accounts -> customers ->
- * vendors -> items). Sequential execution is required because all four hit
- * the same rate-limited QB Online API. Accounts run first because items
- * reference accounts via income/expense IDs.
- *
- * Returns 412 if QB is not connected. Otherwise returns 200 with per-entity
- * results — each entity is either { imported, updated, failed } on success
- * or { error } on failure. `ok` is true only if all four succeeded.
+ * vendors -> items). Accounts run first because items reference accounts.
  */
 export async function POST(req: Request) {
     try {
@@ -86,28 +67,10 @@ export async function POST(req: Request) {
         const actor = body.actor ?? 'admin';
         const start = Date.now();
 
-        // Run sequentially. Order matters: accounts first (items reference them),
-        // then the others can run in any order.
-        const accounts = await runEntityImport(
-            '@/lib/quickbooks/accounts-import',
-            'importAllAccountsFromQb',
-            { actor },
-        );
-        const customers = await runEntityImport(
-            '@/lib/quickbooks/customers-import',
-            'importAllCustomersFromQb',
-            { actor },
-        );
-        const vendors = await runEntityImport(
-            '@/lib/quickbooks/vendors-import',
-            'importAllVendorsFromQb',
-            { actor },
-        );
-        const items = await runEntityImport(
-            '@/lib/quickbooks/items-import',
-            'importAllItemsFromQb',
-            { actor },
-        );
+        const accounts = await safeRun(importAllAccountsFromQb, actor);
+        const customers = await safeRun(importAllCustomersFromQb, actor);
+        const vendors = await safeRun(importAllVendorsFromQb, actor);
+        const items = await safeRun(importAllItemsFromQb, actor);
 
         const allOk =
             !('error' in accounts) &&
