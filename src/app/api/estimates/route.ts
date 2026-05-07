@@ -26,12 +26,14 @@ export async function POST(req: Request) {
         await sql`
             INSERT INTO estimates (
                 id, estimate_number, status, created_date, sent_date, valid_until,
+                customer_id,
                 client, project, line_items, subtotal, tax_rate, tax_amount, total,
                 payment_schedule, terms, notes, prepared_by
             ) VALUES (
                 ${id}, ${estimateNumber}, ${body.status ?? 'Draft'}, ${now},
                 ${body.sentDate ?? null},
                 ${body.validUntil ?? new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]},
+                ${body.customerId ?? null},
                 ${JSON.stringify(body.client)}, ${JSON.stringify(body.project)},
                 ${JSON.stringify(body.lineItems ?? [])},
                 ${body.subtotal ?? 0}, ${body.taxRate ?? 0}, ${body.taxAmount ?? 0}, ${body.total ?? 0},

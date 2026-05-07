@@ -48,6 +48,38 @@ primary debugging surface.
 
 ---
 
+## Multi-entity sync
+
+The CRM is moving toward becoming the system of record for the entities
+that QuickBooks has historically owned. Four are now first-class CRM
+tables, populated by bulk import from QB and kept in sync via webhooks
+plus per-entity push:
+
+- **Customers** — `customers` table. CRM-side dedup, bidirectional sync.
+  See [`CUSTOMERS.md`](./CUSTOMERS.md) for schema, ingest paths, and
+  the backfill tool.
+- **Vendors** — `vendors` table. Broader than `subcontractors` (anyone
+  we pay), with optional linkage from a `subcontractors.vendor_id`.
+- **Items** — `items` table. The chart of services and products used
+  on invoice / estimate lines. Imported from QB; pushable back.
+- **Accounts** — `accounts` table. The chart of accounts (income,
+  expense, COGS, etc.). Imported from QB; read-only on the CRM side
+  for now.
+
+All four are pulled in bulk on first connection and kept fresh by the
+QB webhook processor. The bulk import lives at
+`/admin/integrations/quickbooks/import`. Every imported row stamps
+`source = 'qb_import'`, every CRM-native row stamps `source = 'crm'`,
+and rows created mid-flight by a resolve flow stamp
+`source = 'auto_resolve'`.
+
+Customers have a dedicated runbook because they are the system of
+record after migration and have backfill considerations for existing
+projects / invoices / estimates. Vendors / items / accounts follow the
+same import + sync pattern but have no per-entity doc yet.
+
+---
+
 ## Architecture diagram
 
 ```

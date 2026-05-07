@@ -24,6 +24,9 @@ import {
     KeyRound,
     Image as ImageIcon,
     Plug,
+    Truck,
+    Package,
+    BookOpen,
 } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -52,6 +55,13 @@ const NAV_PEOPLE: NavLink[] = [
     { href: '/admin/subcontractors/compliance', label: 'Sub Compliance', icon: ShieldAlert, exact: false },
     { href: '/admin/employees', label: 'Employees', icon: User, exact: false },
     { href: '/admin/timesheets', label: 'Timesheets', icon: Clock, exact: false },
+];
+
+const NAV_RECORDS: NavLink[] = [
+    { href: '/admin/customers', label: 'Customers', icon: Users, exact: false },
+    { href: '/admin/vendors', label: 'Vendors', icon: Truck, exact: false },
+    { href: '/admin/items', label: 'Items', icon: Package, exact: false },
+    { href: '/admin/accounts', label: 'Accounts', icon: BookOpen, exact: false },
 ];
 
 const NAV_CREW_PORTAL: NavLink[] = [
@@ -156,6 +166,7 @@ export function AdminSidebar({ onClose }: AdminSidebarProps) {
                 {renderNavSection('Dashboard', NAV_DASHBOARD)}
                 {renderNavSection('Operations', NAV_OPERATIONS)}
                 {renderNavSection('People', NAV_PEOPLE)}
+                {renderNavSection('Records', NAV_RECORDS)}
                 {renderNavSection('Crew Portal', NAV_CREW_PORTAL)}
                 {renderNavSection('Integrations', NAV_INTEGRATIONS)}
                 {renderNavSection('Reports', NAV_REPORTS)}

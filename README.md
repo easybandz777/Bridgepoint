@@ -52,3 +52,17 @@ A quick CLI smoke test is at [`scripts/qb-smoke-test.sh`](./scripts/qb-smoke-tes
 ./scripts/qb-smoke-test.sh
 BASE_URL=https://bridgepointepainting.com ./scripts/qb-smoke-test.sh
 ```
+
+## Customer database
+
+Customers, vendors, items, and accounts are now first-class CRM
+entities, populated by bulk import from QuickBooks and kept fresh
+via webhooks plus per-entity push. Customers in particular are
+treated as the eventual system of record (replacing QuickBooks
+long-term) and have their own dedup logic, source tracking, and
+backfill flow.
+
+Schema columns, ingest paths (CRM-native, QB import, auto-resolve),
+the initial setup runbook, and daily operations are documented in
+[`CUSTOMERS.md`](./CUSTOMERS.md). Admin UI lives at
+`/admin/customers`.

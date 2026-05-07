@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, ChevronDown, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { ESTIMATE_TEMPLATES, type EstimateTemplate, type LineItem, type Milestone } from '@/lib/estimate-templates';
+import { CustomerPicker } from '@/components/admin/customer-picker';
 
 const CATEGORIES = ['Labor', 'Materials', 'Subcontractor', 'Equipment', 'Permits & Fees'];
 const STATUS_OPTIONS = ['Draft', 'Sent', 'Approved', 'Declined'];
@@ -90,6 +91,7 @@ export default function EstimateForm() {
     const [status, setStatus] = useState('Draft');
 
     // Client
+    const [customerId, setCustomerId] = useState<string | null>(null);
     const [clientName, setClientName] = useState('');
     const [clientCompany, setClientCompany] = useState('');
     const [clientAddress, setClientAddress] = useState('');
@@ -171,6 +173,7 @@ export default function EstimateForm() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     status,
+                    customerId,
                     validUntil: validUntil || new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
                     client: { name: clientName, company: clientCompany, address: clientAddress, city: clientCity, state: clientState, zip: clientZip, email: clientEmail, phone: clientPhone },
                     project: { title: projTitle, address: projAddress, description: projDesc, startDate: projStart, estimatedDuration: projDuration },
@@ -234,6 +237,31 @@ export default function EstimateForm() {
             {/* Client Info */}
             <div className={sec}>
                 <h2 className="font-serif text-base font-bold text-white mb-5">Client Information</h2>
+                <div className="mb-6">
+                    <label className={lbl}>Customer</label>
+                    <CustomerPicker
+                        value={customerId}
+                        onChange={(id, customer) => {
+                            setCustomerId(id);
+                            if (customer) {
+                                setClientName(customer.displayName);
+                                if (customer.email) setClientEmail(customer.email);
+                                if (customer.phone) setClientPhone(customer.phone);
+                                if (customer.companyName) setClientCompany(customer.companyName);
+                            }
+                        }}
+                        placeholder="Select an existing customer or create new"
+                        allowCreate
+                        createDefaults={{
+                            displayName: clientName,
+                            email: clientEmail,
+                            phone: clientPhone,
+                        }}
+                    />
+                    <p className="text-[11px] text-white/30 mt-1.5">
+                        Pick from your customer list, or fill in the fields below for a one-off entry.
+                    </p>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div><label className={lbl}>Client Name *</label><input className={inp} placeholder="John & Jane Smith" value={clientName} onChange={e => setClientName(e.target.value)} /></div>
                     <div><label className={lbl}>Company (optional)</label><input className={inp} placeholder="Acme Corp" value={clientCompany} onChange={e => setClientCompany(e.target.value)} /></div>
@@ -297,6 +325,7 @@ export default function EstimateForm() {
                                                 className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-[#b8956a]/50 cursor-pointer">
                                                 {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#111]">{c}</option>)}
                                             </select>
+                                            {/* TODO: re-enable when ItemPicker ships — wrap input below so users can pick an existing item to pre-fill description and unitPrice. */}
                                             <input value={item.description} onChange={e => updateItem(idx, 'description', e.target.value)}
                                                 placeholder="Description" className="bg-white/5 border border-white/8 rounded-lg px-2.5 py-2 text-white text-[11px] placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all" />
                                             <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', parseFloat(e.target.value) || 0)}

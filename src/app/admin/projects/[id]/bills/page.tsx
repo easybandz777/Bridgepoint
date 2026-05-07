@@ -204,6 +204,19 @@ export default function ProjectBillsPage({ params }: { params: Promise<{ id: str
                             ))}
                         </select>
                     </div>
+                    {/* TODO: re-enable when AccountPicker ships
+                    <div className="mb-3">
+                        <label className="text-[10px] uppercase tracking-widest text-white/50 mb-2 block">
+                            Expense Account
+                        </label>
+                        <AccountPicker
+                            classification="Expense"
+                            value={null}
+                            onChange={() => {}}
+                            placeholder="Pick the expense account this bill posts against"
+                        />
+                    </div>
+                    */}
                     <textarea
                         placeholder="Description"
                         value={form.description}

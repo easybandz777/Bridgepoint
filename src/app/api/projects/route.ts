@@ -82,6 +82,7 @@ export async function POST(req: Request) {
         await sql`
             INSERT INTO projects (
                 id, project_number, name, status,
+                customer_id,
                 client_name, client_email, client_phone,
                 address, city, state, zip,
                 description, start_date, end_date,
@@ -95,6 +96,7 @@ export async function POST(req: Request) {
                 ${projectNumber},
                 ${body.name},
                 ${body.status ?? 'Planning'},
+                ${body.customerId ?? null},
                 ${body.clientName ?? ''},
                 ${body.clientEmail ?? ''},
                 ${body.clientPhone ?? ''},

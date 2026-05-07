@@ -633,6 +633,186 @@ export async function initDB() {
     await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS qb_customer_id TEXT`;
     await sql`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS qb_customer_id TEXT`;
     await sql`ALTER TABLE estimates ADD COLUMN IF NOT EXISTS qb_customer_id TEXT`;
+
+    // ─── Customers (CRM-side, eventual system of record) ────────────────────
+    // Mirror of QB Customer entity, but the CRM is the source of truth going
+    // forward. Pulled from QB on connect; pushed back on edit.
+    await sql`
+        CREATE TABLE IF NOT EXISTS customers (
+            id TEXT PRIMARY KEY,
+            display_name TEXT NOT NULL,
+            customer_type TEXT NOT NULL DEFAULT 'Individual',
+            company_name TEXT,
+            first_name TEXT,
+            last_name TEXT,
+            email TEXT,
+            phone TEXT,
+            mobile TEXT,
+            fax TEXT,
+            website TEXT,
+            bill_address JSONB NOT NULL DEFAULT '{}',
+            ship_address JSONB NOT NULL DEFAULT '{}',
+            notes TEXT NOT NULL DEFAULT '',
+            tags JSONB NOT NULL DEFAULT '[]',
+            active BOOLEAN NOT NULL DEFAULT true,
+            balance NUMERIC NOT NULL DEFAULT 0,
+            payment_method TEXT,
+            payment_terms TEXT,
+            preferred_delivery_method TEXT,
+            tax_exempt BOOLEAN NOT NULL DEFAULT false,
+            parent_customer_id TEXT,
+            is_job BOOLEAN NOT NULL DEFAULT false,
+            source TEXT NOT NULL DEFAULT 'crm',
+            qb_id TEXT,
+            qb_sync_token TEXT,
+            qb_synced_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_customers_qb_id ON customers(qb_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(LOWER(email))`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_customers_display ON customers(display_name)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_customers_active ON customers(active)`;
+
+    // ─── Vendors (broader than subcontractors — anyone we pay) ──────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS vendors (
+            id TEXT PRIMARY KEY,
+            display_name TEXT NOT NULL,
+            company_name TEXT,
+            first_name TEXT,
+            last_name TEXT,
+            email TEXT,
+            phone TEXT,
+            mobile TEXT,
+            bill_address JSONB NOT NULL DEFAULT '{}',
+            notes TEXT NOT NULL DEFAULT '',
+            tags JSONB NOT NULL DEFAULT '[]',
+            active BOOLEAN NOT NULL DEFAULT true,
+            balance NUMERIC NOT NULL DEFAULT 0,
+            is_1099 BOOLEAN NOT NULL DEFAULT false,
+            tax_identifier TEXT,
+            account_number TEXT,
+            subcontractor_id TEXT,
+            source TEXT NOT NULL DEFAULT 'qb_import',
+            qb_id TEXT,
+            qb_sync_token TEXT,
+            qb_synced_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_vendors_qb_id ON vendors(qb_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_vendors_email ON vendors(LOWER(email))`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_vendors_display ON vendors(display_name)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_vendors_sub ON vendors(subcontractor_id)`;
+
+    // Optional link: subcontractor → vendor row.
+    await sql`ALTER TABLE subcontractors ADD COLUMN IF NOT EXISTS vendor_id TEXT`;
+
+    // ─── Items (chart of services/products) ─────────────────────────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS items (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            description TEXT NOT NULL DEFAULT '',
+            type TEXT NOT NULL DEFAULT 'Service',
+            sku TEXT,
+            unit_price NUMERIC,
+            purchase_cost NUMERIC,
+            income_account_id TEXT,
+            expense_account_id TEXT,
+            active BOOLEAN NOT NULL DEFAULT true,
+            taxable BOOLEAN NOT NULL DEFAULT false,
+            qty_on_hand NUMERIC,
+            source TEXT NOT NULL DEFAULT 'qb_import',
+            qb_id TEXT,
+            qb_sync_token TEXT,
+            qb_synced_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_items_qb_id ON items(qb_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_items_name ON items(name)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_items_type ON items(type)`;
+
+    // ─── Accounts (chart of accounts) ───────────────────────────────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS accounts (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            full_name TEXT,
+            account_type TEXT NOT NULL,
+            account_subtype TEXT,
+            classification TEXT,
+            description TEXT NOT NULL DEFAULT '',
+            parent_account_id TEXT,
+            active BOOLEAN NOT NULL DEFAULT true,
+            current_balance NUMERIC NOT NULL DEFAULT 0,
+            currency TEXT NOT NULL DEFAULT 'USD',
+            source TEXT NOT NULL DEFAULT 'qb_import',
+            qb_id TEXT,
+            qb_sync_token TEXT,
+            qb_synced_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_accounts_qb_id ON accounts(qb_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_accounts_type ON accounts(account_type)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_accounts_parent ON accounts(parent_account_id)`;
+
+    // ─── Customer linkage on existing CRM entities ──────────────────────────
+    // Nullable, additive. Existing rows keep working with their free-form
+    // client_name/client_email/client JSONB. New rows can link to a customer
+    // record; the CRM picker writes both customer_id AND a denormalized
+    // copy of the name/email for backwards compat.
+    await sql`ALTER TABLE projects  ADD COLUMN IF NOT EXISTS customer_id TEXT`;
+    await sql`ALTER TABLE invoices  ADD COLUMN IF NOT EXISTS customer_id TEXT`;
+    await sql`ALTER TABLE estimates ADD COLUMN IF NOT EXISTS customer_id TEXT`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_projects_customer ON projects(customer_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_invoices_customer ON invoices(customer_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_estimates_customer ON estimates(customer_id)`;
+
+    // ─── Payments (PLANNED — Phase 3) ───────────────────────────────────────
+    // Forward-looking schema stub for the CRM-side payments foundation.
+    // Nothing reads or writes this table today; it ships now so future
+    // iterations (Stripe Connect for cards, ACH via Financial Connections,
+    // manual check entries) can build against it without an awkward
+    // migration. See PAYMENTS.md for the planned architecture.
+    await sql`
+        CREATE TABLE IF NOT EXISTS payments (
+            id TEXT PRIMARY KEY,
+            payment_number TEXT,
+            direction TEXT NOT NULL DEFAULT 'incoming',  -- incoming | outgoing
+            amount NUMERIC NOT NULL,
+            currency TEXT NOT NULL DEFAULT 'USD',
+            method TEXT NOT NULL DEFAULT 'card',  -- card | ach | check | cash | other
+            status TEXT NOT NULL DEFAULT 'pending',  -- pending | succeeded | failed | refunded | disputed
+            customer_id TEXT,
+            vendor_id TEXT,
+            invoice_id TEXT,
+            bill_id TEXT,
+            received_date TEXT,
+            deposited_date TEXT,
+            processor TEXT,  -- stripe | manual | qb
+            processor_charge_id TEXT,
+            processor_fee NUMERIC NOT NULL DEFAULT 0,
+            notes TEXT NOT NULL DEFAULT '',
+            metadata JSONB NOT NULL DEFAULT '{}',
+            qb_id TEXT,
+            qb_sync_token TEXT,
+            qb_synced_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_payments_customer ON payments(customer_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_payments_created ON payments(created_at DESC)`;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────

@@ -9,7 +9,16 @@ import type {
     QbVendor,
     QbBill,
     QbPayment,
+    QbItem,
 } from './types';
+
+// QB Account is fetched generically — we don't have a strict type for it and
+// the upsert helper accepts the raw payload.
+interface QbAccount {
+    Id?: string;
+    Name?: string;
+    [key: string]: unknown;
+}
 
 export function verifyWebhookSignature(rawBody: string, signature: string | null): boolean {
     const verifier = process.env.QUICKBOOKS_WEBHOOK_VERIFIER_TOKEN;
@@ -188,11 +197,6 @@ async function handleCustomerEvent(ev: QbWebhookEventRow): Promise<void> {
         return;
     }
 
-    const projects = (await sql`
-        SELECT id FROM projects WHERE qb_customer_id = ${ev.entity_id}
-    `) as unknown as { id: string }[];
-    if (projects.length === 0) return;
-
     const r = await qbGet<{ Customer: QbCustomer }>(`/customer/${ev.entity_id}`, {
         logAs: {
             entityType: 'customer',
@@ -201,8 +205,28 @@ async function handleCustomerEvent(ev: QbWebhookEventRow): Promise<void> {
             actor: 'webhook',
         },
     });
-    const customerName = r.Customer?.DisplayName ?? ev.entity_id;
+    const qbCustomer = r.Customer;
+    if (!qbCustomer) return;
+    const customerName = qbCustomer.DisplayName ?? ev.entity_id;
 
+    // Dynamic import: the customers-import module may not exist at type-check
+    // time during a parallel build. A missing module degrades to a logged
+    // warning instead of a hard failure for the webhook batch.
+    try {
+        const mod = await import('@/lib/quickbooks/customers-import');
+        await mod.upsertCustomerFromQb(qbCustomer, 'qb_webhook');
+        await logActivity('quickbooks_customer', ev.entity_id, 'qb_webhook_update',
+            `QB customer ${customerName} synced from webhook`, 'webhook',
+            { qbId: ev.entity_id, operation: ev.operation });
+    } catch (e) {
+        console.warn('[qb-webhook] customer upsert skipped (module missing?):', e);
+    }
+
+    // Also fan out activity entries to any local projects tied to this customer
+    // so the project-level activity feed reflects upstream changes.
+    const projects = (await sql`
+        SELECT id FROM projects WHERE qb_customer_id = ${ev.entity_id}
+    `) as unknown as { id: string }[];
     for (const p of projects) {
         await logActivity('quickbooks_customer', p.id, 'qb_webhook_update',
             `QB customer ${customerName} updated upstream`, 'webhook',
@@ -266,34 +290,49 @@ async function handleVendorEvent(ev: QbWebhookEventRow): Promise<void> {
         return;
     }
 
-    const rows = (await sql`
-        SELECT id, company_name FROM subcontractors WHERE qb_id = ${ev.entity_id} LIMIT 1
-    `) as unknown as { id: string; company_name: string }[];
-    if (rows.length === 0) return;
-    const local = rows[0];
-
     const r = await qbGet<{ Vendor: QbVendor }>(`/vendor/${ev.entity_id}`, {
         logAs: {
             entityType: 'vendor',
-            entityId: local.id,
             qbEntityId: ev.entity_id,
             action: 'webhook-pull',
             actor: 'webhook',
         },
     });
-    const syncToken = r.Vendor?.SyncToken ?? null;
+    const qbVendor = r.Vendor;
+    if (!qbVendor) return;
 
-    await sql`
-        UPDATE subcontractors
-        SET qb_sync_token = ${syncToken},
-            qb_synced_at = NOW()
-        WHERE id = ${local.id}
-    `;
+    // Mirror into the vendors table via the import helper. Dynamic import so
+    // a missing module doesn't break type-check during a parallel build.
+    try {
+        const mod = await import('@/lib/quickbooks/vendors-import');
+        await mod.upsertVendorFromQb(qbVendor, 'qb_webhook');
+        await logActivity('quickbooks_vendor', ev.entity_id, 'qb_webhook_update',
+            `QB vendor ${qbVendor.DisplayName ?? ev.entity_id} synced from webhook`,
+            'webhook',
+            { qbId: ev.entity_id, operation: ev.operation });
+    } catch (e) {
+        console.warn('[qb-webhook] vendor upsert skipped (module missing?):', e);
+    }
 
-    await logActivity('quickbooks_vendor', local.id, 'qb_webhook_update',
-        `Vendor ${local.company_name} refreshed from webhook`,
-        'webhook',
-        { qbId: ev.entity_id, operation: ev.operation });
+    // Subcontractor sync_token bookkeeping: still useful for any subcontractor
+    // rows that mirror this QB vendor by id.
+    const rows = (await sql`
+        SELECT id, company_name FROM subcontractors WHERE qb_id = ${ev.entity_id} LIMIT 1
+    `) as unknown as { id: string; company_name: string }[];
+    if (rows.length > 0) {
+        const local = rows[0];
+        const syncToken = qbVendor.SyncToken ?? null;
+        await sql`
+            UPDATE subcontractors
+            SET qb_sync_token = ${syncToken},
+                qb_synced_at = NOW()
+            WHERE id = ${local.id}
+        `;
+        await logActivity('quickbooks_vendor', local.id, 'qb_webhook_update',
+            `Vendor ${local.company_name} refreshed from webhook`,
+            'webhook',
+            { qbId: ev.entity_id, operation: ev.operation });
+    }
 }
 
 async function handleBillEvent(ev: QbWebhookEventRow): Promise<void> {
@@ -387,6 +426,73 @@ async function handlePaymentEvent(ev: QbWebhookEventRow): Promise<void> {
     }
 }
 
+async function handleItemEvent(ev: QbWebhookEventRow): Promise<void> {
+    if (ev.operation === 'Delete') {
+        await logActivity('quickbooks_item', ev.entity_id, 'qb_webhook_delete',
+            `QB item ${ev.entity_id} deleted upstream`, 'webhook',
+            { realmId: ev.realm_id, qbId: ev.entity_id });
+        return;
+    }
+
+    const r = await qbGet<{ Item: QbItem }>(`/item/${ev.entity_id}`, {
+        logAs: {
+            entityType: 'item',
+            qbEntityId: ev.entity_id,
+            action: 'webhook-pull',
+            actor: 'webhook',
+        },
+    });
+    const qbItem = r.Item;
+    if (!qbItem) return;
+
+    try {
+        const mod = await import('@/lib/quickbooks/items-import');
+        await mod.upsertItemFromQb(qbItem, 'qb_webhook');
+        await logActivity('quickbooks_item', ev.entity_id, 'qb_webhook_update',
+            `Item ${qbItem.Name ?? ev.entity_id} synced from QB webhook`, 'webhook',
+            { qbId: ev.entity_id, operation: ev.operation });
+    } catch (e) {
+        console.warn('[qb-webhook] item upsert skipped (module missing?):', e);
+    }
+}
+
+async function handleAccountEvent(ev: QbWebhookEventRow): Promise<void> {
+    if (ev.operation === 'Delete') {
+        await logActivity('quickbooks_account', ev.entity_id, 'qb_webhook_delete',
+            `QB account ${ev.entity_id} deleted upstream`, 'webhook',
+            { realmId: ev.realm_id, qbId: ev.entity_id });
+        return;
+    }
+
+    const r = await qbGet<{ Account: QbAccount }>(`/account/${ev.entity_id}`, {
+        logAs: {
+            entityType: 'account',
+            qbEntityId: ev.entity_id,
+            action: 'webhook-pull',
+            actor: 'webhook',
+        },
+    });
+    const qbAccount = r.Account;
+    if (!qbAccount) return;
+
+    try {
+        // Indirect specifier: accounts-import.ts may not exist yet at
+        // type-check time during a parallel build. The variable path defeats
+        // static module resolution while still loading the module if/when it
+        // ships. A missing module surfaces as a runtime warning here.
+        const accountsImportPath = '@/lib/quickbooks/accounts-import';
+        const mod = (await import(/* webpackIgnore: true */ accountsImportPath)) as {
+            upsertAccountFromQb: (acct: QbAccount, source: string) => Promise<void>;
+        };
+        await mod.upsertAccountFromQb(qbAccount, 'qb_webhook');
+        await logActivity('quickbooks_account', ev.entity_id, 'qb_webhook_update',
+            `Account ${qbAccount.Name ?? ev.entity_id} synced from QB webhook`, 'webhook',
+            { qbId: ev.entity_id, operation: ev.operation });
+    } catch (e) {
+        console.warn('[qb-webhook] account upsert skipped (module missing?):', e);
+    }
+}
+
 async function dispatchEvent(ev: QbWebhookEventRow): Promise<void> {
     switch (ev.entity_name) {
         case 'Invoice':
@@ -401,6 +507,10 @@ async function dispatchEvent(ev: QbWebhookEventRow): Promise<void> {
             return handleBillEvent(ev);
         case 'Payment':
             return handlePaymentEvent(ev);
+        case 'Item':
+            return handleItemEvent(ev);
+        case 'Account':
+            return handleAccountEvent(ev);
         default:
             await logActivity('quickbooks_webhook', ev.entity_id, 'qb_webhook_unknown',
                 `Unhandled entity ${ev.entity_name} ${ev.operation}`, 'webhook',

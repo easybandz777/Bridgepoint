@@ -8,6 +8,7 @@ import { QbStatsRow } from '@/components/admin/qb-stats-row';
 import { QbActionsCard } from '@/components/admin/qb-actions-card';
 import { QbSyncLogTable, type QbSyncLogEntry } from '@/components/admin/qb-sync-log-table';
 import { QbDefaultsCard } from '@/components/admin/qb-defaults-card';
+import { QbImportCard } from '@/components/admin/qb-import-card';
 import { QbHowItWorks } from '@/components/admin/qb-how-it-works';
 
 interface FlashMessage {
@@ -188,6 +189,8 @@ export default function QuickBooksIntegrationPage() {
                         refreshExpiresAt={data?.refreshExpiresAt}
                     />
                 )}
+
+                <QbImportCard disabled={!connected} onAfter={load} />
 
                 <QbDefaultsCard enabled={Boolean(connected)} />
 

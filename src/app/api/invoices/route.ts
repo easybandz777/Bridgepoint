@@ -28,12 +28,14 @@ export async function POST(req: Request) {
         await sql`
             INSERT INTO invoices (
                 id, invoice_number, estimate_ref, status, issued_date, due_date,
+                customer_id,
                 client, project, line_items, subtotal, tax_rate, tax_amount, total,
                 amount_paid, amount_due, payment_instructions, notes
             ) VALUES (
                 ${id}, ${invoiceNumber}, ${body.estimateRef ?? null},
                 ${body.status ?? 'Outstanding'}, ${now},
                 ${body.dueDate ?? new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]},
+                ${body.customerId ?? null},
                 ${JSON.stringify(body.client)}, ${JSON.stringify(body.project ?? {})},
                 ${JSON.stringify(body.lineItems ?? [])},
                 ${subtotal}, ${body.taxRate ?? 0}, ${body.taxAmount ?? 0}, ${body.total ?? subtotal},

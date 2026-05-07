@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
+import { CustomerPicker } from '@/components/admin/customer-picker';
 
 type LineItem = { id: string; description: string; quantity: number; unit: string; unitPrice: number; total: number };
 const STATUS_OPTIONS = ['Outstanding', 'Partial', 'Paid', 'Overdue'];
@@ -21,6 +22,7 @@ export default function InvoiceForm() {
     const [status, setStatus] = useState('Outstanding');
 
     // Client
+    const [customerId, setCustomerId] = useState<string | null>(null);
     const [clientName, setClientName] = useState('');
     const [clientCompany, setClientCompany] = useState('');
     const [clientAddress, setClientAddress] = useState('');
@@ -73,7 +75,7 @@ export default function InvoiceForm() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    status, estimateRef: estimateRef || null, dueDate,
+                    status, customerId, estimateRef: estimateRef || null, dueDate,
                     client: { name: clientName, company: clientCompany, address: clientAddress, city: clientCity, state: clientState, zip: clientZip, email: clientEmail, phone: clientPhone },
                     project: { title: projTitle, address: projAddress },
                     lineItems: items.filter(i => i.description),
@@ -119,6 +121,31 @@ export default function InvoiceForm() {
             {/* Client Info */}
             <div className={section}>
                 <h2 className="font-serif text-base font-bold text-white mb-5">Client Information</h2>
+                <div className="mb-6">
+                    <label className={label}>Customer</label>
+                    <CustomerPicker
+                        value={customerId}
+                        onChange={(id, customer) => {
+                            setCustomerId(id);
+                            if (customer) {
+                                setClientName(customer.displayName);
+                                if (customer.email) setClientEmail(customer.email);
+                                if (customer.phone) setClientPhone(customer.phone);
+                                if (customer.companyName) setClientCompany(customer.companyName);
+                            }
+                        }}
+                        placeholder="Select an existing customer or create new"
+                        allowCreate
+                        createDefaults={{
+                            displayName: clientName,
+                            email: clientEmail,
+                            phone: clientPhone,
+                        }}
+                    />
+                    <p className="text-[11px] text-white/30 mt-1.5">
+                        Pick from your customer list, or fill in the fields below for a one-off entry.
+                    </p>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className={label}>Client Name *</label>
@@ -191,6 +218,18 @@ export default function InvoiceForm() {
                 <div className="space-y-2">
                     {items.map((item, idx) => (
                         <div key={item.id} className="grid gap-2 items-center" style={{ gridTemplateColumns: '3fr 80px 80px 90px 90px 36px' }}>
+                            {/* TODO: re-enable when ItemPicker ships
+                            <ItemPicker
+                                value={null}
+                                onChange={(_, picked) => {
+                                    if (picked) {
+                                        updateItem(idx, 'description', picked.name ?? picked.description ?? '');
+                                        if (picked.unitPrice != null) updateItem(idx, 'unitPrice', picked.unitPrice);
+                                    }
+                                }}
+                                placeholder="Pick item or type below"
+                            />
+                            */}
                             <input value={item.description} onChange={e => updateItem(idx, 'description', e.target.value)}
                                 placeholder="Description of work" className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 transition-all" />
                             <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', parseFloat(e.target.value) || 0)}

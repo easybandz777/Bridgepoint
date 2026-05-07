@@ -18,6 +18,9 @@ import {
     CreditCard,
     Database,
     Calendar,
+    Truck,
+    Package,
+    Wallet,
 } from 'lucide-react';
 import { StatsCard } from '@/components/admin/stats-card';
 
@@ -100,6 +103,13 @@ interface DashboardData {
     estimateCounts: Record<string, number>;
 }
 
+interface RecordCounts {
+    customers: number;
+    vendors: number;
+    items: number;
+    accounts: number;
+}
+
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
 function fmtCurrency(n: number): string {
@@ -178,6 +188,7 @@ function entityColor(entity_type: string): string {
 
 export default function AdminDashboard() {
     const [data, setData] = useState<DashboardData | null>(null);
+    const [recordCounts, setRecordCounts] = useState<RecordCounts | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [seeding, setSeeding] = useState(false);
@@ -199,6 +210,39 @@ export default function AdminDashboard() {
                 if (!cancelled) setError(String(e));
             } finally {
                 if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const endpoints = [
+                    '/api/customers?active=true&limit=1',
+                    '/api/vendors?active=true&limit=1',
+                    '/api/items?active=true&limit=1',
+                    '/api/accounts?active=true&limit=1',
+                ];
+                const results = await Promise.all(
+                    endpoints.map((u) =>
+                        fetch(u, { cache: 'no-store' })
+                            .then((r) => (r.ok ? r.json() : { total: 0 }))
+                            .catch(() => ({ total: 0 })),
+                    ),
+                );
+                if (cancelled) return;
+                setRecordCounts({
+                    customers: Number(results[0]?.total ?? 0),
+                    vendors: Number(results[1]?.total ?? 0),
+                    items: Number(results[2]?.total ?? 0),
+                    accounts: Number(results[3]?.total ?? 0),
+                });
+            } catch {
+                // best-effort; tiles fall back to "—"
             }
         })();
         return () => {
@@ -299,6 +343,39 @@ export default function AdminDashboard() {
                         />
                     </>
                 )}
+            </div>
+
+            {/* Records section */}
+            <div className="mb-8 sm:mb-10">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-3">
+                    Records
+                </p>
+                <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+                    <StatsCard
+                        icon={Users}
+                        label="Customers"
+                        value={recordCounts ? String(recordCounts.customers) : '—'}
+                        sub="Active customer records"
+                    />
+                    <StatsCard
+                        icon={Truck}
+                        label="Vendors"
+                        value={recordCounts ? String(recordCounts.vendors) : '—'}
+                        sub="Active vendor records"
+                    />
+                    <StatsCard
+                        icon={Package}
+                        label="Items"
+                        value={recordCounts ? String(recordCounts.items) : '—'}
+                        sub="Active items in catalog"
+                    />
+                    <StatsCard
+                        icon={Wallet}
+                        label="Accounts"
+                        value={recordCounts ? String(recordCounts.accounts) : '—'}
+                        sub="Active chart-of-accounts entries"
+                    />
+                </div>
             </div>
 
             {/* This Week widget */}

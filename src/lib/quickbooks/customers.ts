@@ -23,6 +23,7 @@ import {
     trunc,
 } from './mappers';
 import type { QbCustomer } from './types';
+import { upsertCustomerFromQb } from './customers-import';
 
 const QB_LOG_ENTITY = 'quickbooks_customer';
 
@@ -214,6 +215,7 @@ export async function resolveOrCreateCustomerForProject(
         const existing = await readQbCustomer(project.qb_customer_id);
         if (existing) {
             await stampProjectQbId(project, existing);
+            await mirrorCustomerIntoCrm(existing);
             return { qbCustomerId: project.qb_customer_id, customer: existing };
         }
         // Stale id — fall through to re-resolve.
@@ -230,6 +232,7 @@ export async function resolveOrCreateCustomerForProject(
             await logActivity(QB_LOG_ENTITY, byEmail.Id, 'resolved_by_email',
                 `Matched existing QB Customer ${byEmail.DisplayName} via email`, actor,
                 { projectId: project.id, email });
+            await mirrorCustomerIntoCrm(byEmail);
             return { qbCustomerId: byEmail.Id, customer: byEmail };
         }
     }
@@ -243,6 +246,7 @@ export async function resolveOrCreateCustomerForProject(
         await logActivity(QB_LOG_ENTITY, byName.Id, 'resolved_by_name',
             `Matched existing QB Customer ${byName.DisplayName} via DisplayName`, actor,
             { projectId: project.id, displayName });
+        await mirrorCustomerIntoCrm(byName);
         return { qbCustomerId: byName.Id, customer: byName };
     }
 
@@ -262,8 +266,24 @@ export async function resolveOrCreateCustomerForProject(
     await logActivity(QB_LOG_ENTITY, customer.Id, 'created',
         `Created QB Customer ${customer.DisplayName}`, actor,
         { projectId: project.id });
+    await mirrorCustomerIntoCrm(customer);
 
     return { qbCustomerId: customer.Id, customer };
+}
+
+/**
+ * Mirror the resolved QB Customer into the CRM `customers` table so the
+ * customer-level UI can find it. Failures are non-fatal — the project-level
+ * resolve has already succeeded and we don't want to roll that back if the
+ * mirror upsert hits a transient DB error.
+ */
+async function mirrorCustomerIntoCrm(customer: QbCustomer): Promise<void> {
+    if (!customer?.Id) return;
+    try {
+        await upsertCustomerFromQb(customer, 'qb_import');
+    } catch (e) {
+        console.warn('[qb] mirror customer into CRM failed:', e);
+    }
 }
 
 /**

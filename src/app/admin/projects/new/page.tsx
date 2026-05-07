@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Save, Briefcase, User, Calendar, DollarSign, FileText } from 'lucide-react';
 import { SAMPLE_ESTIMATES, formatCurrency } from '@/lib/estimates';
 import { createProject } from '@/lib/project-api';
+import { CustomerPicker } from '@/components/admin/customer-picker';
 
 export default function NewProjectPage() {
     const router = useRouter();
@@ -16,6 +17,7 @@ export default function NewProjectPage() {
 
     // Form State
     const [name, setName] = useState('');
+    const [customerId, setCustomerId] = useState<string | null>(null);
     const [clientName, setClientName] = useState('');
     const [clientEmail, setClientEmail] = useState('');
     const [clientPhone, setClientPhone] = useState('');
@@ -56,6 +58,7 @@ export default function NewProjectPage() {
         try {
             const { id } = await createProject({
                 name,
+                customerId,
                 clientName,
                 clientEmail,
                 clientPhone,
@@ -176,6 +179,32 @@ export default function NewProjectPage() {
                                     placeholder="e.g. Master Bath Remodel - Smith"
                                     className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                 />
+                            </div>
+                            <div>
+                                <label className="block text-[10px] uppercase tracking-widest text-white/50 mb-2">
+                                    Customer
+                                </label>
+                                <CustomerPicker
+                                    value={customerId}
+                                    onChange={(id, customer) => {
+                                        setCustomerId(id);
+                                        if (customer) {
+                                            setClientName(customer.displayName);
+                                            if (customer.email) setClientEmail(customer.email);
+                                            if (customer.phone) setClientPhone(customer.phone);
+                                        }
+                                    }}
+                                    placeholder="Select an existing customer or create new"
+                                    allowCreate
+                                    createDefaults={{
+                                        displayName: clientName,
+                                        email: clientEmail,
+                                        phone: clientPhone,
+                                    }}
+                                />
+                                <p className="text-[11px] text-white/30 mt-1.5">
+                                    Pick from your customer list, or fill in the fields below for a one-off entry.
+                                </p>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
