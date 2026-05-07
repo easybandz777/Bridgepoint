@@ -527,6 +527,112 @@ export async function initDB() {
     // expect — if any earlier deploy missed them, ALTER will be a no-op.
     await sql`ALTER TABLE project_files ADD COLUMN IF NOT EXISTS uploaded_by_type TEXT`;
     await sql`ALTER TABLE project_files ADD COLUMN IF NOT EXISTS uploaded_by_id TEXT`;
+
+    // ─── QuickBooks Connection (one row per workspace) ──────────────────────
+    // Stores OAuth tokens for the QB Online integration. The "realm_id" is
+    // the QuickBooks company file the tokens authorize. We keep one active
+    // connection at a time (admins disconnect / reconnect to switch).
+    await sql`
+        CREATE TABLE IF NOT EXISTS qb_connections (
+            id TEXT PRIMARY KEY,
+            realm_id TEXT NOT NULL,
+            company_name TEXT,
+            access_token TEXT NOT NULL,
+            refresh_token TEXT NOT NULL,
+            token_type TEXT DEFAULT 'Bearer',
+            access_expires_at TIMESTAMPTZ NOT NULL,
+            refresh_expires_at TIMESTAMPTZ NOT NULL,
+            environment TEXT NOT NULL DEFAULT 'sandbox',
+            scopes TEXT NOT NULL DEFAULT '',
+            status TEXT NOT NULL DEFAULT 'active',
+            connected_by TEXT,
+            connected_at TIMESTAMPTZ DEFAULT NOW(),
+            last_refreshed_at TIMESTAMPTZ,
+            disconnected_at TIMESTAMPTZ,
+            metadata JSONB NOT NULL DEFAULT '{}'
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_qb_conn_status ON qb_connections(status)`;
+
+    // ─── OAuth state tokens (CSRF for the connect flow) ─────────────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS qb_oauth_states (
+            state TEXT PRIMARY KEY,
+            actor TEXT NOT NULL DEFAULT 'admin',
+            redirect_after TEXT,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            expires_at TIMESTAMPTZ NOT NULL
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_qb_oauth_states_exp ON qb_oauth_states(expires_at)`;
+
+    // ─── Sync log (every push, pull, refresh, error) ────────────────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS qb_sync_log (
+            id TEXT PRIMARY KEY,
+            connection_id TEXT,
+            entity_type TEXT NOT NULL,
+            entity_id TEXT,
+            qb_entity_id TEXT,
+            direction TEXT NOT NULL,
+            action TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'success',
+            error TEXT,
+            request JSONB,
+            response JSONB,
+            duration_ms INTEGER,
+            actor TEXT DEFAULT 'admin',
+            created_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_qb_sync_log_entity ON qb_sync_log(entity_type, entity_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_qb_sync_log_created ON qb_sync_log(created_at DESC)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_qb_sync_log_status ON qb_sync_log(status)`;
+
+    // ─── Webhook events (Intuit pings us; we fan out workers) ───────────────
+    await sql`
+        CREATE TABLE IF NOT EXISTS qb_webhook_events (
+            id TEXT PRIMARY KEY,
+            realm_id TEXT NOT NULL,
+            entity_name TEXT NOT NULL,
+            entity_id TEXT NOT NULL,
+            operation TEXT NOT NULL,
+            last_updated TIMESTAMPTZ NOT NULL,
+            payload JSONB NOT NULL,
+            processed_at TIMESTAMPTZ,
+            error TEXT,
+            received_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_qb_webhook_unprocessed ON qb_webhook_events(processed_at) WHERE processed_at IS NULL`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_qb_webhook_entity ON qb_webhook_events(entity_name, entity_id)`;
+
+    // ─── Sync columns on existing CRM entities ──────────────────────────────
+    // We add `qb_id` (the QB API resource id) and `qb_sync_token` (QB requires
+    // sending the latest SyncToken on update) to every entity we sync. Plus
+    // `qb_synced_at` for diagnostics. ALTER ... IF NOT EXISTS is idempotent.
+    await sql`ALTER TABLE estimates           ADD COLUMN IF NOT EXISTS qb_id TEXT`;
+    await sql`ALTER TABLE estimates           ADD COLUMN IF NOT EXISTS qb_sync_token TEXT`;
+    await sql`ALTER TABLE estimates           ADD COLUMN IF NOT EXISTS qb_synced_at TIMESTAMPTZ`;
+    await sql`ALTER TABLE invoices            ADD COLUMN IF NOT EXISTS qb_id TEXT`;
+    await sql`ALTER TABLE invoices            ADD COLUMN IF NOT EXISTS qb_sync_token TEXT`;
+    await sql`ALTER TABLE invoices            ADD COLUMN IF NOT EXISTS qb_synced_at TIMESTAMPTZ`;
+    await sql`ALTER TABLE subcontractors      ADD COLUMN IF NOT EXISTS qb_id TEXT`;
+    await sql`ALTER TABLE subcontractors      ADD COLUMN IF NOT EXISTS qb_sync_token TEXT`;
+    await sql`ALTER TABLE subcontractors      ADD COLUMN IF NOT EXISTS qb_synced_at TIMESTAMPTZ`;
+    await sql`ALTER TABLE project_bills       ADD COLUMN IF NOT EXISTS qb_id TEXT`;
+    await sql`ALTER TABLE project_bills       ADD COLUMN IF NOT EXISTS qb_sync_token TEXT`;
+    await sql`ALTER TABLE project_bills       ADD COLUMN IF NOT EXISTS qb_synced_at TIMESTAMPTZ`;
+    await sql`ALTER TABLE projects            ADD COLUMN IF NOT EXISTS qb_id TEXT`;
+    await sql`ALTER TABLE projects            ADD COLUMN IF NOT EXISTS qb_sync_token TEXT`;
+    await sql`ALTER TABLE projects            ADD COLUMN IF NOT EXISTS qb_synced_at TIMESTAMPTZ`;
+
+    // Customers in QB are derived from invoices/estimates' clientName + email.
+    // We track the resolved QB Customer id per project so we don't create
+    // duplicates: every project resolves to one QB Customer.
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS qb_customer_id TEXT`;
+    await sql`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS qb_customer_id TEXT`;
+    await sql`ALTER TABLE estimates ADD COLUMN IF NOT EXISTS qb_customer_id TEXT`;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────

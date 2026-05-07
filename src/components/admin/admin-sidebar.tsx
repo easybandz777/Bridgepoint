@@ -23,6 +23,7 @@ import {
     Smartphone,
     KeyRound,
     Image as ImageIcon,
+    Plug,
 } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -58,6 +59,10 @@ const NAV_CREW_PORTAL: NavLink[] = [
     { href: '/admin/portal/activity', label: 'Crew Activity', icon: Activity, exact: false },
     { href: '/admin/portal/photos', label: 'Crew Photos', icon: ImageIcon, exact: false },
     { href: '/admin/portal/messages', label: 'Announcements', icon: Smartphone, exact: false },
+];
+
+const NAV_INTEGRATIONS: NavLink[] = [
+    { href: '/admin/integrations/quickbooks', label: 'QuickBooks', icon: Plug, exact: false },
 ];
 
 const NAV_REPORTS: NavLink[] = [
@@ -152,6 +157,7 @@ export function AdminSidebar({ onClose }: AdminSidebarProps) {
                 {renderNavSection('Operations', NAV_OPERATIONS)}
                 {renderNavSection('People', NAV_PEOPLE)}
                 {renderNavSection('Crew Portal', NAV_CREW_PORTAL)}
+                {renderNavSection('Integrations', NAV_INTEGRATIONS)}
                 {renderNavSection('Reports', NAV_REPORTS)}
 
                 <div className="my-5 h-px bg-white/6 mx-3" />

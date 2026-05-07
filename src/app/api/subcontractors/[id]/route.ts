@@ -7,6 +7,7 @@ import {
     type RowSubcontractor,
     type RowAssignment,
 } from '@/lib/subcontractors';
+import { autoSyncSubcontractorIfEnabled } from '@/lib/quickbooks/auto-sync';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -75,6 +76,10 @@ export async function PATCH(req: Request, ctx: Ctx) {
         `;
 
         await logActivity('subcontractor', id, 'updated', 'Sub profile updated', 'admin', { fields: Object.keys(body) });
+
+        if (body.status === 'Active') {
+            void autoSyncSubcontractorIfEnabled(id, { reason: 'sub activated' });
+        }
 
         return NextResponse.json({ ok: true });
     } catch (e) {

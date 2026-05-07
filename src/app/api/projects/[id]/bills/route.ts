@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import sql, { initDB, genId, logActivity } from '@/lib/db';
+import { autoSyncBillIfEnabled } from '@/lib/quickbooks/auto-sync';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -56,6 +57,8 @@ export async function POST(req: Request, ctx: Ctx) {
         `;
 
         await logActivity('project', id, 'bill_added', `Bill ${body.billNumber ?? billId} added ($${body.amount ?? 0})`, body.actor, { billId });
+
+        void autoSyncBillIfEnabled(billId, { reason: 'bill created' });
 
         return NextResponse.json({ id: billId }, { status: 201 });
     } catch (e) {
