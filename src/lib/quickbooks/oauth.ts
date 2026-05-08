@@ -54,6 +54,12 @@ export function getAuthorizationUrl(state: string, scopes: string = DEFAULT_SCOP
         scope: scopes,
         redirect_uri: redirectUri,
         state,
+        // Force Intuit to show the company picker on every connect. Without
+        // this a saved session can silently auto-grant to whichever company
+        // the user last authorized — including the sandbox demo company —
+        // which then 403s on every API call in production. `consent` makes
+        // Intuit re-prompt and always show the company list.
+        prompt: 'consent',
     });
     return `${AUTH_URL}?${params.toString()}`;
 }
