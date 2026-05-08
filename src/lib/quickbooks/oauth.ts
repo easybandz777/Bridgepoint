@@ -58,17 +58,11 @@ export function getAuthorizationUrl(
         scope: scopes,
         redirect_uri: redirectUri,
         state,
-        // Force Intuit to re-prompt for consent. Combined with a realm_id
-        // hint below, this makes the OAuth flow land on the correct company
-        // even if the user has multiple QBO companies on the same Intuit ID.
-        // (Earlier we tried `login consent` but Intuit hangs on that combo
-        // when realm_id is also present.)
-        prompt: 'consent',
     });
-    // Optional realm hint — when the caller knows which QBO company they
-    // want to authorize, passing realm_id lets Intuit pre-select that
-    // company on the consent screen. Useful when the user has multiple
-    // companies and we want to skip the picker.
+    // Realm hint is intentionally NOT passed and prompt=consent is dropped —
+    // both interfere with Intuit's production OAuth flow when the developer
+    // is also the end user. With neither set, Intuit defaults to the user's
+    // currently-active QBO company, which is what we want.
     if (realmHint) params.set('realm_id', realmHint);
     return `${AUTH_URL}?${params.toString()}`;
 }
