@@ -58,15 +58,12 @@ export function getAuthorizationUrl(
         scope: scopes,
         redirect_uri: redirectUri,
         state,
-        // Force Intuit to fully re-prompt: re-login AND re-consent. Without
-        // both flags Intuit silently auto-grants to whichever company the
-        // user last authorized for this app (regardless of which company
-        // is actually currently active in their browser session). For users
-        // with multiple QBO companies (e.g. a sandbox demo + a real
-        // production company) the cached choice could be the wrong one,
-        // which then 403s on every API call. `login consent` makes Intuit
-        // re-authenticate the user and present the company picker.
-        prompt: 'login consent',
+        // Force Intuit to re-prompt for consent. Combined with a realm_id
+        // hint below, this makes the OAuth flow land on the correct company
+        // even if the user has multiple QBO companies on the same Intuit ID.
+        // (Earlier we tried `login consent` but Intuit hangs on that combo
+        // when realm_id is also present.)
+        prompt: 'consent',
     });
     // Optional realm hint — when the caller knows which QBO company they
     // want to authorize, passing realm_id lets Intuit pre-select that
