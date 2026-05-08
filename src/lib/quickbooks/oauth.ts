@@ -54,12 +54,15 @@ export function getAuthorizationUrl(state: string, scopes: string = DEFAULT_SCOP
         scope: scopes,
         redirect_uri: redirectUri,
         state,
-        // Force Intuit to show the company picker on every connect. Without
-        // this a saved session can silently auto-grant to whichever company
-        // the user last authorized — including the sandbox demo company —
-        // which then 403s on every API call in production. `consent` makes
-        // Intuit re-prompt and always show the company list.
-        prompt: 'consent',
+        // Force Intuit to fully re-prompt: re-login AND re-consent. Without
+        // both flags Intuit silently auto-grants to whichever company the
+        // user last authorized for this app (regardless of which company
+        // is actually currently active in their browser session). For users
+        // with multiple QBO companies (e.g. a sandbox demo + a real
+        // production company) the cached choice could be the wrong one,
+        // which then 403s on every API call. `login consent` makes Intuit
+        // re-authenticate the user and present the company picker.
+        prompt: 'login consent',
     });
     return `${AUTH_URL}?${params.toString()}`;
 }
