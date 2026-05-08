@@ -22,9 +22,14 @@ export async function GET(req: Request) {
         const redirectAfter = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')
             ? rawRedirect
             : '/admin/integrations/quickbooks';
+        // Optional realm hint passed through to Intuit so it pre-selects
+        // a specific QBO company on the consent screen. Only digits to
+        // avoid forwarding arbitrary strings into the OAuth URL.
+        const rawRealm = url.searchParams.get('realm_id') ?? '';
+        const realmHint = /^\d{8,}$/.test(rawRealm) ? rawRealm : undefined;
         const state = generateState();
         await saveOauthState(state, 'admin', redirectAfter);
-        const authUrl = getAuthorizationUrl(state);
+        const authUrl = getAuthorizationUrl(state, undefined, realmHint);
         return NextResponse.redirect(authUrl);
     } catch (e) {
         console.warn('[qb] connect failed:', e);

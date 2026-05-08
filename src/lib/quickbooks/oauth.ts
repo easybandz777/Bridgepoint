@@ -46,7 +46,11 @@ export function generateState(): string {
     return randomBytes(24).toString('base64url');
 }
 
-export function getAuthorizationUrl(state: string, scopes: string = DEFAULT_SCOPES): string {
+export function getAuthorizationUrl(
+    state: string,
+    scopes: string = DEFAULT_SCOPES,
+    realmHint?: string,
+): string {
     const { clientId, redirectUri } = getQbCredentials();
     const params = new URLSearchParams({
         client_id: clientId,
@@ -64,6 +68,11 @@ export function getAuthorizationUrl(state: string, scopes: string = DEFAULT_SCOP
         // re-authenticate the user and present the company picker.
         prompt: 'login consent',
     });
+    // Optional realm hint — when the caller knows which QBO company they
+    // want to authorize, passing realm_id lets Intuit pre-select that
+    // company on the consent screen. Useful when the user has multiple
+    // companies and we want to skip the picker.
+    if (realmHint) params.set('realm_id', realmHint);
     return `${AUTH_URL}?${params.toString()}`;
 }
 
