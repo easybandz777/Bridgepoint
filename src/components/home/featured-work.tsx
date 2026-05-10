@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Section } from '@/components/ui/section';
 import { Badge } from '@/components/ui/badge';
@@ -39,12 +40,13 @@ export function FeaturedWork() {
               href={`/portfolio/${project.slug}`}
               className="group block"
             >
-              <div className="relative overflow-hidden shadow-lg shadow-charcoal/8 transition-shadow duration-500 group-hover:shadow-xl group-hover:shadow-charcoal/15">
-                <img
+              <div className={`relative overflow-hidden shadow-lg shadow-charcoal/8 transition-shadow duration-500 group-hover:shadow-xl group-hover:shadow-charcoal/15 ${index === 0 ? 'h-[26rem]' : 'h-72'}`}>
+                <Image
                   src={project.image}
                   alt={project.title}
-                  className={`w-full object-cover transition-transform duration-700 group-hover:scale-105 ${index === 0 ? 'h-[26rem]' : 'h-72'
-                    }`}
+                  fill
+                  sizes={index === 0 ? '(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 67vw' : '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'}
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
                 {/* Always-visible subtle gradient at bottom */}

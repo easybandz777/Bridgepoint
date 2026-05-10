@@ -151,20 +151,21 @@ export default function ProjectBillsPage({ params }: { params: Promise<{ id: str
                             placeholder="Bill / Invoice Number"
                             value={form.billNumber}
                             onChange={(e) => setForm({ ...form, billNumber: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <input
                             type="number"
+                            inputMode="decimal"
                             min={0}
                             placeholder="Amount ($)"
                             value={form.amount || ''}
                             onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <select
                             value={form.status}
                             onChange={(e) => setForm({ ...form, status: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         >
                             {BILL_STATUSES.map((s) => (
                                 <option key={s} value={s}>
@@ -176,25 +177,25 @@ export default function ProjectBillsPage({ params }: { params: Promise<{ id: str
                             type="date"
                             value={form.receivedDate}
                             onChange={(e) => setForm({ ...form, receivedDate: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <input
                             type="date"
                             value={form.dueDate}
                             onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
                             placeholder="Due"
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <input
                             placeholder="Subcontractor ID (optional)"
                             value={form.subcontractorId}
                             onChange={(e) => setForm({ ...form, subcontractorId: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <select
                             value={form.phaseId}
                             onChange={(e) => setForm({ ...form, phaseId: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50 sm:col-span-3"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 sm:col-span-3"
                         >
                             <option value="">-- No phase --</option>
                             {project.phases.map((ph) => (
@@ -221,7 +222,7 @@ export default function ProjectBillsPage({ params }: { params: Promise<{ id: str
                         placeholder="Description"
                         value={form.description}
                         onChange={(e) => setForm({ ...form, description: e.target.value })}
-                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white min-h-[60px] focus:outline-none focus:border-[#b8956a]/50 mb-3"
+                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white min-h-[60px] focus:outline-none focus:border-[#b8956a]/50 mb-3"
                     />
                     <div className="flex justify-end gap-2">
                         <button onClick={() => setAdding(false)} className="h-9 px-4 text-white/50 hover:text-white text-sm font-semibold">

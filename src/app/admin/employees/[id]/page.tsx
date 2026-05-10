@@ -212,16 +212,16 @@ export default function EmployeeOverviewPage() {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Info label="Email" value={emp.email ?? '—'} editing={editing} onEdit={
-                                <input value={editEmail} onChange={e => setEditEmail(e.target.value)} className={inputCls} />
+                                <input type="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="email" inputMode="email" value={editEmail} onChange={e => setEditEmail(e.target.value)} className={inputCls} />
                             } />
                             <Info label="Phone" value={emp.phone ?? '—'} editing={editing} onEdit={
-                                <input value={editPhone} onChange={e => setEditPhone(e.target.value)} className={inputCls} />
+                                <input type="tel" inputMode="tel" autoComplete="tel" value={editPhone} onChange={e => setEditPhone(e.target.value)} className={inputCls} />
                             } />
                             <Info label="Address" full value={emp.address || '—'} editing={editing} onEdit={
-                                <input value={editAddress} onChange={e => setEditAddress(e.target.value)} className={inputCls} />
+                                <input autoComplete="street-address" value={editAddress} onChange={e => setEditAddress(e.target.value)} className={inputCls} />
                             } />
                             <Info label={isSalaried ? 'Annual Salary' : 'Hourly Rate'} value={isSalaried ? fmtMoney(emp.salary ?? 0) : `$${emp.hourlyRate.toFixed(2)}/hr`} editing={editing} onEdit={
-                                <input type="number" step="0.5" value={editRate} onChange={e => setEditRate(e.target.value)} className={inputCls} />
+                                <input type="number" inputMode="decimal" step="0.5" value={editRate} onChange={e => setEditRate(e.target.value)} className={inputCls} />
                             } />
                             <Info label="Status" value={emp.status} editing={editing} onEdit={
                                 <select value={editStatus} onChange={e => setEditStatus(e.target.value)} className={inputCls}>
@@ -345,7 +345,7 @@ export default function EmployeeOverviewPage() {
     );
 }
 
-const inputCls = 'w-full h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
+const inputCls = 'w-full h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
 
 function Info({ label, value, full, editing, onEdit }: { label: string; value: string; full?: boolean; editing: boolean; onEdit: React.ReactNode }) {
     return (

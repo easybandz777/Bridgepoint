@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { IMAGES } from '@/lib/images';
@@ -10,10 +11,13 @@ export function LocationHero({ locationName }: { locationName: string }) {
         <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
             {/* Background Image */}
             <div className="absolute inset-0">
-                <img
+                <Image
                     src={IMAGES.hero}
                     alt={`Luxury home interior in ${locationName}`}
-                    className="h-full w-full object-cover"
+                    fill
+                    priority
+                    sizes="100vw"
+                    className="object-cover"
                 />
                 {/* Multi-layer overlay for depth */}
                 <div className="absolute inset-0 bg-gradient-to-b from-charcoal/75 via-charcoal/55 to-charcoal/80" />

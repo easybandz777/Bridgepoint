@@ -119,7 +119,7 @@ export default function BeforeAndAfter() {
             {/* Hero */}
             <section className="relative min-h-[50vh] flex items-end pb-16 pt-36 overflow-hidden bg-[#0f0f0f]">
                 <div className="absolute inset-0">
-                    <img src={HERO} alt="Before and after — Atlanta painting and remodeling transformations" className="h-full w-full object-cover opacity-35" />
+                    <Image src={HERO} alt="Before and after — Atlanta painting and remodeling transformations" fill priority sizes="100vw" className="object-cover opacity-35" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/85 to-[#0f0f0f]/40" />
                 </div>
                 <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">

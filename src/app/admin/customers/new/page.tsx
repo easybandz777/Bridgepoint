@@ -156,6 +156,7 @@ export default function NewCustomerPage() {
                                     value={companyName}
                                     onChange={(e) => setCompanyName(e.target.value)}
                                     required
+                                    autoComplete="organization"
                                     className={inputCls}
                                 />
                             </Field>
@@ -165,6 +166,8 @@ export default function NewCustomerPage() {
                                     <input
                                         value={firstName}
                                         onChange={(e) => setFirstName(e.target.value)}
+                                        autoCapitalize="words"
+                                        autoComplete="given-name"
                                         className={inputCls}
                                     />
                                 </Field>
@@ -172,6 +175,8 @@ export default function NewCustomerPage() {
                                     <input
                                         value={lastName}
                                         onChange={(e) => setLastName(e.target.value)}
+                                        autoCapitalize="words"
+                                        autoComplete="family-name"
                                         className={inputCls}
                                     />
                                 </Field>
@@ -199,19 +204,19 @@ export default function NewCustomerPage() {
                 <Section title="Contact">
                     <Grid>
                         <Field label="Email">
-                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
+                            <input type="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Phone">
-                            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(404) 555-0100" className={inputCls} />
+                            <input type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(404) 555-0100" className={inputCls} />
                         </Field>
                         <Field label="Mobile">
-                            <input value={mobile} onChange={(e) => setMobile(e.target.value)} className={inputCls} />
+                            <input type="tel" inputMode="tel" autoComplete="tel" value={mobile} onChange={(e) => setMobile(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Fax">
-                            <input value={fax} onChange={(e) => setFax(e.target.value)} className={inputCls} />
+                            <input type="tel" inputMode="tel" value={fax} onChange={(e) => setFax(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Website" full>
-                            <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://" className={inputCls} />
+                            <input type="url" inputMode="url" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="url" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://" className={inputCls} />
                         </Field>
                     </Grid>
                 </Section>
@@ -334,7 +339,7 @@ export default function NewCustomerPage() {
     );
 }
 
-const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
+const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
     return (
@@ -401,12 +406,14 @@ function AddressFields({
         <div className="space-y-2">
             <input
                 placeholder="Street address"
+                autoComplete="street-address"
                 value={value.line1 ?? ''}
                 onChange={(e) => onChange({ ...value, line1: e.target.value })}
                 className={inputCls}
             />
             <input
                 placeholder="Apt, suite, etc. (optional)"
+                autoComplete="address-line2"
                 value={value.line2 ?? ''}
                 onChange={(e) => onChange({ ...value, line2: e.target.value })}
                 className={inputCls}
@@ -414,12 +421,14 @@ function AddressFields({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <input
                     placeholder="City"
+                    autoComplete="address-level2"
                     value={value.city ?? ''}
                     onChange={(e) => onChange({ ...value, city: e.target.value })}
                     className={`${inputCls} sm:col-span-2`}
                 />
                 <input
                     placeholder="State"
+                    autoComplete="address-level1"
                     value={value.state ?? ''}
                     onChange={(e) => onChange({ ...value, state: e.target.value })}
                     className={inputCls}
@@ -427,6 +436,8 @@ function AddressFields({
             </div>
             <input
                 placeholder="ZIP"
+                inputMode="numeric"
+                autoComplete="postal-code"
                 value={value.zip ?? ''}
                 onChange={(e) => onChange({ ...value, zip: e.target.value })}
                 className={inputCls}

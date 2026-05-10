@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Lock } from 'lucide-react';
 import { Section } from '@/components/ui/section';
 import { Badge } from '@/components/ui/badge';
@@ -33,11 +34,13 @@ export function ServicesPreview() {
         {/* Painting — Primary */}
         <AnimatedSection direction="left" delay={0.1}>
           <Link href="/painting" className="group block">
-            <div className="relative overflow-hidden shadow-xl shadow-charcoal/10 transition-shadow duration-500 group-hover:shadow-2xl group-hover:shadow-charcoal/20">
-              <img
+            <div className="relative h-[26rem] overflow-hidden shadow-xl shadow-charcoal/10 transition-shadow duration-500 group-hover:shadow-2xl group-hover:shadow-charcoal/20">
+              <Image
                 src={IMAGES.servicesPreviewPainting}
                 alt="Professional painting service"
-                className="h-[26rem] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/30 to-transparent" />
@@ -66,11 +69,13 @@ export function ServicesPreview() {
         {/* Select Remodeling — Exclusive */}
         <AnimatedSection direction="right" delay={0.2}>
           <Link href="/select-services" className="group block">
-            <div className="relative overflow-hidden shadow-xl shadow-charcoal/10 transition-shadow duration-500 group-hover:shadow-2xl group-hover:shadow-charcoal/20">
-              <img
+            <div className="relative h-[26rem] overflow-hidden shadow-xl shadow-charcoal/10 transition-shadow duration-500 group-hover:shadow-2xl group-hover:shadow-charcoal/20">
+              <Image
                 src={IMAGES.servicesPreviewRemodel}
                 alt="High-end kitchen remodel"
-                className="h-[26rem] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/30 to-transparent" />

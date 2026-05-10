@@ -148,7 +148,7 @@ export default function NewProjectPage() {
                             <select
                                 value={selectedEstimateId}
                                 onChange={(e) => handleEstimateSelect(e.target.value)}
-                                className="w-full h-11 px-4 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                className="w-full h-11 px-4 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                             >
                                 <option value="">-- Choose an approved estimate --</option>
                                 {SAMPLE_ESTIMATES.filter((e) => e.status === 'Approved' || e.status === 'Sent').map((e) => (
@@ -177,7 +177,7 @@ export default function NewProjectPage() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="e.g. Master Bath Remodel - Smith"
-                                    className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                    className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                 />
                             </div>
                             <div>
@@ -214,19 +214,22 @@ export default function NewProjectPage() {
                                     <input
                                         type="text"
                                         required
+                                        autoCapitalize="words"
+                                        autoComplete="name"
                                         value={clientName}
                                         onChange={(e) => setClientName(e.target.value)}
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold text-white/50 mb-1.5">Project Manager</label>
                                     <input
                                         type="text"
+                                        autoCapitalize="words"
                                         value={projectManager}
                                         onChange={(e) => setProjectManager(e.target.value)}
                                         placeholder="e.g. Mark"
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                             </div>
@@ -235,18 +238,25 @@ export default function NewProjectPage() {
                                     <label className="block text-xs font-semibold text-white/50 mb-1.5">Client Email</label>
                                     <input
                                         type="email"
+                                        autoCapitalize="none"
+                                        autoCorrect="off"
+                                        spellCheck={false}
+                                        autoComplete="email"
+                                        inputMode="email"
                                         value={clientEmail}
                                         onChange={(e) => setClientEmail(e.target.value)}
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold text-white/50 mb-1.5">Client Phone</label>
                                     <input
                                         type="tel"
+                                        inputMode="tel"
+                                        autoComplete="tel"
                                         value={clientPhone}
                                         onChange={(e) => setClientPhone(e.target.value)}
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                             </div>
@@ -254,9 +264,10 @@ export default function NewProjectPage() {
                                 <label className="block text-xs font-semibold text-white/50 mb-1.5">Job Address</label>
                                 <input
                                     type="text"
+                                    autoComplete="street-address"
                                     value={address}
                                     onChange={(e) => setAddress(e.target.value)}
-                                    className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                    className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                 />
                             </div>
                             <div className="grid grid-cols-3 gap-4">
@@ -264,27 +275,31 @@ export default function NewProjectPage() {
                                     <label className="block text-xs font-semibold text-white/50 mb-1.5">City</label>
                                     <input
                                         type="text"
+                                        autoComplete="address-level2"
                                         value={city}
                                         onChange={(e) => setCity(e.target.value)}
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold text-white/50 mb-1.5">State</label>
                                     <input
                                         type="text"
+                                        autoComplete="address-level1"
                                         value={state}
                                         onChange={(e) => setState(e.target.value)}
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold text-white/50 mb-1.5">Zip</label>
                                     <input
                                         type="text"
+                                        inputMode="numeric"
+                                        autoComplete="postal-code"
                                         value={zip}
                                         onChange={(e) => setZip(e.target.value)}
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                             </div>
@@ -297,7 +312,7 @@ export default function NewProjectPage() {
                                         type="date"
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50 [color-scheme:dark]"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 [color-scheme:dark]"
                                     />
                                 </div>
                                 <div>
@@ -308,7 +323,7 @@ export default function NewProjectPage() {
                                         type="date"
                                         value={endDate}
                                         onChange={(e) => setEndDate(e.target.value)}
-                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50 [color-scheme:dark]"
+                                        className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 [color-scheme:dark]"
                                     />
                                 </div>
                             </div>
@@ -318,7 +333,7 @@ export default function NewProjectPage() {
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Scope summary"
-                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50 min-h-[80px]"
+                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 min-h-[80px]"
                                 />
                             </div>
                         </div>
@@ -336,12 +351,13 @@ export default function NewProjectPage() {
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30">$</span>
                                     <input
                                         type="number"
+                                        inputMode="decimal"
                                         required
                                         min="0"
                                         step="any"
                                         value={estimatedRevenue || ''}
                                         onChange={(e) => setEstimatedRevenue(Number(e.target.value))}
-                                        className="w-full h-10 pl-8 pr-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 pl-8 pr-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                                 {source === 'estimate' && <p className="text-[10px] text-white/30 mt-1">Pre-filled from estimate total</p>}
@@ -352,12 +368,13 @@ export default function NewProjectPage() {
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30">$</span>
                                     <input
                                         type="number"
+                                        inputMode="decimal"
                                         required
                                         min="0"
                                         step="any"
                                         value={estimatedCost || ''}
                                         onChange={(e) => setEstimatedCost(Number(e.target.value))}
-                                        className="w-full h-10 pl-8 pr-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                                        className="w-full h-10 pl-8 pr-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                                     />
                                 </div>
                                 {source === 'estimate' && <p className="text-[10px] text-white/30 mt-1">Estimated at 70% of revenue</p>}

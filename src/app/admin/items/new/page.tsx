@@ -113,10 +113,10 @@ export default function NewItemPage() {
                 <Section title="Pricing">
                     <Grid>
                         <Field label="Unit price ($)">
-                            <input type="number" step="0.01" min="0" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} className={inputCls} />
+                            <input type="number" inputMode="decimal" step="0.01" min="0" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Purchase cost ($)" hint="What you pay">
-                            <input type="number" step="0.01" min="0" value={purchaseCost} onChange={e => setPurchaseCost(e.target.value)} className={inputCls} />
+                            <input type="number" inputMode="decimal" step="0.01" min="0" value={purchaseCost} onChange={e => setPurchaseCost(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Taxable" full>
                             <label className="inline-flex items-center gap-2 text-sm text-white/80 cursor-pointer">
@@ -154,7 +154,7 @@ export default function NewItemPage() {
                     <Section title="Stock">
                         <Grid>
                             <Field label="Quantity on hand">
-                                <input type="number" step="1" min="0" value={qtyOnHand} onChange={e => setQtyOnHand(e.target.value)} className={inputCls} />
+                                <input type="number" inputMode="numeric" step="1" min="0" value={qtyOnHand} onChange={e => setQtyOnHand(e.target.value)} className={inputCls} />
                             </Field>
                         </Grid>
                     </Section>
@@ -175,7 +175,7 @@ export default function NewItemPage() {
     );
 }
 
-const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
+const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
     return (

@@ -91,15 +91,16 @@ export default function NewVendorPage() {
                                 value={displayName}
                                 onChange={(e) => setDisplayName(e.target.value)}
                                 placeholder="What QuickBooks will store as DisplayName"
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="Company Name">
                             <input
                                 type="text"
+                                autoComplete="organization"
                                 value={companyName}
                                 onChange={(e) => setCompanyName(e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="Active">
@@ -116,17 +117,21 @@ export default function NewVendorPage() {
                         <Field label="First Name">
                             <input
                                 type="text"
+                                autoCapitalize="words"
+                                autoComplete="given-name"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="Last Name">
                             <input
                                 type="text"
+                                autoCapitalize="words"
+                                autoComplete="family-name"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                     </div>
@@ -137,25 +142,34 @@ export default function NewVendorPage() {
                         <Field label="Email">
                             <input
                                 type="email"
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                spellCheck={false}
+                                autoComplete="email"
+                                inputMode="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="Phone">
                             <input
                                 type="tel"
+                                inputMode="tel"
+                                autoComplete="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="Mobile" full>
                             <input
                                 type="tel"
+                                inputMode="tel"
+                                autoComplete="tel"
                                 value={mobile}
                                 onChange={(e) => setMobile(e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                     </div>
@@ -166,50 +180,57 @@ export default function NewVendorPage() {
                         <Field label="Line 1" full>
                             <input
                                 type="text"
+                                autoComplete="street-address"
                                 value={bill.line1 ?? ''}
                                 onChange={(e) => updateBill('line1', e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="Line 2" full>
                             <input
                                 type="text"
+                                autoComplete="address-line2"
                                 value={bill.line2 ?? ''}
                                 onChange={(e) => updateBill('line2', e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="City">
                             <input
                                 type="text"
+                                autoComplete="address-level2"
                                 value={bill.city ?? ''}
                                 onChange={(e) => updateBill('city', e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="State">
                             <input
                                 type="text"
+                                autoComplete="address-level1"
                                 value={bill.state ?? ''}
                                 onChange={(e) => updateBill('state', e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="ZIP">
                             <input
                                 type="text"
+                                inputMode="numeric"
+                                autoComplete="postal-code"
                                 value={bill.zip ?? ''}
                                 onChange={(e) => updateBill('zip', e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="Country">
                             <input
                                 type="text"
+                                autoComplete="country-name"
                                 value={bill.country ?? ''}
                                 onChange={(e) => updateBill('country', e.target.value)}
                                 placeholder="US"
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                     </div>
@@ -234,7 +255,7 @@ export default function NewVendorPage() {
                                 value={taxIdentifier}
                                 onChange={(e) => setTaxIdentifier(e.target.value)}
                                 placeholder="XX-XXXXXXX"
-                                className="form-input font-mono"
+                                className="form-input font-mono text-base sm:text-sm"
                             />
                         </Field>
                         <Field label="Account #">
@@ -242,7 +263,7 @@ export default function NewVendorPage() {
                                 type="text"
                                 value={accountNumber}
                                 onChange={(e) => setAccountNumber(e.target.value)}
-                                className="form-input"
+                                className="form-input text-base sm:text-sm"
                             />
                         </Field>
                     </div>

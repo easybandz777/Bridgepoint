@@ -263,11 +263,11 @@ export default function EmployeeTimesheetsPage() {
                         </label>
                         <label className="flex flex-col gap-1">
                             <span className="text-[10px] uppercase tracking-widest text-white/50">Regular (h)</span>
-                            <input type="number" step="0.25" min="0" value={addReg} onChange={e => setAddReg(e.target.value)} className={inputCls} />
+                            <input type="number" inputMode="decimal" step="0.25" min="0" value={addReg} onChange={e => setAddReg(e.target.value)} className={inputCls} />
                         </label>
                         <label className="flex flex-col gap-1">
                             <span className="text-[10px] uppercase tracking-widest text-white/50">Overtime (h)</span>
-                            <input type="number" step="0.25" min="0" value={addOt} onChange={e => setAddOt(e.target.value)} className={inputCls} />
+                            <input type="number" inputMode="decimal" step="0.25" min="0" value={addOt} onChange={e => setAddOt(e.target.value)} className={inputCls} />
                         </label>
                         <label className="flex flex-col gap-1">
                             <span className="text-[10px] uppercase tracking-widest text-white/50">Project</span>
@@ -359,7 +359,7 @@ export default function EmployeeTimesheetsPage() {
     );
 }
 
-const inputCls = 'h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
+const inputCls = 'h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
 
 function TotalCard({ label, total, highlight }: { label: string; total: { regular: number; overtime: number; total: number; gross: number }; highlight?: boolean }) {
     return (

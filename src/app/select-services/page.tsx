@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Lock, Shield, Star } from 'lucide-react';
 import { Section } from '@/components/ui/section';
 import { IMAGES } from '@/lib/images';
@@ -53,10 +54,13 @@ export default function SelectServicesPage() {
       {/* Hero */}
       <section className="relative flex min-h-[60vh] items-end overflow-hidden pb-16 pt-32">
         <div className="absolute inset-0">
-          <img
+          <Image
             src={IMAGES.selectHero}
             alt="Luxury home remodel"
-            className="h-full w-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-charcoal/70" />
         </div>
@@ -138,11 +142,13 @@ export default function SelectServicesPage() {
                 }`}
               >
                 <div className={index % 2 !== 0 ? 'lg:order-2' : ''}>
-                  <div className="overflow-hidden">
-                    <img
+                  <div className="relative h-80 overflow-hidden">
+                    <Image
                       src={service.image}
                       alt={service.title}
-                      className="h-80 w-full object-cover"
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover"
                     />
                   </div>
                 </div>

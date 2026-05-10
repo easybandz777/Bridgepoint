@@ -216,6 +216,7 @@ function Field({
     type?: string;
     className?: string;
 }) {
+    const isPhone = type === 'tel';
     return (
         <label className={`flex flex-col gap-1.5 ${className}`}>
             <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/45">
@@ -223,9 +224,11 @@ function Field({
             </span>
             <input
                 type={type}
+                inputMode={isPhone ? 'tel' : undefined}
+                autoComplete={isPhone ? 'tel' : undefined}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
             />
         </label>
     );
@@ -237,7 +240,7 @@ function ReadOnly({ label, value }: { label: string; value: string }) {
             <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/45">
                 {label}
             </span>
-            <div className="w-full bg-white/[0.02] border border-white/5 rounded-xl px-4 py-3 text-sm text-white/70">
+            <div className="w-full bg-white/[0.02] border border-white/5 rounded-xl px-4 py-3 text-base sm:text-sm text-white/70">
                 {value || '—'}
             </div>
         </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { NEIGHBORHOODS, getNeighborhood } from '@/lib/neighborhoods';
 import { breadcrumbSchema, jsonLd, serviceSchema } from '@/lib/seo';
 
@@ -87,7 +88,7 @@ export default async function NeighborhoodPage({
             {/* Hero */}
             <section className="relative min-h-[55vh] flex items-end pb-16 pt-36 overflow-hidden bg-[#0f0f0f]">
                 <div className="absolute inset-0">
-                    <img src="/images/gallery/painting/14.jpg" alt={`Atlanta-area kitchen — painting contractor in ${n.name}`} className="h-full w-full object-cover opacity-35" />
+                    <Image src="/images/gallery/painting/14.jpg" alt={`Atlanta-area kitchen — painting contractor in ${n.name}`} fill priority sizes="100vw" className="object-cover opacity-35" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/85 to-[#0f0f0f]/40" />
                 </div>
                 <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">

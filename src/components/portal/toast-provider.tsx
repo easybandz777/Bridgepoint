@@ -134,13 +134,15 @@ function ToastViewport({
     return (
         <div
             className={cn(
-                'fixed z-[100] pointer-events-none flex flex-col gap-2',
-                // Mobile: top center
-                'top-4 left-1/2 -translate-x-1/2 w-[min(92vw,360px)]',
+                'fixed z-[300] pointer-events-none flex flex-col gap-2',
+                // Mobile: clear of fixed top bar (h-14 ~ 56px)
+                'top-16 left-1/2 -translate-x-1/2 w-[min(92vw,360px)]',
                 // Desktop: bottom-right
                 'sm:top-auto sm:left-auto sm:translate-x-0 sm:bottom-6 sm:right-6 sm:w-[360px]',
             )}
             role="region"
+            aria-live="polite"
+            aria-atomic="false"
             aria-label="Notifications"
         >
             {toasts.map((t) => (

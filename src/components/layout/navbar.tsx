@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,6 +25,21 @@ export function Navbar() {
     setMobileOpen(false);
   }, [pathname]);
 
+  // Lock body scroll + handle Escape while mobile menu open
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [mobileOpen]);
+
   return (
     <header
       className={cn(
@@ -37,11 +53,14 @@ export function Navbar() {
 
         {/* Logo */}
         <Link href="/" className="relative z-10 shrink-0">
-          <img
+          <Image
             src="/images/logo.png"
             alt={SITE_CONFIG.name}
-            style={{ height: '80px', width: 'auto', objectFit: 'contain' }}
+            width={200}
+            height={80}
+            priority
             className={!scrolled && !mobileOpen ? 'drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]' : ''}
+            style={{ height: '80px', width: 'auto', objectFit: 'contain' }}
           />
         </Link>
 
@@ -52,6 +71,7 @@ export function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
+                aria-current={pathname === link.href ? 'page' : undefined}
                 className={cn(
                   'relative font-sans text-xs font-semibold uppercase tracking-[0.15em]',
                   'transition-colors duration-300',
@@ -81,69 +101,88 @@ export function Navbar() {
               scrolled ? 'text-gold hover:text-gold-dark' : 'text-white/70 hover:text-white'
             )}
           >
-            <Phone size={13} />
+            <Phone size={13} aria-hidden="true" />
             {SITE_CONFIG.phone}
           </a>
           <Link
             href="/admin"
-            title="Admin Portal"
+            aria-label="Admin Portal"
             className={cn(
-              'flex items-center justify-center w-7 h-7 rounded-full transition-all duration-300 opacity-35 hover:opacity-100',
+              'flex items-center justify-center w-11 h-11 rounded-full transition-all duration-300 opacity-35 hover:opacity-100',
               scrolled ? 'text-slate' : 'text-white'
             )}
           >
-            <Lock size={13} />
+            <Lock size={13} aria-hidden="true" />
           </Link>
         </div>
 
         {/* Mobile Toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="relative z-10 lg:hidden p-2 rounded-full bg-gold text-white transition-all duration-300 cursor-pointer"
+          className="relative z-30 lg:hidden p-3 rounded-full bg-gold text-white transition-all duration-300 cursor-pointer"
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-menu"
         >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          {mobileOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
         </button>
       </nav>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-x-0 top-0 bg-warm-white pt-24 pb-12 shadow-xl border-b border-warm-white-dark/60 lg:hidden"
-          >
-            <ul className="flex flex-col items-center gap-6 px-6">
-              {NAV_LINKS.map((link) => (
-                <li key={link.href} className="w-full text-center">
-                  <Link
-                    href={link.href}
-                    className={cn(
-                      'block py-3 font-sans text-base font-semibold uppercase tracking-[0.2em]',
-                      'text-slate transition-colors hover:text-gold',
-                      pathname === link.href && 'text-gold'
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <>
+            {/* Backdrop — tap outside to close */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileOpen(false)}
+              className="fixed inset-0 z-10 bg-black/40 lg:hidden"
+              aria-hidden="true"
+            />
+            <motion.div
+              id="mobile-menu"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site navigation"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="absolute inset-x-0 top-0 z-20 bg-warm-white pt-24 pb-12 shadow-xl border-b border-warm-white-dark/60 lg:hidden"
+            >
+              <ul className="flex flex-col items-center gap-6 px-6">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.href} className="w-full text-center">
+                    <Link
+                      href={link.href}
+                      aria-current={pathname === link.href ? 'page' : undefined}
+                      className={cn(
+                        'block py-3 font-sans text-base font-semibold uppercase tracking-[0.2em]',
+                        'text-slate transition-colors hover:text-gold',
+                        pathname === link.href && 'text-gold'
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
 
-            {/* Phone in mobile menu */}
-            <div className="mt-10 flex justify-center">
-              <a
-                href={`tel:${SITE_CONFIG.phone}`}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gold text-white font-sans text-sm font-semibold uppercase tracking-widest transition-colors hover:bg-gold-dark"
-              >
-                <Phone size={14} />
-                {SITE_CONFIG.phone}
-              </a>
-            </div>
-          </motion.div>
+              {/* Phone in mobile menu */}
+              <div className="mt-10 flex justify-center">
+                <a
+                  href={`tel:${SITE_CONFIG.phone}`}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gold text-white font-sans text-sm font-semibold uppercase tracking-widest transition-colors hover:bg-gold-dark"
+                >
+                  <Phone size={14} aria-hidden="true" />
+                  {SITE_CONFIG.phone}
+                </a>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

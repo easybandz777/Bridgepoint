@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { breadcrumbSchema, faqSchema, serviceSchema, jsonLd } from '@/lib/seo';
 
 const BASE = 'https://bridgepointepainting.com';
@@ -93,7 +94,7 @@ export default function LuxuryHomePainting() {
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-end pb-20 pt-36 overflow-hidden bg-[#0f0f0f]">
         <div className="absolute inset-0">
-          <img src={HERO} alt="Luxury Atlanta home — open kitchen with coffered ceiling, painted millwork, navy island" className="h-full w-full object-cover opacity-40" />
+          <Image src={HERO} alt="Luxury Atlanta home — open kitchen with coffered ceiling, painted millwork, navy island" fill priority sizes="100vw" className="object-cover opacity-40" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/80 to-[#0f0f0f]/40" />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">

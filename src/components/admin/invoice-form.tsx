@@ -92,26 +92,26 @@ export default function InvoiceForm() {
     }
 
     return (
-        <div className="p-8 max-w-4xl">
+        <div className="p-4 sm:p-8 max-w-4xl">
             {/* Header */}
-            <div className="mb-8 flex items-center justify-between">
+            <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#b8956a] mb-1">Admin · Invoices</p>
                     <h1 className="font-serif text-2xl font-bold text-white">New Invoice</h1>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2">
                     <div className="relative">
-                        <select value={status} onChange={e => setStatus(e.target.value)}
-                            className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm pr-8 focus:outline-none focus:border-[#b8956a]/60 cursor-pointer">
+                        <select value={status} onChange={e => setStatus(e.target.value)} aria-label="Invoice status"
+                            className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 h-11 text-white text-sm pr-8 focus:outline-none focus:border-[#b8956a]/60 cursor-pointer">
                             {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[#1a1a1a]">{s}</option>)}
                         </select>
                         <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
                     </div>
-                    <button onClick={() => router.back()} className="px-4 py-2.5 rounded-xl text-sm text-white/40 hover:text-white/70 transition-colors border border-white/8">
+                    <button onClick={() => router.back()} className="px-4 h-11 rounded-xl text-sm text-white/40 hover:text-white/70 transition-colors border border-white/8">
                         Cancel
                     </button>
                     <button onClick={handleSave} disabled={saving || !clientName || !projTitle}
-                        className="px-6 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wider disabled:opacity-40 transition-all"
+                        className="px-6 h-11 rounded-xl text-sm font-semibold uppercase tracking-wider disabled:opacity-40 transition-all"
                         style={{ background: 'linear-gradient(135deg, #b8956a 0%, #9a7a54 100%)', color: 'white' }}>
                         {saving ? 'Saving…' : 'Save Invoice'}
                     </button>
@@ -146,34 +146,34 @@ export default function InvoiceForm() {
                         Pick from your customer list, or fill in the fields below for a one-off entry.
                     </p>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label className={label}>Client Name *</label>
-                        <input className={inp} placeholder="John & Jane Smith" value={clientName} onChange={e => setClientName(e.target.value)} />
+                        <input className={inp} placeholder="John & Jane Smith" autoCapitalize="words" autoComplete="name" value={clientName} onChange={e => setClientName(e.target.value)} />
                     </div>
                     <div>
                         <label className={label}>Company (optional)</label>
-                        <input className={inp} placeholder="Acme Corp" value={clientCompany} onChange={e => setClientCompany(e.target.value)} />
+                        <input className={inp} placeholder="Acme Corp" autoCapitalize="words" autoComplete="organization" value={clientCompany} onChange={e => setClientCompany(e.target.value)} />
                     </div>
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2">
                         <label className={label}>Street Address</label>
-                        <input className={inp} placeholder="123 Main St" value={clientAddress} onChange={e => setClientAddress(e.target.value)} />
+                        <input className={inp} placeholder="123 Main St" autoComplete="street-address" value={clientAddress} onChange={e => setClientAddress(e.target.value)} />
                     </div>
                     <div>
                         <label className={label}>City</label>
-                        <input className={inp} placeholder="Atlanta" value={clientCity} onChange={e => setClientCity(e.target.value)} />
+                        <input className={inp} placeholder="Atlanta" autoCapitalize="words" autoComplete="address-level2" value={clientCity} onChange={e => setClientCity(e.target.value)} />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                        <div><label className={label}>State</label><input className={inp} placeholder="GA" value={clientState} onChange={e => setClientState(e.target.value)} /></div>
-                        <div><label className={label}>ZIP</label><input className={inp} placeholder="30301" value={clientZip} onChange={e => setClientZip(e.target.value)} /></div>
+                        <div><label className={label}>State</label><input className={inp} placeholder="GA" autoCapitalize="characters" autoComplete="address-level1" value={clientState} onChange={e => setClientState(e.target.value)} /></div>
+                        <div><label className={label}>ZIP</label><input className={inp} placeholder="30301" inputMode="numeric" autoComplete="postal-code" value={clientZip} onChange={e => setClientZip(e.target.value)} /></div>
                     </div>
                     <div>
                         <label className={label}>Email</label>
-                        <input className={inp} type="email" placeholder="client@email.com" value={clientEmail} onChange={e => setClientEmail(e.target.value)} />
+                        <input className={inp} type="email" inputMode="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="email" placeholder="client@email.com" value={clientEmail} onChange={e => setClientEmail(e.target.value)} />
                     </div>
                     <div>
                         <label className={label}>Phone</label>
-                        <input className={inp} placeholder="(404) 000-0000" value={clientPhone} onChange={e => setClientPhone(e.target.value)} />
+                        <input className={inp} type="tel" inputMode="tel" autoComplete="tel" placeholder="(404) 000-0000" value={clientPhone} onChange={e => setClientPhone(e.target.value)} />
                     </div>
                 </div>
             </div>
@@ -181,14 +181,14 @@ export default function InvoiceForm() {
             {/* Project & Invoice Details */}
             <div className={section}>
                 <h2 className="font-serif text-base font-bold text-white mb-5">Project & Invoice Details</h2>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="col-span-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="sm:col-span-2">
                         <label className={label}>Project Title *</label>
                         <input className={inp} placeholder="Interior Repaint — Smith Residence" value={projTitle} onChange={e => setProjTitle(e.target.value)} />
                     </div>
-                    <div className="col-span-2">
+                    <div className="sm:col-span-2">
                         <label className={label}>Project Address</label>
-                        <input className={inp} placeholder="123 Main St, Atlanta, GA" value={projAddress} onChange={e => setProjAddress(e.target.value)} />
+                        <input className={inp} placeholder="123 Main St, Atlanta, GA" autoComplete="street-address" value={projAddress} onChange={e => setProjAddress(e.target.value)} />
                     </div>
                     <div>
                         <label className={label}>Due Date</label>
@@ -210,43 +210,47 @@ export default function InvoiceForm() {
                         <Plus size={14} /> Add Item
                     </button>
                 </div>
-                <div className="grid gap-2 mb-2" style={{ gridTemplateColumns: '3fr 80px 80px 90px 90px 36px' }}>
-                    {['Description', 'Qty', 'Unit', 'Unit Price', 'Total', ''].map(h => (
-                        <span key={h} className="text-[10px] font-semibold uppercase tracking-wider text-white/30">{h}</span>
-                    ))}
-                </div>
-                <div className="space-y-2">
-                    {items.map((item, idx) => (
-                        <div key={item.id} className="grid gap-2 items-center" style={{ gridTemplateColumns: '3fr 80px 80px 90px 90px 36px' }}>
-                            {/* TODO: re-enable when ItemPicker ships
-                            <ItemPicker
-                                value={null}
-                                onChange={(_, picked) => {
-                                    if (picked) {
-                                        updateItem(idx, 'description', picked.name ?? picked.description ?? '');
-                                        if (picked.unitPrice != null) updateItem(idx, 'unitPrice', picked.unitPrice);
-                                    }
-                                }}
-                                placeholder="Pick item or type below"
-                            />
-                            */}
-                            <input value={item.description} onChange={e => updateItem(idx, 'description', e.target.value)}
-                                placeholder="Description of work" className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 transition-all" />
-                            <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', parseFloat(e.target.value) || 0)}
-                                className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs text-right focus:outline-none focus:border-[#b8956a]/60 transition-all" />
-                            <input value={item.unit} onChange={e => updateItem(idx, 'unit', e.target.value)}
-                                placeholder="job" className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:border-[#b8956a]/60 transition-all" />
-                            <input type="number" value={item.unitPrice} onChange={e => updateItem(idx, 'unitPrice', parseFloat(e.target.value) || 0)}
-                                className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs text-right focus:outline-none focus:border-[#b8956a]/60 transition-all" />
-                            <div className="text-right text-sm font-semibold text-white/70 px-2.5 py-2 bg-white/3 rounded-lg border border-white/6">
-                                ${item.total.toLocaleString()}
-                            </div>
-                            <button onClick={() => setItems(p => p.filter((_, i) => i !== idx))} disabled={items.length === 1}
-                                className="flex items-center justify-center w-8 h-8 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-20">
-                                <Trash2 size={13} />
-                            </button>
+                <div className="overflow-x-auto -mx-2 px-2 sm:mx-0 sm:px-0">
+                    <div className="min-w-[640px] sm:min-w-0">
+                        <div className="grid gap-2 mb-2" style={{ gridTemplateColumns: '3fr 80px 80px 90px 90px 44px' }}>
+                            {['Description', 'Qty', 'Unit', 'Unit Price', 'Total', ''].map(h => (
+                                <span key={h} className="text-[10px] font-semibold uppercase tracking-wider text-white/30">{h}</span>
+                            ))}
                         </div>
-                    ))}
+                        <div className="space-y-2">
+                            {items.map((item, idx) => (
+                                <div key={item.id} className="grid gap-2 items-center" style={{ gridTemplateColumns: '3fr 80px 80px 90px 90px 44px' }}>
+                                    {/* TODO: re-enable when ItemPicker ships
+                                    <ItemPicker
+                                        value={null}
+                                        onChange={(_, picked) => {
+                                            if (picked) {
+                                                updateItem(idx, 'description', picked.name ?? picked.description ?? '');
+                                                if (picked.unitPrice != null) updateItem(idx, 'unitPrice', picked.unitPrice);
+                                            }
+                                        }}
+                                        placeholder="Pick item or type below"
+                                    />
+                                    */}
+                                    <input value={item.description} onChange={e => updateItem(idx, 'description', e.target.value)}
+                                        placeholder="Description of work" className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 transition-all" />
+                                    <input type="number" inputMode="decimal" value={item.quantity} onChange={e => updateItem(idx, 'quantity', parseFloat(e.target.value) || 0)}
+                                        className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs text-right focus:outline-none focus:border-[#b8956a]/60 transition-all" />
+                                    <input value={item.unit} onChange={e => updateItem(idx, 'unit', e.target.value)}
+                                        placeholder="job" className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:border-[#b8956a]/60 transition-all" />
+                                    <input type="number" inputMode="decimal" value={item.unitPrice} onChange={e => updateItem(idx, 'unitPrice', parseFloat(e.target.value) || 0)}
+                                        className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-2 text-white text-xs text-right focus:outline-none focus:border-[#b8956a]/60 transition-all" />
+                                    <div className="text-right text-sm font-semibold text-white/70 px-2.5 py-2 bg-white/3 rounded-lg border border-white/6">
+                                        ${item.total.toLocaleString()}
+                                    </div>
+                                    <button onClick={() => setItems(p => p.filter((_, i) => i !== idx))} disabled={items.length === 1} aria-label="Remove line item"
+                                        className="flex items-center justify-center w-11 h-11 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-20">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
                 {/* Totals */}
                 <div className="mt-5 pt-4 border-t border-white/6 space-y-3">
@@ -258,7 +262,7 @@ export default function InvoiceForm() {
                         <span className="text-sm text-white/40">Amount Paid</span>
                         <div className="relative w-28">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
-                            <input type="number" value={amountPaid} onChange={e => setAmountPaid(parseFloat(e.target.value) || 0)}
+                            <input type="number" inputMode="decimal" value={amountPaid} onChange={e => setAmountPaid(parseFloat(e.target.value) || 0)}
                                 className="w-full bg-white/5 border border-white/10 rounded-lg pl-6 pr-3 py-1.5 text-white text-sm text-right focus:outline-none focus:border-[#b8956a]/60 transition-all" />
                         </div>
                     </div>
@@ -274,13 +278,13 @@ export default function InvoiceForm() {
             {/* Payment Instructions */}
             <div className={section}>
                 <h2 className="font-serif text-base font-bold text-white mb-5">Payment Instructions</h2>
-                <div className="grid grid-cols-2 gap-4">
-                    <div><label className={label}>Bank Name</label><input className={inp} placeholder="Chase Bank" value={bankName} onChange={e => setBankName(e.target.value)} /></div>
-                    <div><label className={label}>Account Name</label><input className={inp} placeholder="Bridgepointe" value={accountName} onChange={e => setAccountName(e.target.value)} /></div>
-                    <div><label className={label}>Routing Number</label><input className={inp} placeholder="021000021" value={routing} onChange={e => setRouting(e.target.value)} /></div>
-                    <div><label className={label}>Account Number</label><input className={inp} placeholder="XXXXXXXXXX" value={account} onChange={e => setAccount(e.target.value)} /></div>
-                    <div><label className={label}>Zelle (optional)</label><input className={inp} placeholder="phone or email" value={zelle} onChange={e => setZelle(e.target.value)} /></div>
-                    <div><label className={label}>Check Payable To</label><input className={inp} placeholder="Bridgepointe" value={checkPayable} onChange={e => setCheckPayable(e.target.value)} /></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label className={label}>Bank Name</label><input className={inp} placeholder="Chase Bank" autoCapitalize="words" value={bankName} onChange={e => setBankName(e.target.value)} /></div>
+                    <div><label className={label}>Account Name</label><input className={inp} placeholder="Bridgepointe" autoCapitalize="words" value={accountName} onChange={e => setAccountName(e.target.value)} /></div>
+                    <div><label className={label}>Routing Number</label><input className={inp} placeholder="021000021" inputMode="numeric" value={routing} onChange={e => setRouting(e.target.value)} /></div>
+                    <div><label className={label}>Account Number</label><input className={inp} placeholder="XXXXXXXXXX" inputMode="numeric" value={account} onChange={e => setAccount(e.target.value)} /></div>
+                    <div><label className={label}>Zelle (optional)</label><input className={inp} placeholder="phone or email" autoCapitalize="none" autoCorrect="off" spellCheck={false} value={zelle} onChange={e => setZelle(e.target.value)} /></div>
+                    <div><label className={label}>Check Payable To</label><input className={inp} placeholder="Bridgepointe" autoCapitalize="words" value={checkPayable} onChange={e => setCheckPayable(e.target.value)} /></div>
                 </div>
             </div>
 
@@ -291,10 +295,10 @@ export default function InvoiceForm() {
             </div>
 
             {/* Save footer */}
-            <div className="flex justify-end gap-3 mt-2 pb-8">
-                <button onClick={() => router.back()} className="px-5 py-3 rounded-xl text-sm text-white/40 hover:text-white/70 transition-colors border border-white/8">Cancel</button>
+            <div className="sticky bottom-0 sm:static -mx-4 sm:mx-0 px-4 sm:px-0 py-3 sm:py-0 mt-2 pb-[env(safe-area-inset-bottom)] sm:pb-8 bg-[#0f0f0f]/95 backdrop-blur sm:bg-transparent sm:backdrop-blur-none border-t border-white/10 sm:border-t-0 flex flex-wrap justify-end gap-2 sm:gap-3">
+                <button onClick={() => router.back()} className="px-5 h-11 sm:py-3 sm:h-auto rounded-xl text-sm text-white/40 hover:text-white/70 transition-colors border border-white/8">Cancel</button>
                 <button onClick={handleSave} disabled={saving || !clientName || !projTitle}
-                    className="px-8 py-3 rounded-xl text-sm font-semibold uppercase tracking-wider disabled:opacity-40 transition-all"
+                    className="px-8 h-11 sm:py-3 sm:h-auto rounded-xl text-sm font-semibold uppercase tracking-wider disabled:opacity-40 transition-all"
                     style={{ background: 'linear-gradient(135deg, #b8956a 0%, #9a7a54 100%)', color: 'white' }}>
                     {saving ? 'Saving…' : 'Save Invoice'}
                 </button>

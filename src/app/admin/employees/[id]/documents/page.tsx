@@ -233,7 +233,7 @@ export default function EmployeeDocumentsPage() {
                                             <button
                                                 onClick={() => deleteDoc(doc.id)}
                                                 title="Delete"
-                                                className="w-7 h-7 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-400/10 flex items-center justify-center transition-colors"
+                                                className="w-11 h-11 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-400/10 flex items-center justify-center transition-colors"
                                             >
                                                 <Trash2 size={12} />
                                             </button>
@@ -249,4 +249,4 @@ export default function EmployeeDocumentsPage() {
     );
 }
 
-const inputCls = 'h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
+const inputCls = 'h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';

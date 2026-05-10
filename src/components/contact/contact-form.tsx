@@ -63,7 +63,7 @@ export function ContactForm() {
 
   const inputClasses = cn(
     'w-full border border-charcoal/15 bg-white px-4 py-3',
-    'font-sans text-sm text-charcoal placeholder:text-slate-light',
+    'font-sans text-base text-charcoal placeholder:text-slate-light',
     'transition-colors focus:border-gold focus:outline-none'
   );
 
@@ -137,6 +137,8 @@ export function ContactForm() {
             <input
               id="name"
               type="text"
+              autoComplete="name"
+              autoCapitalize="words"
               placeholder="Your name"
               className={inputClasses}
               {...register('name')}
@@ -152,6 +154,11 @@ export function ContactForm() {
             <input
               id="email"
               type="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              autoComplete="email"
+              inputMode="email"
               placeholder="your@email.com"
               className={inputClasses}
               {...register('email')}
@@ -171,6 +178,8 @@ export function ContactForm() {
             <input
               id="phone"
               type="tel"
+              inputMode="tel"
+              autoComplete="tel"
               placeholder="(555) 123-4567"
               className={inputClasses}
               {...register('phone')}
@@ -187,6 +196,7 @@ export function ContactForm() {
             <input
               id="address"
               type="text"
+              autoComplete="street-address"
               placeholder="123 Main St, Austin, TX"
               className={inputClasses}
               {...register('address')}

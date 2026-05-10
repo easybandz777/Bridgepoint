@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { breadcrumbSchema, faqSchema, jsonLd } from '@/lib/seo';
 
 const BASE = 'https://bridgepointepainting.com';
@@ -88,7 +89,7 @@ export default function CostOfCabinetPaintingAtlanta() {
             {/* Hero */}
             <section className="relative min-h-[55vh] flex items-end pb-16 pt-36 overflow-hidden bg-[#0f0f0f]">
                 <div className="absolute inset-0">
-                    <img src={HERO} alt="Two-tone painted shaker cabinets Atlanta — cost guide" className="h-full w-full object-cover opacity-35" />
+                    <Image src={HERO} alt="Two-tone painted shaker cabinets Atlanta — cost guide" fill priority sizes="100vw" className="object-cover opacity-35" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/85 to-[#0f0f0f]/40" />
                 </div>
                 <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">

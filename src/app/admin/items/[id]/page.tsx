@@ -259,10 +259,10 @@ export default function ItemDetailPage() {
                     <Card title="Pricing">
                         <Grid>
                             <Info label="Unit price" editing={editing} value={fmtPrice(item.unitPrice)} edit={
-                                <input type="number" step="0.01" min="0" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} className={inputCls} />
+                                <input type="number" inputMode="decimal" step="0.01" min="0" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} className={inputCls} />
                             } />
                             <Info label="Purchase cost" editing={editing} value={fmtPrice(item.purchaseCost)} edit={
-                                <input type="number" step="0.01" min="0" value={purchaseCost} onChange={e => setPurchaseCost(e.target.value)} className={inputCls} />
+                                <input type="number" inputMode="decimal" step="0.01" min="0" value={purchaseCost} onChange={e => setPurchaseCost(e.target.value)} className={inputCls} />
                             } />
                             <Info full label="Taxable" editing={editing} value={item.taxable ? 'Yes' : 'No'} edit={
                                 <label className="inline-flex items-center gap-2 text-sm text-white/80 cursor-pointer">
@@ -313,7 +313,7 @@ export default function ItemDetailPage() {
                         <Card title="Stock">
                             <Grid>
                                 <Info label="Quantity on hand" editing={editing} value={item.qtyOnHand?.toLocaleString() ?? '0'} edit={
-                                    <input type="number" step="1" min="0" value={qtyOnHand} onChange={e => setQtyOnHand(e.target.value)} className={inputCls} />
+                                    <input type="number" inputMode="numeric" step="1" min="0" value={qtyOnHand} onChange={e => setQtyOnHand(e.target.value)} className={inputCls} />
                                 } />
                             </Grid>
                         </Card>
@@ -358,7 +358,7 @@ export default function ItemDetailPage() {
     );
 }
 
-const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
+const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
     return (

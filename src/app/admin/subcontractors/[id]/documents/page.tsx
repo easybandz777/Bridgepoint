@@ -212,7 +212,7 @@ export default function SubcontractorDocumentsPage() {
                                                     onClick={() => void verifyDoc(d.id)}
                                                     disabled={busy === d.id}
                                                     title="Mark verified"
-                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-[#34d399] hover:bg-[#34d399]/10 transition-all disabled:opacity-50"
+                                                    className="w-11 h-11 flex items-center justify-center rounded-lg text-white/40 hover:text-[#34d399] hover:bg-[#34d399]/10 transition-all disabled:opacity-50"
                                                 >
                                                     <Check size={14} />
                                                 </button>
@@ -221,7 +221,7 @@ export default function SubcontractorDocumentsPage() {
                                                 onClick={() => void deleteDoc(d.id)}
                                                 disabled={busy === d.id}
                                                 title="Delete"
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-50"
+                                                className="w-11 h-11 flex items-center justify-center rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-50"
                                             >
                                                 <Trash2 size={14} />
                                             </button>
@@ -244,7 +244,7 @@ export default function SubcontractorDocumentsPage() {
                                 <select
                                     value={type}
                                     onChange={(e) => setType(e.target.value as DocumentType)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white"
                                 >
                                     {DOC_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                                 </select>
@@ -256,7 +256,7 @@ export default function SubcontractorDocumentsPage() {
                                     value={filename}
                                     onChange={(e) => setFilename(e.target.value)}
                                     placeholder="e.g. W9_2026.pdf"
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white"
                                 />
                             </div>
                             <div>
@@ -265,7 +265,7 @@ export default function SubcontractorDocumentsPage() {
                                     type="date"
                                     value={expiryDate}
                                     onChange={(e) => setExpiryDate(e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white"
                                 />
                             </div>
                             <label className="flex items-center gap-3">

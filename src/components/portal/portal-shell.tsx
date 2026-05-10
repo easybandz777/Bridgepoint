@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { PortalSidebar } from './portal-sidebar';
 import { PortalTopbar } from './portal-topbar';
@@ -35,6 +35,20 @@ function PortalShellChrome({ children }: { children: React.ReactNode }) {
     const [open, setOpen] = useState(false);
     const { user, refresh } = usePortalUser();
 
+    useEffect(() => {
+        if (!open) return;
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setOpen(false);
+        };
+        window.addEventListener('keydown', onKey);
+        return () => {
+            document.body.style.overflow = prev;
+            window.removeEventListener('keydown', onKey);
+        };
+    }, [open]);
+
     return (
         <div className="flex h-screen overflow-hidden" style={{ background: '#0f0f0f' }}>
             <PortalTopbar onOpenMenu={() => setOpen(true)} />
@@ -43,6 +57,7 @@ function PortalShellChrome({ children }: { children: React.ReactNode }) {
                 <div
                     className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm md:hidden"
                     onClick={() => setOpen(false)}
+                    aria-hidden="true"
                 />
             )}
 

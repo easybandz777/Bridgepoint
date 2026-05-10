@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { AnimatedSection } from '@/components/shared/animated-section';
 import { Lightbox, type LightboxImage } from '@/components/shared/lightbox';
 
@@ -25,13 +26,15 @@ export function ProjectGallery({ images, projectTitle }: ProjectGalleryProps) {
             <button
               key={index}
               type="button"
-              className="cursor-pointer overflow-hidden"
+              className="relative h-64 cursor-pointer overflow-hidden"
               onClick={() => setLightboxIndex(index)}
             >
-              <img
+              <Image
                 src={image}
                 alt={`${projectTitle} - Image ${index + 1}`}
-                className="h-64 w-full object-cover transition-transform duration-700 hover:scale-105"
+                fill
+                sizes="(max-width: 640px) 100vw, 50vw"
+                className="object-cover transition-transform duration-700 hover:scale-105"
               />
             </button>
           ))}

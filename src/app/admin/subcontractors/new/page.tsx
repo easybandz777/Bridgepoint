@@ -133,9 +133,10 @@ export default function NewSubcontractorPage() {
                             <input
                                 required
                                 type="text"
+                                autoComplete="organization"
                                 value={companyName}
                                 onChange={(e) => setCompanyName(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             />
                         </div>
 
@@ -144,9 +145,11 @@ export default function NewSubcontractorPage() {
                             <input
                                 required
                                 type="text"
+                                autoCapitalize="words"
+                                autoComplete="name"
                                 value={primaryContact}
                                 onChange={(e) => setPrimaryContact(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             />
                         </div>
 
@@ -157,7 +160,7 @@ export default function NewSubcontractorPage() {
                                 value={taxId}
                                 onChange={(e) => setTaxId(e.target.value)}
                                 placeholder="XX-XXXXXXX"
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors font-mono"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors font-mono"
                             />
                         </div>
 
@@ -166,9 +169,14 @@ export default function NewSubcontractorPage() {
                             <input
                                 required
                                 type="email"
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                spellCheck={false}
+                                autoComplete="email"
+                                inputMode="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             />
                         </div>
 
@@ -177,18 +185,21 @@ export default function NewSubcontractorPage() {
                             <input
                                 required
                                 type="tel"
+                                inputMode="tel"
+                                autoComplete="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             />
                         </div>
 
                         <div className="md:col-span-2">
                             <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Physical Address</label>
                             <textarea
+                                autoComplete="street-address"
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors min-h-[80px]"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors min-h-[80px]"
                             />
                         </div>
                     </div>
@@ -284,7 +295,7 @@ export default function NewSubcontractorPage() {
                                                 type="date"
                                                 value={insuranceExpiry}
                                                 onChange={(e) => setInsuranceExpiry(e.target.value)}
-                                                className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-white focus:outline-none focus:border-[#b8956a]/50 text-sm"
+                                                className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-white focus:outline-none focus:border-[#b8956a]/50 text-base sm:text-sm"
                                             />
                                         </div>
                                     )}

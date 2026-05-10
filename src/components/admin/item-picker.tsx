@@ -180,11 +180,13 @@ export function ItemPicker({
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" size={14} />
                             <input
                                 ref={inputRef}
-                                type="text"
+                                type="search"
+                                inputMode="search"
+                                autoComplete="off"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 placeholder={typeFilter ? `Search ${TYPE_LABEL[typeFilter]} items…` : placeholder}
-                                className="w-full h-9 pl-9 pr-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#b8956a]/50 transition-all"
+                                className="w-full h-9 pl-9 pr-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#b8956a]/50 transition-all"
                                 autoFocus
                             />
                         </div>
@@ -326,7 +328,7 @@ function CreateItemModal({
             <div className="relative w-full max-w-md bg-[#131313] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
                 <div className="flex items-center justify-between px-5 py-4 border-b border-white/6">
                     <h3 className="font-serif text-lg font-bold text-white">Quick Create Item</h3>
-                    <button onClick={onCancel} className="w-8 h-8 flex items-center justify-center rounded-xl text-white/40 hover:text-white hover:bg-white/10 transition-colors">
+                    <button onClick={onCancel} className="w-11 h-11 flex items-center justify-center rounded-xl text-white/40 hover:text-white hover:bg-white/10 transition-colors">
                         <X size={14} />
                     </button>
                 </div>
@@ -337,7 +339,7 @@ function CreateItemModal({
                     <label className="flex flex-col gap-1.5">
                         <span className="text-[10px] uppercase tracking-widest text-white/50">Name <span className="text-[#b8956a]">*</span></span>
                         <input value={name} onChange={e => setName(e.target.value)} required autoFocus
-                            className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all" />
+                            className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all" />
                     </label>
                     <label className="flex flex-col gap-1.5">
                         <span className="text-[10px] uppercase tracking-widest text-white/50">Type</span>
@@ -345,7 +347,7 @@ function CreateItemModal({
                             value={type}
                             onChange={e => setType(e.target.value as ItemType)}
                             disabled={Boolean(typeFilter)}
-                            className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#b8956a]/50 transition-all disabled:opacity-60"
+                            className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 transition-all disabled:opacity-60"
                         >
                             <option value="Service">Service</option>
                             <option value="Inventory">Inventory</option>
@@ -354,8 +356,8 @@ function CreateItemModal({
                     </label>
                     <label className="flex flex-col gap-1.5">
                         <span className="text-[10px] uppercase tracking-widest text-white/50">Unit price ($)</span>
-                        <input type="number" step="0.01" min="0" value={unitPrice} onChange={e => setUnitPrice(e.target.value)}
-                            className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all" />
+                        <input type="number" inputMode="decimal" step="0.01" min="0" value={unitPrice} onChange={e => setUnitPrice(e.target.value)}
+                            className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all" />
                     </label>
                     <div className="flex items-center justify-end gap-2 pt-2">
                         <button type="button" onClick={onCancel} className="h-9 px-4 text-white/60 hover:text-white text-xs font-semibold rounded-full transition-colors">

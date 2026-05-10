@@ -100,17 +100,19 @@ export default function ExpensesDirectoryPage() {
                     <div className="relative w-full sm:w-72">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" size={16} />
                         <input
-                            type="text"
+                            type="search"
+                            inputMode="search"
+                            autoComplete="off"
                             placeholder="Search vendors, descriptions..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full h-10 pl-10 pr-4 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-all"
+                            className="w-full h-10 pl-10 pr-4 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-all"
                         />
                     </div>
                     <select
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="h-10 px-4 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#b8956a]/50 w-full sm:w-48"
+                        className="h-10 px-4 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 w-full sm:w-48"
                     >
                         <option value="All">All Categories</option>
                         {categories.map((cat) => (
@@ -211,7 +213,7 @@ export default function ExpensesDirectoryPage() {
                                         <td className="px-5 py-4 text-right">
                                             <button
                                                 onClick={() => handleDelete(expense.id)}
-                                                className="h-7 w-7 inline-flex items-center justify-center text-red-400/70 hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-full"
+                                                className="h-11 w-11 inline-flex items-center justify-center text-red-400/70 hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-full"
                                             >
                                                 <Trash2 size={12} />
                                             </button>

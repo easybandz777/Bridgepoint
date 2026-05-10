@@ -200,9 +200,10 @@ export default function ProjectOverviewPage({ params }: { params: Promise<{ id: 
                         )}
                         {editing ? (
                             <input
+                                autoComplete="street-address"
                                 value={form.address}
                                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                                className="text-sm text-white/60 bg-transparent border-b border-white/20 focus:outline-none focus:border-[#b8956a] w-full"
+                                className="text-base sm:text-sm text-white/60 bg-transparent border-b border-white/20 focus:outline-none focus:border-[#b8956a] w-full"
                             />
                         ) : (
                             <p className="text-white/60 flex items-center gap-2">
@@ -297,7 +298,7 @@ export default function ProjectOverviewPage({ params }: { params: Promise<{ id: 
                                         type="date"
                                         value={form.startDate}
                                         onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                                        className="bg-transparent text-sm font-semibold text-white focus:outline-none [color-scheme:dark]"
+                                        className="bg-transparent text-base sm:text-sm font-semibold text-white focus:outline-none [color-scheme:dark]"
                                     />
                                 ) : (
                                     <p className="text-sm font-semibold text-white flex items-center gap-2">
@@ -312,7 +313,7 @@ export default function ProjectOverviewPage({ params }: { params: Promise<{ id: 
                                         type="date"
                                         value={form.endDate}
                                         onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                                        className="bg-transparent text-sm font-semibold text-white focus:outline-none [color-scheme:dark]"
+                                        className="bg-transparent text-base sm:text-sm font-semibold text-white focus:outline-none [color-scheme:dark]"
                                     />
                                 ) : (
                                     <p className="text-sm font-semibold text-white flex items-center gap-2">
@@ -394,9 +395,11 @@ export default function ProjectOverviewPage({ params }: { params: Promise<{ id: 
                                 <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">Name</p>
                                 {editing ? (
                                     <input
+                                        autoCapitalize="words"
+                                        autoComplete="name"
                                         value={form.clientName}
                                         onChange={(e) => setForm({ ...form, clientName: e.target.value })}
-                                        className="bg-transparent border-b border-white/20 text-white w-full focus:outline-none"
+                                        className="bg-transparent border-b border-white/20 text-white w-full focus:outline-none text-base sm:text-sm"
                                     />
                                 ) : (
                                     <p className="font-medium text-white">{project.client_name || '—'}</p>
@@ -406,9 +409,15 @@ export default function ProjectOverviewPage({ params }: { params: Promise<{ id: 
                                 <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">Email</p>
                                 {editing ? (
                                     <input
+                                        type="email"
+                                        autoCapitalize="none"
+                                        autoCorrect="off"
+                                        spellCheck={false}
+                                        autoComplete="email"
+                                        inputMode="email"
                                         value={form.clientEmail}
                                         onChange={(e) => setForm({ ...form, clientEmail: e.target.value })}
-                                        className="bg-transparent border-b border-white/20 text-white w-full focus:outline-none"
+                                        className="bg-transparent border-b border-white/20 text-white w-full focus:outline-none text-base sm:text-sm"
                                     />
                                 ) : (
                                     <p className="font-medium text-white flex items-center gap-2">
@@ -420,9 +429,12 @@ export default function ProjectOverviewPage({ params }: { params: Promise<{ id: 
                                 <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">Phone</p>
                                 {editing ? (
                                     <input
+                                        type="tel"
+                                        inputMode="tel"
+                                        autoComplete="tel"
                                         value={form.clientPhone}
                                         onChange={(e) => setForm({ ...form, clientPhone: e.target.value })}
-                                        className="bg-transparent border-b border-white/20 text-white w-full focus:outline-none"
+                                        className="bg-transparent border-b border-white/20 text-white w-full focus:outline-none text-base sm:text-sm"
                                     />
                                 ) : (
                                     <p className="font-medium text-white flex items-center gap-2">

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Lock, ArrowRight } from 'lucide-react';
 import { Section } from '@/components/ui/section';
 import { AnimatedSection } from '@/components/shared/animated-section';
@@ -44,11 +45,13 @@ export function ExclusiveRemodeling() {
                     {/* Full Remodel */}
                     <AnimatedSection direction="left" delay={0.1}>
                         <Link href="/select-services" className="group block">
-                            <div className="relative overflow-hidden">
-                                <img
+                            <div className="relative h-72 overflow-hidden">
+                                <Image
                                     src={FULL_REMODEL_IMG}
                                     alt="Full home remodel"
-                                    className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/25 to-transparent" />
                                 <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -68,11 +71,13 @@ export function ExclusiveRemodeling() {
                     {/* Custom Carpentry */}
                     <AnimatedSection direction="right" delay={0.2}>
                         <Link href="/select-services" className="group block">
-                            <div className="relative overflow-hidden">
-                                <img
+                            <div className="relative h-72 overflow-hidden">
+                                <Image
                                     src={CARPENTRY_IMG}
                                     alt="Custom carpentry and millwork"
-                                    className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/25 to-transparent" />
                                 <div className="absolute bottom-0 left-0 right-0 p-6">

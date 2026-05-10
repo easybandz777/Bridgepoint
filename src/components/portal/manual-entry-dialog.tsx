@@ -216,6 +216,7 @@ export function ManualEntryDialog({
                             </span>
                             <input
                                 type="number"
+                                inputMode="decimal"
                                 min={0}
                                 max={24}
                                 step={0.25}
@@ -230,6 +231,7 @@ export function ManualEntryDialog({
                             </span>
                             <input
                                 type="number"
+                                inputMode="decimal"
                                 min={0}
                                 max={12}
                                 step={0.25}
@@ -249,7 +251,7 @@ export function ManualEntryDialog({
                             onChange={e => setNotes(e.target.value)}
                             rows={3}
                             placeholder={t('timesheets.notesPlaceholder')}
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#b8956a]/50 resize-none"
+                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#b8956a]/50 resize-none"
                         />
                     </label>
 

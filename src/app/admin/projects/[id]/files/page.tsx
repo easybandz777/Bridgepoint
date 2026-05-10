@@ -123,18 +123,23 @@ export default function ProjectFilesPage({ params }: { params: Promise<{ id: str
                             placeholder="Filename"
                             value={form.filename}
                             onChange={(e) => setForm({ ...form, filename: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <input
+                            type="url"
+                            inputMode="url"
+                            autoCapitalize="none"
+                            autoCorrect="off"
+                            spellCheck={false}
                             placeholder="URL (https://…)"
                             value={form.url}
                             onChange={(e) => setForm({ ...form, url: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <select
                             value={form.category}
                             onChange={(e) => setForm({ ...form, category: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         >
                             {CATEGORIES.map((c) => (
                                 <option key={c.name} value={c.name}>
@@ -146,14 +151,14 @@ export default function ProjectFilesPage({ params }: { params: Promise<{ id: str
                             placeholder="File Type (pdf, jpg, dwg…)"
                             value={form.fileType}
                             onChange={(e) => setForm({ ...form, fileType: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                     </div>
                     <textarea
                         placeholder="Description"
                         value={form.description}
                         onChange={(e) => setForm({ ...form, description: e.target.value })}
-                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white min-h-[60px] focus:outline-none focus:border-[#b8956a]/50 mb-3"
+                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white min-h-[60px] focus:outline-none focus:border-[#b8956a]/50 mb-3"
                     />
                     <div className="flex justify-end gap-2">
                         <button onClick={() => setAdding(false)} className="h-9 px-4 text-white/50 hover:text-white text-sm font-semibold">
@@ -218,7 +223,7 @@ export default function ProjectFilesPage({ params }: { params: Promise<{ id: str
                                     </a>
                                     <button
                                         onClick={() => handleDelete(f.id)}
-                                        className="h-8 w-8 text-red-400/70 hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center"
+                                        className="h-11 w-11 text-red-400/70 hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center"
                                     >
                                         <Trash2 size={12} />
                                     </button>

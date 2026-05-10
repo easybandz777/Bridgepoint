@@ -150,7 +150,7 @@ export default function SubcontractorNotesPage() {
                                     <button
                                         onClick={() => void deleteNote(n.id)}
                                         title="Delete note"
-                                        className="opacity-0 group-hover:opacity-100 self-start mt-1 w-8 h-8 flex items-center justify-center rounded-lg text-white/30 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                                        className="opacity-0 group-hover:opacity-100 self-start mt-1 w-11 h-11 flex items-center justify-center rounded-lg text-white/30 hover:text-red-400 hover:bg-red-400/10 transition-all"
                                     >
                                         <Trash2 size={14} />
                                     </button>
@@ -165,13 +165,13 @@ export default function SubcontractorNotesPage() {
                                 value={draft}
                                 onChange={(e) => setDraft(e.target.value)}
                                 placeholder="Add an internal note about this subcontractor..."
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 pr-12 text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors min-h-[80px] resize-none"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 pr-12 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors min-h-[80px] resize-none"
                                 disabled={saving}
                             />
                             <button
                                 type="submit"
                                 disabled={!draft.trim() || saving}
-                                className="absolute right-3 bottom-3 w-8 h-8 rounded-lg bg-[#b8956a] text-black flex items-center justify-center hover:bg-[#cbb08c] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                className="absolute right-3 bottom-3 w-11 h-11 rounded-lg bg-[#b8956a] text-black flex items-center justify-center hover:bg-[#cbb08c] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                 title="Save note"
                             >
                                 <Send size={14} />

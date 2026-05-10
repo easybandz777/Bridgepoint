@@ -105,7 +105,7 @@ export function DocumentUploadDialog({
                         <select
                             value={docType}
                             onChange={(e) => setDocType(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
                         >
                             {types.map(opt => (
                                 <option key={opt} value={opt} className="bg-[#1a1a1a]">{opt}</option>
@@ -119,7 +119,7 @@ export function DocumentUploadDialog({
                             value={filename}
                             onChange={(e) => setFilename(e.target.value)}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
                             placeholder="W-4 2026.pdf"
                         />
                     </Field>
@@ -127,9 +127,13 @@ export function DocumentUploadDialog({
                     <Field label={t('documents.urlLabel')}>
                         <input
                             type="url"
+                            inputMode="url"
+                            autoCapitalize="none"
+                            autoCorrect="off"
+                            spellCheck={false}
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
                             placeholder="https://"
                         />
                     </Field>
@@ -139,7 +143,7 @@ export function DocumentUploadDialog({
                             type="date"
                             value={expiryDate}
                             onChange={(e) => setExpiryDate(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all"
                         />
                     </Field>
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Section } from '@/components/ui/section';
 import { AnimatedSection } from '@/components/shared/animated-section';
 import { ProjectGrid } from '@/components/portfolio/project-grid';
@@ -35,10 +36,13 @@ export default function PortfolioPage() {
       {/* Hero */}
       <section className="relative flex min-h-[50vh] items-end overflow-hidden pb-16 pt-32">
         <div className="absolute inset-0">
-          <img
+          <Image
             src={IMAGES.portfolioHero}
             alt="Portfolio showcase"
-            className="h-full w-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-charcoal/60" />
         </div>

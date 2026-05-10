@@ -116,10 +116,10 @@ export default function SubcontractorOverviewPage() {
                                 <p className="text-[10px] uppercase tracking-widest text-white/40 mt-1">Primary Point of Contact</p>
                             </div>
                             <div className="flex gap-2">
-                                <a href={`tel:${sub.phone}`} title="Call" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-colors">
+                                <a href={`tel:${sub.phone}`} title="Call" className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-colors">
                                     <Phone size={14} />
                                 </a>
-                                <a href={`mailto:${sub.email}`} title="Email" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-colors">
+                                <a href={`mailto:${sub.email}`} title="Email" className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-colors">
                                     <Mail size={14} />
                                 </a>
                             </div>

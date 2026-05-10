@@ -37,7 +37,7 @@ interface CustomerQuickCreateModalProps {
 }
 
 const inp =
-    'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all';
+    'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base sm:text-sm placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all';
 const lbl = 'block text-[11px] font-semibold uppercase tracking-wider text-white/40 mb-1.5';
 
 export function CustomerQuickCreateModal({
@@ -178,6 +178,11 @@ function QuickCreateForm({ defaults, onCancel, onCreated }: QuickCreateFormProps
                     <input
                         id="qcc-email"
                         type="email"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        autoComplete="email"
+                        inputMode="email"
                         className={inp}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -192,6 +197,8 @@ function QuickCreateForm({ defaults, onCancel, onCreated }: QuickCreateFormProps
                     <input
                         id="qcc-phone"
                         type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
                         className={inp}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}

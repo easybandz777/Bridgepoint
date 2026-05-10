@@ -288,7 +288,7 @@ export function PhotoUploader({ projectId, phaseId = null, onUploaded }: PhotoUp
                         value={batchCaption}
                         onChange={(e) => setBatchCaption(e.target.value)}
                         placeholder={t('photos.captionPlaceholder')}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all min-h-[44px]"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-base sm:text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#b8956a]/60 focus:bg-white/8 transition-all min-h-[44px]"
                     />
                 </label>
             </div>
@@ -326,7 +326,7 @@ export function PhotoUploader({ projectId, phaseId = null, onUploaded }: PhotoUp
                                     onChange={(e) => updateCaption(p.id, e.target.value)}
                                     placeholder={t('photos.captionPlaceholder')}
                                     disabled={uploading}
-                                    className="w-full bg-transparent border-t border-white/8 px-2.5 py-2 text-xs text-white placeholder-white/25 focus:outline-none focus:bg-white/5 transition-colors"
+                                    className="w-full bg-transparent border-t border-white/8 px-2.5 py-2 text-base sm:text-xs text-white placeholder-white/25 focus:outline-none focus:bg-white/5 transition-colors"
                                 />
                             </li>
                         ))}

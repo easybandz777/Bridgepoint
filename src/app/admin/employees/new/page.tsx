@@ -107,19 +107,19 @@ export default function NewEmployeePage() {
                 <Section title="Identity">
                     <Grid>
                         <Field label="First name" required>
-                            <input value={firstName} onChange={e => setFirstName(e.target.value)} required className={inputCls} />
+                            <input value={firstName} onChange={e => setFirstName(e.target.value)} required autoCapitalize="words" autoComplete="given-name" className={inputCls} />
                         </Field>
                         <Field label="Last name" required>
-                            <input value={lastName} onChange={e => setLastName(e.target.value)} required className={inputCls} />
+                            <input value={lastName} onChange={e => setLastName(e.target.value)} required autoCapitalize="words" autoComplete="family-name" className={inputCls} />
                         </Field>
                         <Field label="Email">
-                            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className={inputCls} />
+                            <input type="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="email" inputMode="email" value={email} onChange={e => setEmail(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Phone">
-                            <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="(404) 555-0100" className={inputCls} />
+                            <input type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(404) 555-0100" className={inputCls} />
                         </Field>
                         <Field label="Address" full>
-                            <input value={address} onChange={e => setAddress(e.target.value)} className={inputCls} />
+                            <input autoComplete="street-address" value={address} onChange={e => setAddress(e.target.value)} className={inputCls} />
                         </Field>
                     </Grid>
                 </Section>
@@ -143,10 +143,10 @@ export default function NewEmployeePage() {
                             <input type="date" value={hireDate} onChange={e => setHireDate(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Hourly rate ($/hr)">
-                            <input type="number" step="0.5" min="0" value={hourlyRate} onChange={e => setHourlyRate(e.target.value)} className={inputCls} />
+                            <input type="number" inputMode="decimal" step="0.5" min="0" value={hourlyRate} onChange={e => setHourlyRate(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Annual salary ($)" hint="Leave blank if hourly">
-                            <input type="number" step="500" min="0" value={salary} onChange={e => setSalary(e.target.value)} className={inputCls} />
+                            <input type="number" inputMode="decimal" step="500" min="0" value={salary} onChange={e => setSalary(e.target.value)} className={inputCls} />
                         </Field>
                     </Grid>
                 </Section>
@@ -211,7 +211,7 @@ export default function NewEmployeePage() {
     );
 }
 
-const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
+const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
     return (

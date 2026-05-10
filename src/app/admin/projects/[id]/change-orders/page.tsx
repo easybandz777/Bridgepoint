@@ -144,44 +144,47 @@ export default function ProjectChangeOrdersPage({ params }: { params: Promise<{ 
                             placeholder="Title"
                             value={form.title}
                             onChange={(e) => setForm({ ...form, title: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white sm:col-span-2 focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white sm:col-span-2 focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <input
                             type="number"
+                            inputMode="decimal"
                             min={0}
                             placeholder="Customer Amount ($)"
                             value={form.amount || ''}
                             onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <input
                             type="number"
+                            inputMode="decimal"
                             min={0}
                             placeholder="Cost Impact ($)"
                             value={form.costImpact || ''}
                             onChange={(e) => setForm({ ...form, costImpact: Number(e.target.value) })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <input
                             type="number"
+                            inputMode="numeric"
                             min={0}
                             placeholder="Time Impact (days)"
                             value={form.timeImpactDays || ''}
                             onChange={(e) => setForm({ ...form, timeImpactDays: Number(e.target.value) })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                         <input
                             placeholder="Requested By"
                             value={form.requestedBy}
                             onChange={(e) => setForm({ ...form, requestedBy: e.target.value })}
-                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                            className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                         />
                     </div>
                     <textarea
                         placeholder="Description / Reason"
                         value={form.description}
                         onChange={(e) => setForm({ ...form, description: e.target.value })}
-                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white min-h-[60px] focus:outline-none focus:border-[#b8956a]/50 mb-3"
+                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white min-h-[60px] focus:outline-none focus:border-[#b8956a]/50 mb-3"
                     />
                     <div className="flex justify-end gap-2">
                         <button onClick={() => setAdding(false)} className="h-9 px-4 text-white/50 hover:text-white text-sm font-semibold">

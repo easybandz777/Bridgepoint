@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Section } from '@/components/ui/section';
 import { Button } from '@/components/ui/button';
 import { AnimatedSection } from '@/components/shared/animated-section';
@@ -85,10 +86,13 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="relative flex min-h-[60vh] items-end overflow-hidden pb-16 pt-32">
         <div className="absolute inset-0">
-          <img
+          <Image
             src={IMAGES.aboutHero}
             alt="Craftsman at work"
-            className="h-full w-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-charcoal/60" />
         </div>
@@ -108,11 +112,13 @@ export default function AboutPage() {
       <Section variant="default" spacious>
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <AnimatedSection direction="left">
-            <div className="overflow-hidden">
-              <img
+            <div className="relative h-[500px] overflow-hidden">
+              <Image
                 src={IMAGES.craftsmanPortrait}
                 alt="The craftsman"
-                className="h-[500px] w-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
               />
             </div>
           </AnimatedSection>

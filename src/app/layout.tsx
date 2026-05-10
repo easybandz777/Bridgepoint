@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import { Agentation } from 'agentation';
 import { ConditionalLayout } from '@/components/layout/conditional-layout';
@@ -86,6 +86,13 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#b8956a',
+};
+
 // ─── JSON-LD Schema: LocalBusiness + AggregateRating ─────────────────────────
 const localBusinessSchema = {
   '@context': 'https://schema.org',
@@ -158,10 +165,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <meta name="theme-color" content="#b8956a" />
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className="font-sans antialiased">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-md focus:bg-gold focus:text-white focus:font-semibold"
+        >
+          Skip to main content
+        </a>
         <ConditionalLayout>{children}</ConditionalLayout>
         <Agentation />
       </body>

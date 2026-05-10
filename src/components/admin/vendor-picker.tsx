@@ -144,11 +144,13 @@ export function VendorPicker({
                         <Search size={14} className="text-white/30 shrink-0 ml-1" />
                         <input
                             autoFocus
-                            type="text"
+                            type="search"
+                            inputMode="search"
+                            autoComplete="off"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Search vendors..."
-                            className="flex-1 bg-transparent outline-none text-sm text-white placeholder-white/30"
+                            className="flex-1 bg-transparent outline-none text-base sm:text-sm text-white placeholder-white/30"
                         />
                     </div>
                     <div className="max-h-72 overflow-y-auto">
@@ -266,7 +268,7 @@ function QuickCreateVendor({ onClose, onCreated, initialQuery }: QuickCreateProp
                     <button
                         type="button"
                         onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center rounded-xl text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+                        className="w-11 h-11 flex items-center justify-center rounded-xl text-white/40 hover:text-white hover:bg-white/10 transition-colors"
                         aria-label="Close"
                     >
                         <X size={16} />
@@ -281,16 +283,17 @@ function QuickCreateVendor({ onClose, onCreated, initialQuery }: QuickCreateProp
                             type="text"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                         />
                     </div>
                     <div>
                         <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Company Name</label>
                         <input
                             type="text"
+                            autoComplete="organization"
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                         />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -298,18 +301,25 @@ function QuickCreateVendor({ onClose, onCreated, initialQuery }: QuickCreateProp
                             <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Email</label>
                             <input
                                 type="email"
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                spellCheck={false}
+                                autoComplete="email"
+                                inputMode="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             />
                         </div>
                         <div>
                             <label className="block text-xs uppercase tracking-widest text-white/40 mb-2 font-semibold">Phone</label>
                             <input
                                 type="tel"
+                                inputMode="tel"
+                                autoComplete="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 focus:bg-white/10 transition-colors"
                             />
                         </div>
                     </div>

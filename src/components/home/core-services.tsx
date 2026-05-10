@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Check } from 'lucide-react';
 import { AnimatedSection } from '@/components/shared/animated-section';
 
@@ -120,11 +121,13 @@ function ServiceSectionBlock({ section }: { section: ServiceSection }) {
                     <AnimatedSection direction={flip ? 'right' : 'left'}>
                         <div className="space-y-3">
                             {/* Main image */}
-                            <div className="relative overflow-hidden shadow-2xl shadow-charcoal/15">
-                                <img
+                            <div className="relative h-[26rem] overflow-hidden shadow-2xl shadow-charcoal/15">
+                                <Image
                                     src={mainImage}
                                     alt={title}
-                                    className="h-[26rem] w-full object-cover transition-transform duration-700 hover:scale-105"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    className="object-cover transition-transform duration-700 hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/20 to-transparent pointer-events-none" />
                             </div>
@@ -132,10 +135,12 @@ function ServiceSectionBlock({ section }: { section: ServiceSection }) {
                             <div className="grid grid-cols-3 gap-3">
                                 {gallery.map((src, i) => (
                                     <div key={i} className="relative overflow-hidden h-24">
-                                        <img
+                                        <Image
                                             src={src}
                                             alt={`${title} example ${i + 1}`}
-                                            className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+                                            fill
+                                            sizes="(max-width: 768px) 33vw, 17vw"
+                                            className="object-cover transition-transform duration-500 hover:scale-110"
                                         />
                                     </div>
                                 ))}

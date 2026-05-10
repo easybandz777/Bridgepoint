@@ -408,14 +408,14 @@ export default function CustomerDetailPage() {
                             <input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Company name">
-                            <input value={editCompanyName} onChange={(e) => setEditCompanyName(e.target.value)} className={inputCls} />
+                            <input autoComplete="organization" value={editCompanyName} onChange={(e) => setEditCompanyName(e.target.value)} className={inputCls} />
                         </Field>
                         <div />
                         <Field label="First name">
-                            <input value={editFirstName} onChange={(e) => setEditFirstName(e.target.value)} className={inputCls} />
+                            <input autoCapitalize="words" autoComplete="given-name" value={editFirstName} onChange={(e) => setEditFirstName(e.target.value)} className={inputCls} />
                         </Field>
                         <Field label="Last name">
-                            <input value={editLastName} onChange={(e) => setEditLastName(e.target.value)} className={inputCls} />
+                            <input autoCapitalize="words" autoComplete="family-name" value={editLastName} onChange={(e) => setEditLastName(e.target.value)} className={inputCls} />
                         </Field>
                     </div>
                 </div>
@@ -426,19 +426,19 @@ export default function CustomerDetailPage() {
                 {/* Contact info */}
                 <Card title="Contact">
                     <ContactRow icon={<Mail size={12} />} label="Email" editing={editing} display={customer.email ?? '—'}>
-                        <input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} className={inputCls} />
+                        <input type="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="email" inputMode="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} className={inputCls} />
                     </ContactRow>
                     <ContactRow icon={<Phone size={12} />} label="Phone" editing={editing} display={customer.phone ?? '—'}>
-                        <input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} className={inputCls} />
+                        <input type="tel" inputMode="tel" autoComplete="tel" value={editPhone} onChange={(e) => setEditPhone(e.target.value)} className={inputCls} />
                     </ContactRow>
                     <ContactRow icon={<Smartphone size={12} />} label="Mobile" editing={editing} display={customer.mobile ?? '—'}>
-                        <input value={editMobile} onChange={(e) => setEditMobile(e.target.value)} className={inputCls} />
+                        <input type="tel" inputMode="tel" autoComplete="tel" value={editMobile} onChange={(e) => setEditMobile(e.target.value)} className={inputCls} />
                     </ContactRow>
                     <ContactRow icon={<Printer size={12} />} label="Fax" editing={editing} display={customer.fax ?? '—'}>
-                        <input value={editFax} onChange={(e) => setEditFax(e.target.value)} className={inputCls} />
+                        <input type="tel" inputMode="tel" value={editFax} onChange={(e) => setEditFax(e.target.value)} className={inputCls} />
                     </ContactRow>
                     <ContactRow icon={<Globe size={12} />} label="Website" editing={editing} display={customer.website ?? '—'}>
-                        <input value={editWebsite} onChange={(e) => setEditWebsite(e.target.value)} className={inputCls} />
+                        <input type="url" inputMode="url" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="url" value={editWebsite} onChange={(e) => setEditWebsite(e.target.value)} className={inputCls} />
                     </ContactRow>
 
                     {editing && (
@@ -582,7 +582,7 @@ export default function CustomerDetailPage() {
     );
 }
 
-const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
+const inputCls = 'w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-base sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all';
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
     return (
@@ -649,12 +649,14 @@ function AddressBlock({
                 <div className="space-y-2">
                     <input
                         placeholder="Street address"
+                        autoComplete="street-address"
                         value={edit.line1 ?? ''}
                         onChange={(e) => setEdit({ ...edit, line1: e.target.value })}
                         className={inputCls}
                     />
                     <input
                         placeholder="Apt, suite, etc. (optional)"
+                        autoComplete="address-line2"
                         value={edit.line2 ?? ''}
                         onChange={(e) => setEdit({ ...edit, line2: e.target.value })}
                         className={inputCls}
@@ -662,12 +664,14 @@ function AddressBlock({
                     <div className="grid grid-cols-3 gap-2">
                         <input
                             placeholder="City"
+                            autoComplete="address-level2"
                             value={edit.city ?? ''}
                             onChange={(e) => setEdit({ ...edit, city: e.target.value })}
                             className={`${inputCls} col-span-2`}
                         />
                         <input
                             placeholder="State"
+                            autoComplete="address-level1"
                             value={edit.state ?? ''}
                             onChange={(e) => setEdit({ ...edit, state: e.target.value })}
                             className={inputCls}
@@ -675,6 +679,8 @@ function AddressBlock({
                     </div>
                     <input
                         placeholder="ZIP"
+                        inputMode="numeric"
+                        autoComplete="postal-code"
                         value={edit.zip ?? ''}
                         onChange={(e) => setEdit({ ...edit, zip: e.target.value })}
                         className={inputCls}

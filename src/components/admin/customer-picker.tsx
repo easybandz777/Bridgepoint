@@ -331,12 +331,14 @@ export function CustomerPicker({
                             <Search size={14} className="text-white/30 shrink-0" />
                             <input
                                 ref={inputRef}
-                                type="text"
+                                type="search"
+                                inputMode="search"
+                                autoComplete="off"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder="Search customers..."
-                                className="flex-1 bg-transparent text-white text-sm placeholder-white/25 focus:outline-none"
+                                className="flex-1 bg-transparent text-white text-base sm:text-sm placeholder-white/25 focus:outline-none"
                                 role="combobox"
                                 aria-expanded={open}
                                 aria-controls={listboxId}
@@ -352,7 +354,7 @@ export function CustomerPicker({
                             <button
                                 type="button"
                                 onClick={() => setOpen(false)}
-                                className="sm:hidden w-7 h-7 flex items-center justify-center rounded-md text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+                                className="sm:hidden w-11 h-11 flex items-center justify-center rounded-md text-white/40 hover:text-white hover:bg-white/10 transition-colors"
                                 aria-label="Close"
                             >
                                 <X size={14} />

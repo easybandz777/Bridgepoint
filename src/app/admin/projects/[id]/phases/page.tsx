@@ -316,12 +316,12 @@ function PhaseForm({
                     placeholder="Phase Name"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50 sm:col-span-2"
+                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 sm:col-span-2"
                 />
                 <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                 >
                     {PHASE_STATUSES.map((s) => (
                         <option key={s} value={s}>
@@ -331,47 +331,50 @@ function PhaseForm({
                 </select>
                 <input
                     type="number"
+                    inputMode="numeric"
                     min={0}
                     max={100}
                     placeholder="Completion %"
                     value={form.completionPct}
                     onChange={(e) => setForm({ ...form, completionPct: Number(e.target.value) })}
-                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                 />
                 <input
                     type="number"
+                    inputMode="decimal"
                     min={0}
                     placeholder="Estimated Budget"
                     value={form.estimatedBudget || ''}
                     onChange={(e) => setForm({ ...form, estimatedBudget: Number(e.target.value) })}
-                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                 />
                 <input
                     type="number"
+                    inputMode="decimal"
                     min={0}
                     placeholder="Actual Cost"
                     value={form.actualCost || ''}
                     onChange={(e) => setForm({ ...form, actualCost: Number(e.target.value) })}
-                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
+                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50"
                 />
                 <input
                     type="date"
                     value={form.startDate}
                     onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50"
+                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50"
                 />
                 <input
                     type="date"
                     value={form.endDate}
                     onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50"
+                    className="h-9 px-3 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white [color-scheme:dark] focus:outline-none focus:border-[#b8956a]/50"
                 />
             </div>
             <textarea
                 placeholder="Notes"
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-[#b8956a]/50 min-h-[60px] mb-3"
+                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-[#b8956a]/50 min-h-[60px] mb-3"
             />
             <div className="flex justify-end gap-2">
                 <button

@@ -13,14 +13,15 @@ export function ServiceStrip() {
     const scrollTo = (id: string) => {
         const el = document.getElementById(id);
         if (el) {
-            const offset = 80; // navbar height
+            // navbar (~112px) + this strip (~56px); leave ~8px breathing room
+            const offset = 168;
             const top = el.getBoundingClientRect().top + window.scrollY - offset;
             window.scrollTo({ top, behavior: 'smooth' });
         }
     };
 
     return (
-        <div className="sticky top-[72px] z-40 bg-warm-white/95 backdrop-blur-sm border-b border-warm-white-dark/50 shadow-sm">
+        <div className="sticky top-[112px] z-40 bg-warm-white/95 backdrop-blur-sm border-b border-warm-white-dark/50 shadow-sm">
             <div className="mx-auto max-w-7xl px-4">
                 <div className="flex items-stretch overflow-x-auto scrollbar-hide">
                     {SERVICES.map(({ id, label, Icon }) => (

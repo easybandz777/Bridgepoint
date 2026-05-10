@@ -340,10 +340,11 @@ export function PortalAccessCard({ userType, userId, recordEmail }: PortalAccess
                                         type="text"
                                         inputMode="numeric"
                                         pattern="[0-9]*"
+                                        autoComplete="one-time-code"
                                         placeholder="4-12 digits"
                                         value={customPin}
                                         onChange={(e) => setCustomPin(e.target.value.replace(/\D+/g, ''))}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/25 text-sm font-mono focus:outline-none focus:border-[#b8956a]/60"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/25 text-base sm:text-sm font-mono focus:outline-none focus:border-[#b8956a]/60"
                                     />
                                     <button
                                         onClick={() => {

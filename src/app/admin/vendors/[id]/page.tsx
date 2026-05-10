@@ -393,31 +393,36 @@ export default function VendorDetailPage() {
                                         type="text"
                                         value={draft.displayName}
                                         onChange={(e) => setDraft({ ...draft, displayName: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="Company Name">
                                     <input
                                         type="text"
+                                        autoComplete="organization"
                                         value={draft.companyName}
                                         onChange={(e) => setDraft({ ...draft, companyName: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="First Name">
                                     <input
                                         type="text"
+                                        autoCapitalize="words"
+                                        autoComplete="given-name"
                                         value={draft.firstName}
                                         onChange={(e) => setDraft({ ...draft, firstName: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="Last Name">
                                     <input
                                         type="text"
+                                        autoCapitalize="words"
+                                        autoComplete="family-name"
                                         value={draft.lastName}
                                         onChange={(e) => setDraft({ ...draft, lastName: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="Active" className="md:col-span-2">
@@ -447,25 +452,34 @@ export default function VendorDetailPage() {
                                 <Field label="Email">
                                     <input
                                         type="email"
+                                        autoCapitalize="none"
+                                        autoCorrect="off"
+                                        spellCheck={false}
+                                        autoComplete="email"
+                                        inputMode="email"
                                         value={draft.email}
                                         onChange={(e) => setDraft({ ...draft, email: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="Phone">
                                     <input
                                         type="tel"
+                                        inputMode="tel"
+                                        autoComplete="tel"
                                         value={draft.phone}
                                         onChange={(e) => setDraft({ ...draft, phone: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="Mobile" className="md:col-span-2">
                                     <input
                                         type="tel"
+                                        inputMode="tel"
+                                        autoComplete="tel"
                                         value={draft.mobile}
                                         onChange={(e) => setDraft({ ...draft, mobile: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                             </div>
@@ -484,49 +498,56 @@ export default function VendorDetailPage() {
                                 <Field label="Line 1" className="md:col-span-2">
                                     <input
                                         type="text"
+                                        autoComplete="street-address"
                                         value={draft.bill.line1 ?? ''}
                                         onChange={(e) => setDraft({ ...draft, bill: { ...draft.bill, line1: e.target.value } })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="Line 2" className="md:col-span-2">
                                     <input
                                         type="text"
+                                        autoComplete="address-line2"
                                         value={draft.bill.line2 ?? ''}
                                         onChange={(e) => setDraft({ ...draft, bill: { ...draft.bill, line2: e.target.value } })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="City">
                                     <input
                                         type="text"
+                                        autoComplete="address-level2"
                                         value={draft.bill.city ?? ''}
                                         onChange={(e) => setDraft({ ...draft, bill: { ...draft.bill, city: e.target.value } })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="State">
                                     <input
                                         type="text"
+                                        autoComplete="address-level1"
                                         value={draft.bill.state ?? ''}
                                         onChange={(e) => setDraft({ ...draft, bill: { ...draft.bill, state: e.target.value } })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="ZIP">
                                     <input
                                         type="text"
+                                        inputMode="numeric"
+                                        autoComplete="postal-code"
                                         value={draft.bill.zip ?? ''}
                                         onChange={(e) => setDraft({ ...draft, bill: { ...draft.bill, zip: e.target.value } })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="Country">
                                     <input
                                         type="text"
+                                        autoComplete="country-name"
                                         value={draft.bill.country ?? ''}
                                         onChange={(e) => setDraft({ ...draft, bill: { ...draft.bill, country: e.target.value } })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                             </div>
@@ -556,7 +577,7 @@ export default function VendorDetailPage() {
                                         type="text"
                                         value={draft.taxIdentifier}
                                         onChange={(e) => setDraft({ ...draft, taxIdentifier: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                                 <Field label="Account #">
@@ -564,7 +585,7 @@ export default function VendorDetailPage() {
                                         type="text"
                                         value={draft.accountNumber}
                                         onChange={(e) => setDraft({ ...draft, accountNumber: e.target.value })}
-                                        className="ven-input"
+                                        className="ven-input text-base sm:text-sm"
                                     />
                                 </Field>
                             </div>

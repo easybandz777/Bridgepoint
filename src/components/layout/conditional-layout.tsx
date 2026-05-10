@@ -11,7 +11,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
             {!isAdmin && <Navbar />}
-            <main className={isAdmin ? undefined : 'min-h-screen'}>{children}</main>
+            <main id="main" className={isAdmin ? undefined : 'min-h-screen'}>{children}</main>
             {!isAdmin && <Footer />}
         </>
     );

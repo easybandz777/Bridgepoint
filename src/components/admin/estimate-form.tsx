@@ -197,9 +197,9 @@ export default function EstimateForm() {
     const templateColor = template?.color ?? '#b8956a';
 
     return (
-        <div className="p-8 max-w-4xl">
+        <div className="p-4 sm:p-8 max-w-4xl">
             {/* Header */}
-            <div className="mb-8 flex items-center justify-between">
+            <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-3 mb-1">
                         <button onClick={() => setTemplate(undefined)}
@@ -215,19 +215,19 @@ export default function EstimateForm() {
                     </div>
                     <h1 className="font-serif text-2xl font-bold text-white">New Estimate</h1>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2">
                     <div className="relative">
                         <select value={status} onChange={e => setStatus(e.target.value)} aria-label="Estimate status"
-                            className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm pr-8 focus:outline-none focus:border-[#b8956a]/60 cursor-pointer">
+                            className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 h-11 text-white text-sm pr-8 focus:outline-none focus:border-[#b8956a]/60 cursor-pointer">
                             {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[#1a1a1a]">{s}</option>)}
                         </select>
                         <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
                     </div>
-                    <button onClick={() => router.back()} className="px-4 py-2.5 rounded-xl text-sm text-white/40 hover:text-white/70 border border-white/8 transition-colors">
+                    <button onClick={() => router.back()} className="px-4 h-11 rounded-xl text-sm text-white/40 hover:text-white/70 border border-white/8 transition-colors">
                         Cancel
                     </button>
                     <button onClick={handleSave} disabled={saving || !clientName || !projTitle}
-                        className="px-6 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wider disabled:opacity-40 transition-all"
+                        className="px-6 h-11 rounded-xl text-sm font-semibold uppercase tracking-wider disabled:opacity-40 transition-all"
                         style={{ background: `linear-gradient(135deg, ${templateColor} 0%, ${templateColor}90 100%)`, color: 'white' }}>
                         {saving ? 'Saving…' : 'Save Estimate'}
                     </button>
@@ -263,16 +263,16 @@ export default function EstimateForm() {
                     </p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label className={lbl}>Client Name *</label><input className={inp} placeholder="John & Jane Smith" value={clientName} onChange={e => setClientName(e.target.value)} /></div>
-                    <div><label className={lbl}>Company (optional)</label><input className={inp} placeholder="Acme Corp" value={clientCompany} onChange={e => setClientCompany(e.target.value)} /></div>
-                    <div className="sm:col-span-2"><label className={lbl}>Street Address</label><input className={inp} placeholder="123 Main St" value={clientAddress} onChange={e => setClientAddress(e.target.value)} /></div>
-                    <div><label className={lbl}>City</label><input className={inp} placeholder="Atlanta" value={clientCity} onChange={e => setClientCity(e.target.value)} /></div>
+                    <div><label className={lbl}>Client Name *</label><input className={inp} placeholder="John & Jane Smith" autoCapitalize="words" autoComplete="name" value={clientName} onChange={e => setClientName(e.target.value)} /></div>
+                    <div><label className={lbl}>Company (optional)</label><input className={inp} placeholder="Acme Corp" autoCapitalize="words" autoComplete="organization" value={clientCompany} onChange={e => setClientCompany(e.target.value)} /></div>
+                    <div className="sm:col-span-2"><label className={lbl}>Street Address</label><input className={inp} placeholder="123 Main St" autoComplete="street-address" value={clientAddress} onChange={e => setClientAddress(e.target.value)} /></div>
+                    <div><label className={lbl}>City</label><input className={inp} placeholder="Atlanta" autoCapitalize="words" autoComplete="address-level2" value={clientCity} onChange={e => setClientCity(e.target.value)} /></div>
                     <div className="grid grid-cols-2 gap-3">
-                        <div><label className={lbl}>State</label><input className={inp} placeholder="GA" value={clientState} onChange={e => setClientState(e.target.value)} /></div>
-                        <div><label className={lbl}>ZIP</label><input className={inp} placeholder="30301" value={clientZip} onChange={e => setClientZip(e.target.value)} /></div>
+                        <div><label className={lbl}>State</label><input className={inp} placeholder="GA" autoCapitalize="characters" autoComplete="address-level1" value={clientState} onChange={e => setClientState(e.target.value)} /></div>
+                        <div><label className={lbl}>ZIP</label><input className={inp} placeholder="30301" inputMode="numeric" autoComplete="postal-code" value={clientZip} onChange={e => setClientZip(e.target.value)} /></div>
                     </div>
-                    <div><label className={lbl}>Email</label><input className={inp} type="email" placeholder="client@email.com" value={clientEmail} onChange={e => setClientEmail(e.target.value)} /></div>
-                    <div><label className={lbl}>Phone</label><input className={inp} placeholder="(404) 000-0000" value={clientPhone} onChange={e => setClientPhone(e.target.value)} /></div>
+                    <div><label className={lbl}>Email</label><input className={inp} type="email" inputMode="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="email" placeholder="client@email.com" value={clientEmail} onChange={e => setClientEmail(e.target.value)} /></div>
+                    <div><label className={lbl}>Phone</label><input className={inp} type="tel" inputMode="tel" autoComplete="tel" placeholder="(404) 000-0000" value={clientPhone} onChange={e => setClientPhone(e.target.value)} /></div>
                 </div>
             </div>
 
@@ -315,35 +315,37 @@ export default function EstimateForm() {
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">{cat}</span>
                                 <div className="flex-1 h-px bg-white/5" />
                             </div>
-                            <div className="grid gap-1.5 mb-1" style={{ gridTemplateColumns: '140px 1fr 72px 64px 86px 80px 30px' }}>
-                                {catItems.map(item => {
-                                    const idx = items.findIndex(i => i.id === item.id);
-                                    return (
-                                        <div key={item.id} className="contents">
-                                            <select value={item.category} aria-label="Category"
-                                                onChange={e => updateItem(idx, 'category', e.target.value)}
-                                                className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-[#b8956a]/50 cursor-pointer">
-                                                {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#111]">{c}</option>)}
-                                            </select>
-                                            {/* TODO: re-enable when ItemPicker ships — wrap input below so users can pick an existing item to pre-fill description and unitPrice. */}
-                                            <input value={item.description} onChange={e => updateItem(idx, 'description', e.target.value)}
-                                                placeholder="Description" className="bg-white/5 border border-white/8 rounded-lg px-2.5 py-2 text-white text-[11px] placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all" />
-                                            <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', parseFloat(e.target.value) || 0)}
-                                                className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] text-right focus:outline-none focus:border-[#b8956a]/50 transition-all" />
-                                            <input value={item.unit} onChange={e => updateItem(idx, 'unit', e.target.value)}
-                                                placeholder="unit" className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-[#b8956a]/50 transition-all" />
-                                            <input type="number" value={item.unitPrice} onChange={e => updateItem(idx, 'unitPrice', parseFloat(e.target.value) || 0)}
-                                                className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] text-right focus:outline-none focus:border-[#b8956a]/50 transition-all" />
-                                            <div className="text-right text-[11px] font-semibold text-white/60 px-2 py-2 bg-white/3 rounded-lg border border-white/6">
-                                                ${item.total.toLocaleString()}
+                            <div className="overflow-x-auto -mx-2 px-2 sm:mx-0 sm:px-0">
+                                <div className="grid gap-1.5 mb-1 min-w-[640px] sm:min-w-0" style={{ gridTemplateColumns: '140px 1fr 72px 64px 86px 80px 44px' }}>
+                                    {catItems.map(item => {
+                                        const idx = items.findIndex(i => i.id === item.id);
+                                        return (
+                                            <div key={item.id} className="contents">
+                                                <select value={item.category} aria-label="Category"
+                                                    onChange={e => updateItem(idx, 'category', e.target.value)}
+                                                    className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-[#b8956a]/50 cursor-pointer">
+                                                    {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#111]">{c}</option>)}
+                                                </select>
+                                                {/* TODO: re-enable when ItemPicker ships — wrap input below so users can pick an existing item to pre-fill description and unitPrice. */}
+                                                <input value={item.description} onChange={e => updateItem(idx, 'description', e.target.value)}
+                                                    placeholder="Description" className="bg-white/5 border border-white/8 rounded-lg px-2.5 py-2 text-white text-[11px] placeholder-white/20 focus:outline-none focus:border-[#b8956a]/50 transition-all" />
+                                                <input type="number" inputMode="decimal" value={item.quantity} onChange={e => updateItem(idx, 'quantity', parseFloat(e.target.value) || 0)}
+                                                    className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] text-right focus:outline-none focus:border-[#b8956a]/50 transition-all" />
+                                                <input value={item.unit} onChange={e => updateItem(idx, 'unit', e.target.value)}
+                                                    placeholder="unit" className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-[#b8956a]/50 transition-all" />
+                                                <input type="number" inputMode="decimal" value={item.unitPrice} onChange={e => updateItem(idx, 'unitPrice', parseFloat(e.target.value) || 0)}
+                                                    className="bg-white/5 border border-white/8 rounded-lg px-2 py-2 text-white text-[11px] text-right focus:outline-none focus:border-[#b8956a]/50 transition-all" />
+                                                <div className="text-right text-[11px] font-semibold text-white/60 px-2 py-2 bg-white/3 rounded-lg border border-white/6">
+                                                    ${item.total.toLocaleString()}
+                                                </div>
+                                                <button onClick={() => setItems(p => p.filter(i => i.id !== item.id))} disabled={items.length === 1} aria-label="Remove line item"
+                                                    className="flex items-center justify-center w-11 h-11 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-20">
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </div>
-                                            <button onClick={() => setItems(p => p.filter(i => i.id !== item.id))} disabled={items.length === 1} aria-label="Remove line item"
-                                                className="flex items-center justify-center w-7 h-8 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-20">
-                                                <Trash2 size={11} />
-                                            </button>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
                     ));
@@ -373,7 +375,7 @@ export default function EstimateForm() {
                         <div key={idx} className="grid grid-cols-12 gap-3 items-center">
                             <div className="col-span-5"><input value={m.label} onChange={e => updateMilestone(idx, 'label', e.target.value)} placeholder="Milestone label" className={`${inp} text-xs`} /></div>
                             <div className="col-span-2 relative">
-                                <input type="number" value={m.percentage} onChange={e => updateMilestone(idx, 'percentage', parseFloat(e.target.value) || 0)} className={`${inp} text-xs pr-6`} placeholder="%" />
+                                <input type="number" inputMode="decimal" value={m.percentage} onChange={e => updateMilestone(idx, 'percentage', parseFloat(e.target.value) || 0)} className={`${inp} text-xs pr-6`} placeholder="%" />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 text-xs">%</span>
                             </div>
                             <div className="col-span-2 text-sm font-semibold text-white/60 text-right">${Math.round((subtotal * m.percentage) / 100).toLocaleString()}</div>
@@ -399,8 +401,8 @@ export default function EstimateForm() {
                             <input value={t} onChange={e => setTerms(p => { const a = [...p]; a[idx] = e.target.value; return a; })}
                                 className={`${inp} text-xs flex-1`} />
                             <button onClick={() => setTerms(p => p.filter((_, i) => i !== idx))} aria-label="Remove term"
-                                className="mt-1.5 w-7 h-7 flex items-center justify-center rounded-lg text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-all">
-                                <Trash2 size={12} />
+                                className="w-11 h-11 flex items-center justify-center rounded-lg text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-all shrink-0">
+                                <Trash2 size={16} />
                             </button>
                         </div>
                     ))}
@@ -413,10 +415,10 @@ export default function EstimateForm() {
             </div>
 
             {/* Save footer */}
-            <div className="flex justify-end gap-3 mt-2 pb-8">
-                <button onClick={() => router.back()} className="px-5 py-3 rounded-xl text-sm text-white/40 hover:text-white/70 border border-white/8 transition-colors">Cancel</button>
+            <div className="sticky bottom-0 sm:static -mx-4 sm:mx-0 px-4 sm:px-0 py-3 sm:py-0 mt-2 pb-[env(safe-area-inset-bottom)] sm:pb-8 bg-[#0f0f0f]/95 backdrop-blur sm:bg-transparent sm:backdrop-blur-none border-t border-white/10 sm:border-t-0 flex flex-wrap justify-end gap-2 sm:gap-3">
+                <button onClick={() => router.back()} className="px-5 h-11 sm:py-3 sm:h-auto rounded-xl text-sm text-white/40 hover:text-white/70 border border-white/8 transition-colors">Cancel</button>
                 <button onClick={handleSave} disabled={saving || !clientName || !projTitle}
-                    className="px-8 py-3 rounded-xl text-sm font-semibold uppercase tracking-wider disabled:opacity-40 transition-all"
+                    className="px-8 h-11 sm:py-3 sm:h-auto rounded-xl text-sm font-semibold uppercase tracking-wider disabled:opacity-40 transition-all"
                     style={{ background: `linear-gradient(135deg, ${templateColor} 0%, ${templateColor}a0 100%)`, color: 'white' }}>
                     {saving ? 'Saving…' : 'Save Estimate'}
                 </button>
