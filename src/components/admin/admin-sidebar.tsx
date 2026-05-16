@@ -47,6 +47,7 @@ const NAV_OPERATIONS: NavLink[] = [
     { href: '/admin/projects', label: 'Projects', icon: Hammer, exact: false },
     { href: '/admin/estimates', label: 'Estimates', icon: FileText, exact: false },
     { href: '/admin/invoices', label: 'Invoices', icon: Receipt, exact: false },
+    { href: '/admin/payments', label: 'Payments', icon: DollarSign, exact: false },
     { href: '/admin/expenses', label: 'Expenses', icon: CreditCard, exact: false },
 ];
 

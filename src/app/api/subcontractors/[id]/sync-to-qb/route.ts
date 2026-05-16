@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { pushVendor } from '@/lib/quickbooks/vendors';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -10,6 +11,12 @@ type Ctx = { params: Promise<{ id: string }> };
  * to QB as a Vendor and stamps qb_id + qb_synced_at.
  */
 export async function POST(req: Request, ctx: Ctx) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const { id } = await ctx.params;
         const body = await req.json().catch(() => ({})) as { actor?: string };

@@ -23,6 +23,7 @@ import { pushEstimate } from '@/lib/quickbooks/estimates';
 import { pushVendor } from '@/lib/quickbooks/vendors';
 import { pushBill } from '@/lib/quickbooks/bills';
 import { refreshAllInvoicePayments } from '@/lib/quickbooks/payments';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,6 +40,12 @@ interface PendingRow {
 }
 
 export async function POST(req: Request) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410, headers: NO_STORE },
+        );
+    }
     // Optional shared-secret protection. If ADMIN_CRON_SECRET is set in the
     // environment, the request must include a matching X-Admin-Key header.
     // This lets Vercel Cron (configured with the header) hit the route while

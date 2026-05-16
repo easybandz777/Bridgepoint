@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server';
 import { listRecentPayments } from '@/lib/quickbooks/payments';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const url = new URL(req.url);
         const limit = url.searchParams.get('limit');

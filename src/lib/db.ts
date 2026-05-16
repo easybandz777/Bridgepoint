@@ -813,6 +813,33 @@ export async function initDB() {
     await sql`CREATE INDEX IF NOT EXISTS idx_payments_customer ON payments(customer_id)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_payments_created ON payments(created_at DESC)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_payments_charge ON payments(processor_charge_id)`;
+
+    // ─── Stripe webhook idempotency ─────────────────────────────────────────
+    // Stripe will retry webhook deliveries on non-2xx response. Persist the
+    // raw envelope keyed by event id so we can return 200 immediately and
+    // drain on a separate cron — the same receiver/processor split as QB.
+    await sql`
+        CREATE TABLE IF NOT EXISTS payments_webhook_events (
+            id TEXT PRIMARY KEY,                  -- Stripe event id (evt_...)
+            type TEXT NOT NULL,                   -- e.g. checkout.session.completed
+            livemode BOOLEAN NOT NULL DEFAULT false,
+            api_version TEXT,
+            payload JSONB NOT NULL,
+            received_at TIMESTAMPTZ DEFAULT NOW(),
+            processed_at TIMESTAMPTZ,
+            process_error TEXT,
+            attempts INTEGER NOT NULL DEFAULT 0
+        )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_webhook_unprocessed ON payments_webhook_events(received_at) WHERE processed_at IS NULL`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_webhook_type ON payments_webhook_events(type)`;
+
+    // ─── Customer-level Stripe identity ─────────────────────────────────────
+    // Created lazily on first Checkout session so we can save card / bank
+    // details against a stable Stripe Customer across multiple invoices.
+    await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_customers_stripe ON customers(stripe_customer_id)`;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────

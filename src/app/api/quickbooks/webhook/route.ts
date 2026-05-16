@@ -1,12 +1,20 @@
+import { NextResponse } from 'next/server';
 import {
     verifyWebhookSignature,
     persistWebhookEvents,
 } from '@/lib/quickbooks/webhooks';
 import type { QbWebhookEnvelope } from '@/lib/quickbooks/types';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     const raw = await req.text();
     const sig = req.headers.get('intuit-signature');
 

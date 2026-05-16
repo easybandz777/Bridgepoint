@@ -20,6 +20,8 @@ interface DetailState {
     children: Account[];
 }
 
+const QB_DISABLED = process.env.NEXT_PUBLIC_QB_DISABLED === 'true';
+
 function fmtCurrency(n: number, currency: string): string {
     try {
         return new Intl.NumberFormat('en-US', {
@@ -254,18 +256,20 @@ export default function AccountDetailPage({
                             Inactive
                         </span>
                     )}
-                    <button
-                        onClick={refreshFromQb}
-                        disabled={refreshing}
-                        className="h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-[#cbb08c] transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                        {refreshing ? (
-                            <Loader2 size={14} className="animate-spin" />
-                        ) : (
-                            <RefreshCw size={14} />
-                        )}
-                        {refreshing ? 'Refreshing…' : 'Refresh from QuickBooks'}
-                    </button>
+                    {!QB_DISABLED && (
+                        <button
+                            onClick={refreshFromQb}
+                            disabled={refreshing}
+                            className="h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-[#cbb08c] transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            {refreshing ? (
+                                <Loader2 size={14} className="animate-spin" />
+                            ) : (
+                                <RefreshCw size={14} />
+                            )}
+                            {refreshing ? 'Refreshing…' : 'Refresh from QuickBooks'}
+                        </button>
+                    )}
                 </div>
             </div>
 

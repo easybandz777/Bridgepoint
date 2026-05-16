@@ -11,9 +11,17 @@ import {
     Loader2,
     Building,
     Clock,
+    Archive,
 } from 'lucide-react';
 
 export interface QbStatusResponse {
+    /**
+     * When true, the server has set QB_DISABLED=true. Every other field on this
+     * shape becomes informational only — the UI should render its disabled
+     * state and hide connect / sync / disconnect controls.
+     */
+    disabled?: boolean;
+    message?: string;
     connected: boolean;
     connectionId?: string;
     realmId?: string;
@@ -63,6 +71,35 @@ export function QbStatusCard({ data, loading, busy, onConnect, onDisconnect, onR
                     <div className="flex flex-col sm:flex-row gap-3">
                         <div className="h-11 w-full sm:w-44 bg-white/5 rounded-xl" />
                         <div className="h-11 w-full sm:w-32 bg-white/5 rounded-xl" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (data.disabled) {
+        // QB_DISABLED=true on the server — render a compact archived state
+        // instead of the usual connect / disconnect / refresh controls.
+        // No live QB calls are made from this card while disabled.
+        return (
+            <div className="bg-[#1a1a1a] border border-white/6 rounded-2xl p-6 sm:p-7">
+                <div className="flex items-start gap-4">
+                    <div className="w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
+                        <Archive size={20} className="text-white/40" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <h2 className="font-serif text-lg sm:text-xl font-semibold text-white mb-1">
+                            QuickBooks disabled
+                        </h2>
+                        <p className="text-sm text-white/55 max-w-2xl">
+                            {data.message ?? 'QuickBooks integration is disabled. The CRM is now the system of record.'}
+                        </p>
+                        <p className="text-[11px] text-white/35 mt-3">
+                            Existing QB ids (<code className="px-1 py-0.5 rounded bg-white/5 border border-white/6 text-white/55 font-mono">qb_id</code>)
+                            are preserved on every record. To re-enable, set
+                            <code className="px-1 py-0.5 rounded bg-white/5 border border-white/6 text-white/55 font-mono"> QB_DISABLED=false</code>
+                            and redeploy.
+                        </p>
                     </div>
                 </div>
             </div>

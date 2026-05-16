@@ -1,11 +1,18 @@
 import { NextResponse } from 'next/server';
 import { refreshAllInvoicePayments } from '@/lib/quickbooks/payments';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
 const NO_STORE = { 'Cache-Control': 'no-store' };
 
 export async function POST() {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410, headers: NO_STORE },
+        );
+    }
     try {
         const result = await refreshAllInvoicePayments('admin');
         return NextResponse.json({ ok: true, ...result }, { headers: NO_STORE });

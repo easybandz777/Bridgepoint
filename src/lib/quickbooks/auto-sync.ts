@@ -21,6 +21,7 @@ import { pushEstimate } from './estimates';
 import { pushVendor } from './vendors';
 import { pushBill } from './bills';
 import { resolveOrCreateCustomerForProject } from './customers';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 const QB_LOG_ENTITY = 'quickbooks_auto';
 
@@ -34,11 +35,23 @@ async function isConnected(): Promise<boolean> {
     return conn != null;
 }
 
+/**
+ * Combined gate: returns true if QB sync should be skipped (either because
+ * the feature flag is off, or because there is no active connection).
+ * Centralizing this means every `autoSync*IfEnabled` entry point becomes a
+ * no-op the instant `QB_DISABLED=true` is flipped — no DB roundtrip required.
+ */
+async function shouldSkipAutoSync(): Promise<boolean> {
+    if (isQbDisabled()) return true;
+    if (!(await isConnected())) return true;
+    return false;
+}
+
 export async function autoSyncInvoiceIfEnabled(
     invoiceId: string,
     opts: AutoSyncOpts = {},
 ): Promise<void> {
-    if (!(await isConnected())) return;
+    if (await shouldSkipAutoSync()) return;
     const actor = opts.actor ?? 'auto';
     const reason = opts.reason ?? 'state change';
     try {
@@ -67,7 +80,7 @@ export async function autoSyncEstimateIfEnabled(
     estimateId: string,
     opts: AutoSyncOpts = {},
 ): Promise<void> {
-    if (!(await isConnected())) return;
+    if (await shouldSkipAutoSync()) return;
     const actor = opts.actor ?? 'auto';
     const reason = opts.reason ?? 'state change';
     try {
@@ -96,7 +109,7 @@ export async function autoSyncCustomerForProjectIfEnabled(
     projectId: string,
     opts: AutoSyncOpts = {},
 ): Promise<void> {
-    if (!(await isConnected())) return;
+    if (await shouldSkipAutoSync()) return;
     const actor = opts.actor ?? 'auto';
     const reason = opts.reason ?? 'state change';
     try {
@@ -125,7 +138,7 @@ export async function autoSyncSubcontractorIfEnabled(
     subId: string,
     opts: AutoSyncOpts = {},
 ): Promise<void> {
-    if (!(await isConnected())) return;
+    if (await shouldSkipAutoSync()) return;
     const actor = opts.actor ?? 'auto';
     const reason = opts.reason ?? 'state change';
     try {
@@ -154,7 +167,7 @@ export async function autoSyncBillIfEnabled(
     billId: string,
     opts: AutoSyncOpts = {},
 ): Promise<void> {
-    if (!(await isConnected())) return;
+    if (await shouldSkipAutoSync()) return;
     const actor = opts.actor ?? 'auto';
     const reason = opts.reason ?? 'state change';
     try {

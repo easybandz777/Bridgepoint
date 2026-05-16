@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { initDB } from '@/lib/db';
 import { resolveOrCreateCustomerForProject } from '@/lib/quickbooks/customers';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,12 @@ export const dynamic = 'force-dynamic';
  * so the admin UI can prompt to connect.
  */
 export async function POST(req: Request) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         await initDB();
 

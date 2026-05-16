@@ -17,6 +17,8 @@ const FILTERS: { key: FilterKey; label: string }[] = [
     { key: 'unlinked', label: 'Not Linked' },
 ];
 
+const QB_DISABLED = process.env.NEXT_PUBLIC_QB_DISABLED === 'true';
+
 interface VendorListResponse {
     rows: Vendor[];
     total: number;
@@ -114,13 +116,15 @@ export default function VendorsDirectoryPage() {
                     <p className="text-sm text-white/50">{counts.total} total &middot; suppliers, services, and subs.</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => void importFromQb()}
-                        disabled={importing}
-                        className="h-10 px-4 bg-white/5 border border-white/10 text-white text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-white/10 transition-colors whitespace-nowrap disabled:opacity-50"
-                    >
-                        <Download size={16} /> {importing ? 'Importing...' : 'Pull from QB'}
-                    </button>
+                    {!QB_DISABLED && (
+                        <button
+                            onClick={() => void importFromQb()}
+                            disabled={importing}
+                            className="h-10 px-4 bg-white/5 border border-white/10 text-white text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-white/10 transition-colors whitespace-nowrap disabled:opacity-50"
+                        >
+                            <Download size={16} /> {importing ? 'Importing...' : 'Pull from QB'}
+                        </button>
+                    )}
                     <Link
                         href="/admin/vendors/new"
                         className="h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-[#cbb08c] transition-colors whitespace-nowrap"
@@ -222,15 +226,17 @@ export default function VendorsDirectoryPage() {
                     </p>
                     {vendors.length === 0 ? (
                         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                            <Link
-                                href="/admin/integrations/quickbooks"
-                                className="h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full inline-flex items-center justify-center gap-2 hover:bg-[#cbb08c] transition-colors"
-                            >
-                                <Plug size={16} /> Pull from QuickBooks
-                            </Link>
+                            {!QB_DISABLED && (
+                                <Link
+                                    href="/admin/integrations/quickbooks"
+                                    className="h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full inline-flex items-center justify-center gap-2 hover:bg-[#cbb08c] transition-colors"
+                                >
+                                    <Plug size={16} /> Pull from QuickBooks
+                                </Link>
+                            )}
                             <Link
                                 href="/admin/vendors/new"
-                                className="h-10 px-5 bg-white/5 border border-white/10 text-white text-sm font-semibold rounded-full inline-flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+                                className={`h-10 px-5 ${QB_DISABLED ? 'bg-[#b8956a] text-black hover:bg-[#cbb08c]' : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'} text-sm font-semibold rounded-full inline-flex items-center justify-center gap-2 transition-colors`}
                             >
                                 <Plus size={16} /> New Vendor
                             </Link>

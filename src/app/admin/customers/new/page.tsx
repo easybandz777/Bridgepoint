@@ -9,6 +9,8 @@ import type { CustomerAddress, CustomerType } from '@/lib/customers';
 const PAYMENT_TERMS_OPTIONS = ['Net 15', 'Net 30', 'Net 60', 'Due on Receipt', 'Custom'];
 const PAYMENT_METHODS = ['Check', 'ACH', 'Card', 'Cash'];
 
+const QB_DISABLED = process.env.NEXT_PUBLIC_QB_DISABLED === 'true';
+
 export default function NewCustomerPage() {
     const router = useRouter();
 
@@ -94,7 +96,7 @@ export default function NewCustomerPage() {
             }
             const newId = data.id;
 
-            if (syncToQB) {
+            if (syncToQB && !QB_DISABLED) {
                 // Customer-direct QB sync isn't built yet; another agent will wire
                 // this up. We attempt the call and continue regardless of result —
                 // the user can retry from the detail page.
@@ -291,33 +293,35 @@ export default function NewCustomerPage() {
                     </div>
                 </Section>
 
-                {/* 5. QB sync */}
-                <Section title="QuickBooks">
-                    <label
-                        className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
-                            syncToQB
-                                ? 'bg-[#b8956a]/5 border-[#b8956a]/30'
-                                : 'bg-white/5 border-white/10 hover:bg-white/10'
-                        }`}
-                    >
-                        <input
-                            type="checkbox"
-                            checked={syncToQB}
-                            onChange={(e) => setSyncToQB(e.target.checked)}
-                            className="w-5 h-5 mt-0.5 rounded border-white/20 bg-black/50 text-[#b8956a] focus:ring-[#b8956a] focus:ring-offset-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-white flex items-center gap-2">
-                                <PlugZap size={14} className="text-[#b8956a]" />
-                                Also create in QuickBooks now
-                            </p>
-                            <p className="text-[12px] text-white/50 mt-1">
-                                If QuickBooks is connected, we&apos;ll mirror this customer immediately. Otherwise the
-                                CRM record is created and you can sync later from the customer detail page.
-                            </p>
-                        </div>
-                    </label>
-                </Section>
+                {/* 5. QB sync — hidden entirely when the integration is disabled */}
+                {!QB_DISABLED && (
+                    <Section title="QuickBooks">
+                        <label
+                            className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
+                                syncToQB
+                                    ? 'bg-[#b8956a]/5 border-[#b8956a]/30'
+                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                            }`}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={syncToQB}
+                                onChange={(e) => setSyncToQB(e.target.checked)}
+                                className="w-5 h-5 mt-0.5 rounded border-white/20 bg-black/50 text-[#b8956a] focus:ring-[#b8956a] focus:ring-offset-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-white flex items-center gap-2">
+                                    <PlugZap size={14} className="text-[#b8956a]" />
+                                    Also create in QuickBooks now
+                                </p>
+                                <p className="text-[12px] text-white/50 mt-1">
+                                    If QuickBooks is connected, we&apos;ll mirror this customer immediately. Otherwise the
+                                    CRM record is created and you can sync later from the customer detail page.
+                                </p>
+                            </div>
+                        </label>
+                    </Section>
+                )}
 
                 <div className="flex items-center justify-end gap-3 pt-2">
                     <Link

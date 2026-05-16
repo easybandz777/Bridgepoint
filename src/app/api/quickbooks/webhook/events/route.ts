@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server';
 import sql, { initDB } from '@/lib/db';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         await initDB();
         const events = await sql`

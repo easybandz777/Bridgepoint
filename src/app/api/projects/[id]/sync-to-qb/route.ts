@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import sql, { initDB, logActivity } from '@/lib/db';
 import { resolveOrCreateCustomerForProject } from '@/lib/quickbooks/customers';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -12,6 +13,12 @@ type Ctx = { params: Promise<{ id: string }> };
  * QB Customer for this project and stamps `qb_id` + `qb_synced_at` on the row.
  */
 export async function POST(req: Request, ctx: Ctx) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const { id } = await ctx.params;
         await initDB();

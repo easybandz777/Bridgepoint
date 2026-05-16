@@ -1,8 +1,11 @@
 import { notFound } from 'next/navigation';
 import sql from '@/lib/db';
 import { InvoiceDocument } from '@/components/admin/invoice-document';
+import { InvoicePaymentsCard } from '@/components/admin/invoice-payments-card';
 import { QbSyncButton } from '@/components/admin/qb-sync-button';
 import { QbStatusPill } from '@/components/admin/qb-status-pill';
+import { listPayments } from '@/lib/stripe/payments';
+import { getAppUrl } from '@/lib/stripe/client';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -28,6 +31,19 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
     const qbId = (rows[0] as { qb_id?: string | null }).qb_id ?? null;
     const qbSyncedAt = (rows[0] as { qb_synced_at?: string | null }).qb_synced_at ?? null;
 
+    // Pre-fetch payments server-side so the card paints with data on first render.
+    // Swallow errors so the page still renders if the payments table is missing
+    // in this environment — the card will retry client-side.
+    let initialPayments;
+    try {
+        initialPayments = await listPayments({ invoiceId: id });
+    } catch (e) {
+        console.error('[admin/invoices/[id]] listPayments failed:', e);
+        initialPayments = undefined;
+    }
+
+    const payUrl = `${getAppUrl()}/pay/${id}`;
+
     return (
         <div className="p-8">
             <div className="flex items-center justify-between mb-8 print:hidden">
@@ -41,6 +57,13 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 </div>
             </div>
             <InvoiceDocument invoice={invoice} />
+            <InvoicePaymentsCard
+                invoiceId={invoice.id}
+                invoiceNumber={invoice.invoiceNumber}
+                amountDue={invoice.amountDue}
+                initialPayments={initialPayments}
+                payUrl={payUrl}
+            />
         </div>
     );
 }

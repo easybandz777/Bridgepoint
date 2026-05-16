@@ -30,6 +30,8 @@ interface LinkedSub {
     contactPerson?: string;
 }
 
+const QB_DISABLED = process.env.NEXT_PUBLIC_QB_DISABLED === 'true';
+
 function fmtMoney(n: number): string {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -347,7 +349,7 @@ export default function VendorDetailPage() {
                                 <Edit size={14} /> Edit
                             </button>
                         )}
-                        {vendor.subcontractorId ? (
+                        {!QB_DISABLED && vendor.subcontractorId ? (
                             <button
                                 onClick={() => void syncToQb()}
                                 disabled={syncing}
@@ -355,7 +357,7 @@ export default function VendorDetailPage() {
                             >
                                 <Cloud size={14} /> {syncing ? 'Syncing...' : 'Sync to QB'}
                             </button>
-                        ) : (
+                        ) : !QB_DISABLED ? (
                             <button
                                 disabled
                                 title="Direct vendor push coming soon"
@@ -363,8 +365,8 @@ export default function VendorDetailPage() {
                             >
                                 <Cloud size={14} /> Direct push soon
                             </button>
-                        )}
-                        {vendor.qbId && (
+                        ) : null}
+                        {!QB_DISABLED && vendor.qbId && (
                             <button
                                 onClick={() => void refreshFromQb()}
                                 disabled={refreshing}

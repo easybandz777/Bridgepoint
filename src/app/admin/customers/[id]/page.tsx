@@ -48,6 +48,8 @@ interface DetailResponse {
 const PAYMENT_TERMS_OPTIONS = ['Net 15', 'Net 30', 'Net 60', 'Due on Receipt', 'Custom'];
 const PAYMENT_METHODS = ['Check', 'ACH', 'Card', 'Cash'];
 
+const QB_DISABLED = process.env.NEXT_PUBLIC_QB_DISABLED === 'true';
+
 function fmtMoney(n: number): string {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -147,19 +149,25 @@ export default function CustomerDetailPage() {
 
             // Pull QB activity for this customer (filter client-side; sync-log API
             // doesn't currently support entityId filter, so we narrow ourselves).
-            try {
-                const logRes = await fetch(`/api/quickbooks/sync-log?entityType=customer&limit=200`, { cache: 'no-store' });
-                if (logRes.ok) {
-                    const logData = (await logRes.json()) as { rows?: SyncLogEntry[] };
-                    const filtered = (logData.rows ?? []).filter(
-                        (row) => row.entityId === id || row.qbEntityId === c.qbId,
-                    );
-                    setSyncLog(filtered);
-                } else {
+            // Skip entirely when the integration is disabled — the route returns
+            // 410 and we don't want noisy "Failed to load" entries in the console.
+            if (QB_DISABLED) {
+                setSyncLog([]);
+            } else {
+                try {
+                    const logRes = await fetch(`/api/quickbooks/sync-log?entityType=customer&limit=200`, { cache: 'no-store' });
+                    if (logRes.ok) {
+                        const logData = (await logRes.json()) as { rows?: SyncLogEntry[] };
+                        const filtered = (logData.rows ?? []).filter(
+                            (row) => row.entityId === id || row.qbEntityId === c.qbId,
+                        );
+                        setSyncLog(filtered);
+                    } else {
+                        setSyncLog(null);
+                    }
+                } catch {
                     setSyncLog(null);
                 }
-            } catch {
-                setSyncLog(null);
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
@@ -333,28 +341,30 @@ export default function CustomerDetailPage() {
                     </div>
 
                     <div className="flex flex-wrap items-start gap-2 shrink-0">
-                        <div className="inline-flex items-center gap-3">
-                            <button
-                                onClick={syncToQuickBooks}
-                                disabled={syncBusy}
-                                className="h-10 px-4 rounded-xl bg-[#b8956a] text-black text-sm font-semibold hover:bg-[#cbb08c] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
-                            >
-                                {syncBusy ? (
-                                    <Loader2 size={14} className="animate-spin" />
-                                ) : (
-                                    <PlugZap size={14} />
-                                )}
-                                {syncBusy ? 'Syncing…' : 'Sync to QuickBooks'}
-                            </button>
-                            {syncMsg && (
-                                <span
-                                    className={`inline-flex items-center gap-1.5 text-xs font-medium ${syncOk ? 'text-[#34d399]' : 'text-red-400'}`}
+                        {!QB_DISABLED && (
+                            <div className="inline-flex items-center gap-3">
+                                <button
+                                    onClick={syncToQuickBooks}
+                                    disabled={syncBusy}
+                                    className="h-10 px-4 rounded-xl bg-[#b8956a] text-black text-sm font-semibold hover:bg-[#cbb08c] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
                                 >
-                                    {syncOk ? <CheckCircle size={12} /> : <AlertCircle size={12} />}
-                                    {syncMsg}
-                                </span>
-                            )}
-                        </div>
+                                    {syncBusy ? (
+                                        <Loader2 size={14} className="animate-spin" />
+                                    ) : (
+                                        <PlugZap size={14} />
+                                    )}
+                                    {syncBusy ? 'Syncing…' : 'Sync to QuickBooks'}
+                                </button>
+                                {syncMsg && (
+                                    <span
+                                        className={`inline-flex items-center gap-1.5 text-xs font-medium ${syncOk ? 'text-[#34d399]' : 'text-red-400'}`}
+                                    >
+                                        {syncOk ? <CheckCircle size={12} /> : <AlertCircle size={12} />}
+                                        {syncMsg}
+                                    </span>
+                                )}
+                            </div>
+                        )}
 
                         {!editing ? (
                             <button

@@ -8,6 +8,7 @@
 import { NextResponse } from 'next/server';
 import sql, { initDB } from '@/lib/db';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +22,12 @@ function toNum(rows: unknown): number {
 }
 
 export async function GET() {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     await initDB();
 
     const conn = await getActiveConnection().catch(() => null);

@@ -53,6 +53,13 @@ async function safeRun(
  *
  * Orchestrates the four bulk imports in sequence (accounts -> customers ->
  * vendors -> items). Accounts run first because items reference accounts.
+ *
+ * NOTE: This route is intentionally NOT gated by `isQbDisabled()`. Even after
+ * the CRM has been promoted to system-of-record and `QB_DISABLED=true` is
+ * flipped, an admin still needs the ability to run one final import to pull
+ * any stragglers from QuickBooks (e.g., transactions Intuit created on their
+ * own between the cutover snapshot and the actual flip). Every other QB route
+ * returns 410 when disabled; this one stays live by design.
  */
 export async function POST(req: Request) {
     try {

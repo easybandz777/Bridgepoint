@@ -1,6 +1,19 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 import { type Invoice } from '@/lib/invoices';
-import { Eye, Clock, CheckCircle, AlertCircle, XCircle, Timer } from 'lucide-react';
+import {
+    Eye,
+    Clock,
+    CheckCircle,
+    AlertCircle,
+    XCircle,
+    Timer,
+    Copy,
+    Check,
+    Link as LinkIcon,
+} from 'lucide-react';
 
 const STATUS_CONFIG: Record<string, { bg: string; text: string; icon: typeof CheckCircle }> = {
     Paid: { bg: 'rgba(52,211,153,0.12)', text: '#34d399', icon: CheckCircle },
@@ -13,9 +26,44 @@ function fmt(n: number) {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(n);
 }
 
+function getAppUrlClient(): string {
+    if (typeof window !== 'undefined') return window.location.origin;
+    return '';
+}
+
 export function InvoiceCard({ invoice }: { invoice: Invoice }) {
-    const s = STATUS_CONFIG[invoice.status];
+    const s = STATUS_CONFIG[invoice.status] ?? STATUS_CONFIG.Outstanding;
     const StatusIcon = s.icon;
+    const [copied, setCopied] = useState(false);
+    const [toast, setToast] = useState<string | null>(null);
+
+    async function handleCopy(e: React.MouseEvent) {
+        e.preventDefault();
+        e.stopPropagation();
+        const url = `${getAppUrlClient()}/pay/${invoice.id}`;
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(url);
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = url;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            }
+            setCopied(true);
+            setToast('Pay link copied');
+            window.setTimeout(() => setCopied(false), 1800);
+            window.setTimeout(() => setToast(null), 2200);
+        } catch {
+            setToast('Could not copy');
+            window.setTimeout(() => setToast(null), 2200);
+        }
+    }
+
     return (
         <div className="bg-[#1a1a1a] border border-white/6 rounded-2xl p-5 hover:border-[#b8956a]/30 transition-all group">
             <div className="flex items-start justify-between gap-4">
@@ -62,15 +110,47 @@ export function InvoiceCard({ invoice }: { invoice: Invoice }) {
                     {invoice.amountDue === 0 && (
                         <p className="text-xs text-[#34d399]/60 mb-3">Paid in full</p>
                     )}
-                    <Link
-                        href={`/admin/invoices/${invoice.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#b8956a] hover:text-[#d4b896] transition-colors"
-                    >
-                        <Eye size={12} />
-                        View Invoice
-                    </Link>
+                    <div className="inline-flex items-center gap-3">
+                        <button
+                            type="button"
+                            onClick={handleCopy}
+                            title="Copy pay link"
+                            aria-label="Copy pay link"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-white/40 hover:text-white transition-colors"
+                        >
+                            {copied ? (
+                                <>
+                                    <Check size={12} />
+                                    Copied
+                                </>
+                            ) : (
+                                <>
+                                    <LinkIcon size={12} />
+                                    Pay link
+                                    <Copy size={11} className="opacity-60" />
+                                </>
+                            )}
+                        </button>
+                        <Link
+                            href={`/admin/invoices/${invoice.id}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#b8956a] hover:text-[#d4b896] transition-colors"
+                        >
+                            <Eye size={12} />
+                            View Invoice
+                        </Link>
+                    </div>
                 </div>
             </div>
+
+            {toast && (
+                <div
+                    className="fixed bottom-6 right-6 z-[200] rounded-xl border border-emerald-400/40 bg-[#1a1a1a]/95 backdrop-blur shadow-2xl px-3 py-2 text-xs font-semibold text-emerald-300"
+                    role="status"
+                    aria-live="polite"
+                >
+                    {toast}
+                </div>
+            )}
         </div>
     );
 }

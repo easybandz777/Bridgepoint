@@ -19,6 +19,8 @@ import { rowToAccount } from '@/lib/accounts';
 
 type FilterChip = 'All' | 'Active' | 'Bank' | 'Has Balance' | 'By Classification';
 
+const QB_DISABLED = process.env.NEXT_PUBLIC_QB_DISABLED === 'true';
+
 interface ClassificationGroup {
     label: string;
     classification: AccountClassification;
@@ -296,18 +298,20 @@ export default function AccountsAdminPage() {
                             ? `${totalCount} account${totalCount === 1 ? '' : 's'}`
                             : `${filteredCount} of ${totalCount}`}
                     </span>
-                    <button
-                        onClick={pullFromQuickbooks}
-                        disabled={importing}
-                        className="h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-[#cbb08c] transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                        {importing ? (
-                            <Loader2 size={14} className="animate-spin" />
-                        ) : (
-                            <Download size={14} />
-                        )}
-                        {importing ? 'Pulling…' : 'Pull from QuickBooks'}
-                    </button>
+                    {!QB_DISABLED && (
+                        <button
+                            onClick={pullFromQuickbooks}
+                            disabled={importing}
+                            className="h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-[#cbb08c] transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            {importing ? (
+                                <Loader2 size={14} className="animate-spin" />
+                            ) : (
+                                <Download size={14} />
+                            )}
+                            {importing ? 'Pulling…' : 'Pull from QuickBooks'}
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -413,20 +417,24 @@ export default function AccountsAdminPage() {
                         Chart of Accounts is empty
                     </h3>
                     <p className="text-white/40 mb-6 max-w-sm mx-auto">
-                        Pull accounts from QuickBooks to populate the ledger.
+                        {QB_DISABLED
+                            ? 'QuickBooks is disabled. Accounts will appear here once added directly to the CRM.'
+                            : 'Pull accounts from QuickBooks to populate the ledger.'}
                     </p>
-                    <button
-                        onClick={pullFromQuickbooks}
-                        disabled={importing}
-                        className="inline-flex items-center gap-2 h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full hover:bg-[#cbb08c] transition-colors disabled:opacity-60"
-                    >
-                        {importing ? (
-                            <Loader2 size={14} className="animate-spin" />
-                        ) : (
-                            <Download size={14} />
-                        )}
-                        {importing ? 'Pulling…' : 'Pull from QuickBooks'}
-                    </button>
+                    {!QB_DISABLED && (
+                        <button
+                            onClick={pullFromQuickbooks}
+                            disabled={importing}
+                            className="inline-flex items-center gap-2 h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full hover:bg-[#cbb08c] transition-colors disabled:opacity-60"
+                        >
+                            {importing ? (
+                                <Loader2 size={14} className="animate-spin" />
+                            ) : (
+                                <Download size={14} />
+                            )}
+                            {importing ? 'Pulling…' : 'Pull from QuickBooks'}
+                        </button>
+                    )}
                 </div>
             ) : filtered.length === 0 ? (
                 <div className="py-16 text-center border border-white/5 border-dashed rounded-2xl bg-white/[0.02]">

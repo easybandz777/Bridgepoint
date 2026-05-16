@@ -1,186 +1,248 @@
 # Payment Processing
 
-Forward-looking architecture doc for the Bridgepointe CRM payments
-foundation. Audience: the next engineer who lights this up.
+Operational guide for the Bridgepointe CRM payments system. The CRM is now
+the system of record for invoicing and payments; QuickBooks is being
+decommissioned (see [`QB_DISCONNECT_RUNBOOK.md`](./QB_DISCONNECT_RUNBOOK.md)).
 
-> **Status: SCHEMA STUB ONLY.** Nothing in this document is wired to a
-> live payment processor today. The `payments` table ships in
-> `initDB()` so future iterations don't have to do an awkward migration
-> against existing data, and so adjacent code can reference the table
-> at compile time. There is no Stripe account connected, no API
-> credentials in the env, no admin UI, and no webhook receiver. Treat
-> every "will" in this doc as planned, not implemented.
+> **Status: LIVE (test mode).** Wired against Stripe with `sk_test_*` keys.
+> To go to production: replace the three Stripe env vars in Vercel with
+> their `sk_live_*` / `pk_live_*` / `whsec_*` counterparts, register the
+> webhook endpoint in the Stripe dashboard, redeploy.
 
 ---
 
-## Why now (and why only the schema)
-
-The mid-term plan is to replace QuickBooks Online for payments. QB
-stays as the bookkeeping destination during the transition (per
-[`QUICKBOOKS.md`](./QUICKBOOKS.md)), but the CRM becomes the place
-where charges, refunds, ACH transfers, and check entries live. To
-get there cleanly we need:
-
-- A table that can record any payment — incoming or outgoing, any
-  method, any processor.
-- Foreign keys so a payment can reference exactly one invoice (when
-  incoming) or one bill (when outgoing).
-- Processor-agnostic columns so a Stripe charge, a manual check
-  entry, and a recorded ACH credit all live in the same shape.
-
-Shipping the schema now means future feature work can `JOIN` against
-`payments` without first having to negotiate a migration and a code
-deploy in the same PR. Nothing else ships in this pass: no admin
-page, no CRUD endpoint, no Stripe SDK, no webhook receiver. Those
-land iteration by iteration.
-
----
-
-## Planned architecture
-
-### Pilot: Stripe Connect for cards
-
-Card processing will use Stripe Connect (Standard accounts) so
-Bridgepointe can accept payments under its own merchant identity
-without owning the PCI compliance burden. Customer-facing invoices
-will gain a "Pay online" link backed by a Stripe Checkout session;
-on success the resulting `Charge` object lands in the `payments`
-table via webhook.
-
-### Bank ACH
-
-Bank ACH credits (one-off transfers from customer to Bridgepointe)
-will use Stripe Financial Connections to attach a bank account, then
-ACH credit transfers to debit it. Same `payments` row shape; the
-`method` column flips from `card` to `ach` and `processor_fee` is
-typically lower.
-
-### Manual entries
-
-Checks and cash will be entered by hand from
-`/admin/payments/new` (planned). These rows have `processor='manual'`
-and no `processor_charge_id`. They behave identically to processor
-rows for reconciliation purposes.
-
-### Outgoing payments (bills)
-
-When the CRM eventually pays subcontractor bills (`project_bills`)
-directly, those land as `direction='outgoing'` rows pointing at a
-`bill_id` instead of an `invoice_id`. Method will typically be
-`ach` or `check`.
-
----
-
-## Reconciliation model
-
-The `payments` table is the truth. `invoices.amount_paid` is a
-denormalized cache, recomputed as:
+## Architecture
 
 ```
-invoices.amount_paid = SUM(payments.amount)
-                       WHERE payments.invoice_id = invoice.id
-                         AND payments.status = 'succeeded'
-                         AND payments.direction = 'incoming'
-                       MINUS refunds.
+                       ┌────────────────────────────────────┐
+                       │     Stripe (test or live mode)     │
+                       └───────────┬────────────────────────┘
+                                   │
+              Checkout / ACH       │              Webhook POST
+              SetupIntents         │           (signed, HMAC SHA-256)
+                                   │
+                ┌──────────────────┼────────────────────────────────┐
+                │                  │                                │
+                │     ┌────────────▼─────────────┐                  │
+                │     │ POST /api/payments/      │                  │
+                │     │   checkout               │                  │
+                │     │   ach/setup-intent       │                  │
+                │     │   ach/payment-intent     │                  │
+                │     │   manual                 │                  │
+                │     │   [id]/refund            │                  │
+                │     └────────────┬─────────────┘                  │
+                │                  │                                │
+                │     ┌────────────▼─────────────┐    ┌──────────┐  │
+                │     │  src/lib/stripe/         │    │ POST     │  │
+                │     │   client.ts (lazy SDK)   │    │ /api/    │  │
+                │     │   payments.ts            │    │ payments │  │
+                │     │   webhook-drain.ts       │    │ /webhook │  │
+                │     └────────────┬─────────────┘    └────┬─────┘  │
+                │                  │                       │        │
+                │                  ▼                       ▼        │
+                │  ┌────────────────────────────────────────────┐   │
+                │  │  Postgres (Neon)                           │   │
+                │  │   payments                                 │   │
+                │  │   payments_webhook_events  (idempotency)   │   │
+                │  │   customers.stripe_customer_id             │   │
+                │  │   invoices.amount_paid / status            │   │
+                │  └────────────────────────────────────────────┘   │
+                │                  ▲                                │
+                │                  │ */5 * * * *                    │
+                │      ┌───────────┴───────────┐                    │
+                │      │ /api/payments/cron    │ (Vercel cron)      │
+                │      │ drains webhook queue  │                    │
+                │      └───────────────────────┘                    │
+                │                                                   │
+                │   CRM (Next.js 16 on Vercel + Postgres on Neon)   │
+                └───────────────────────────────────────────────────┘
 ```
 
-`invoices.status` (Paid / Partial / Outstanding) is derived from
-`amount_paid` vs `total`. The recompute step runs whenever a
-payment row mutates — initially via a server action, eventually via
-a Postgres trigger if performance demands it.
-
-This mirrors how the QB integration already derives Paid status from
-`Balance` vs `TotalAmt`, just with the source of truth flipped to
-the CRM.
+The receiver-then-drain pattern is intentional: webhooks land, get persisted
+to `payments_webhook_events` keyed by event id, and a 200 returns
+immediately. A separate cron (or a manual POST) walks unprocessed rows and
+applies them to `payments` + `invoices`. This matches the QB pattern that
+was already battle-tested, keeps Vercel function timeouts safe, and makes
+retries idempotent.
 
 ---
 
-## Webhook plan
+## Surfaces
 
-Stripe will POST to `/api/payments/webhook` (planned). The receiver
-will:
+### Customer-facing
 
-1. Verify the `Stripe-Signature` header against `STRIPE_WEBHOOK_SECRET`.
-2. Persist the raw envelope to a `payments_webhook_events` table
-   keyed by `(event_id)` for idempotency.
-3. Return `200 ok` immediately. A separate cron (`*/5 * * * *`,
-   matching the QB pattern) will drain the queue and update the
-   `payments` row by `processor_charge_id`.
+- **`/pay/[invoiceId]`** — public payment landing page (warm theme,
+  invoice summary, "Pay $X" CTA). Renders three modes: `new`,
+  `success` (when Stripe redirects back with `?session_id=...`), and
+  `canceled` (when Stripe redirects with `?canceled=1`).
+- Click the CTA → POST `/api/payments/checkout` → Stripe Checkout
+  session → customer enters card or bank → Stripe redirects back.
+- After success, the page polls `GET /api/payments/checkout/[sessionId]`
+  for up to 30 s to surface "Thank you / processing / error" state.
 
-Mirroring the QB receiver/processor split keeps Vercel function
-timeouts safe and makes failure handling consistent.
+### Admin
 
----
+- **`/admin/payments`** — list of all payments with status filter chips,
+  responsive table/cards, deep links into payment detail.
+- **`/admin/payments/[id]`** — single payment detail with refund / void
+  / re-sync-invoice actions, linked invoice + customer.
+- **Invoice detail page** now shows an **InvoicePaymentsCard** with:
+  the public pay URL + copy button, "Record Payment" (manual entry
+  dialog), "Send Pay Email" (stubbed), and the payment history table.
+- **Invoice list cards** now have a small "Pay link" copy icon.
 
-## Schema (shipping now, unused)
+### Manual entry
 
-The `payments` table is created at the very end of `initDB()` in
-[`src/lib/db.ts`](./src/lib/db.ts) and tagged with a "PLANNED — Phase 3"
-comment. Columns:
+- **`RecordPaymentDialog`** at `src/components/admin/record-payment-dialog.tsx`
+  records cash / check / wire / other against an invoice. POSTs to
+  `/api/payments/manual`, which writes the row with
+  `processor='manual', status='succeeded'` and reconciles the invoice.
 
-| Column                | Type           | Description                                                     |
-| --------------------- | -------------- | --------------------------------------------------------------- |
-| `id`                  | `TEXT` PK      | CRM-internal id (`pay-<timestamp>-<rand>`).                     |
-| `payment_number`      | `TEXT`         | Optional human-friendly number for receipts.                    |
-| `direction`           | `TEXT`         | `incoming` (default) or `outgoing`.                             |
-| `amount`              | `NUMERIC`      | Always positive. Refunds are separate rows with negative-net effect via `status`. |
-| `currency`            | `TEXT`         | Default `USD`.                                                  |
-| `method`              | `TEXT`         | `card` (default) / `ach` / `check` / `cash` / `other`.          |
-| `status`              | `TEXT`         | `pending` / `succeeded` / `failed` / `refunded` / `disputed`.   |
-| `customer_id`         | `TEXT`         | FK to `customers`. Nullable for outgoing rows.                  |
-| `vendor_id`           | `TEXT`         | FK to `vendors`. Used when `direction='outgoing'`.              |
-| `invoice_id`          | `TEXT`         | FK to `invoices`. One incoming payment → one invoice.           |
-| `bill_id`             | `TEXT`         | FK to `project_bills`. One outgoing payment → one bill.         |
-| `received_date`       | `TEXT`         | When funds arrived (or were initiated for ACH).                 |
-| `deposited_date`      | `TEXT`         | When the deposit cleared the bank.                              |
-| `processor`           | `TEXT`         | `stripe` / `manual` / `qb`.                                     |
-| `processor_charge_id` | `TEXT`         | The processor's id (`ch_...`, `pi_...`, etc.). Used for webhook lookup. |
-| `processor_fee`       | `NUMERIC`      | Default 0. The fee the processor took out of the gross.         |
-| `notes`               | `TEXT`         | Internal-only freeform.                                         |
-| `metadata`            | `JSONB`        | Catch-all for processor payload bits we want to keep.            |
-| `qb_id`               | `TEXT`         | If/when we push payments back into QB.                          |
-| `qb_sync_token`       | `TEXT`         | QB optimistic-concurrency token.                                |
-| `qb_synced_at`        | `TIMESTAMPTZ`  | Last successful QB push.                                        |
-| `created_at`          | `TIMESTAMPTZ`  | Default `NOW()`.                                                |
-| `updated_at`          | `TIMESTAMPTZ`  | Default `NOW()`.                                                |
+### Stripe ACH
 
-Indexes (also shipped now):
-
-- `idx_payments_invoice` on `(invoice_id)` — for the recompute query.
-- `idx_payments_customer` on `(customer_id)` — for the customer
-  detail page's payments tab when it lights up.
-- `idx_payments_status` on `(status)` — for filtering "needs
-  attention" lists.
-- `idx_payments_created` on `(created_at DESC)` — default sort.
-
-The table is created with `CREATE TABLE IF NOT EXISTS`, so a re-run of
-`initDB()` against an environment that already has it is a no-op.
+- **Checkout** already accepts ACH automatically (`payment_method_types`
+  includes `us_bank_account`). For most flows this is enough.
+- For a **standalone bank-only flow**, hit
+  `POST /api/payments/ach/payment-intent` with `{ invoiceId, amount? }`
+  and confirm client-side via `src/components/portal/ach-payment-form.tsx`.
+  It runs `stripe.collectBankAccountForPayment` (Financial Connections)
+  then `stripe.confirmUsBankAccountPayment` against the returned
+  client secret. ACH typically settles in 3–5 business days; the
+  PaymentIntent webhook flips the row from `pending` to `succeeded`
+  when funds clear.
 
 ---
 
-## What is **not** in this pass
+## Endpoints
 
-To be explicit:
+| Verb | Path                                            | Purpose                                                     |
+| ---- | ----------------------------------------------- | ----------------------------------------------------------- |
+| POST | `/api/payments/checkout`                        | Create a Stripe Checkout session for an invoice.            |
+| GET  | `/api/payments/checkout?invoiceId=`             | Same as POST, query-string form (for direct links).         |
+| GET  | `/api/payments/checkout/[sessionId]`            | Poll session status after Checkout returns.                 |
+| POST | `/api/payments/ach/setup-intent`                | SetupIntent for saving a bank account against a customer.   |
+| POST | `/api/payments/ach/payment-intent`              | One-off ACH debit against an invoice.                       |
+| POST | `/api/payments/manual`                          | Record an offline (cash/check) payment.                     |
+| GET  | `/api/payments?customerId=&invoiceId=&status=`  | List payments with optional filters.                        |
+| GET  | `/api/payments/[id]`                            | Single payment.                                             |
+| POST | `/api/payments/[id]/refund`                     | Refund (Stripe) or void (manual).                           |
+| POST | `/api/payments/webhook`                         | Stripe webhook receiver. Verifies signature, enqueues.      |
+| GET  | `/api/payments/cron`                            | Drain queued webhook events. Runs every 5 min via Vercel.   |
 
-- No Stripe SDK / dependency.
-- No env vars (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
-  `STRIPE_CONNECT_CLIENT_ID`).
-- No admin pages under `/admin/payments`.
-- No public-facing `/pay/[invoiceId]` flow.
-- No `/api/payments/*` endpoints.
-- No webhook receiver.
-- No reconciliation cron.
-- No invoice-level "Pay online" link.
-- No QB push for CRM-recorded payments (still read-only from QB).
+All routes `await initDB()` on entry, so the schema is always fresh.
 
-The next iteration that touches this should pick exactly one of those
-gaps to close and land it in isolation.
+---
+
+## Environment variables
+
+| Variable                              | Required          | Description                                                                 |
+| ------------------------------------- | ----------------- | --------------------------------------------------------------------------- |
+| `STRIPE_SECRET_KEY`                   | Yes               | Server-side. `sk_test_...` or `sk_live_...`. NEVER prefix `NEXT_PUBLIC_`.   |
+| `STRIPE_WEBHOOK_SECRET`               | Yes               | `whsec_...` from the dashboard endpoint (or `stripe listen` in dev).        |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`  | Yes (browser)     | `pk_test_...` or `pk_live_...`. Used by `loadStripe()` for the ACH form.   |
+| `NEXT_PUBLIC_APP_URL`                 | Yes               | Used to construct success/cancel URLs. Set per environment.                 |
+| `CRON_SECRET`                         | Recommended (prod)| If set, `/api/payments/cron` requires `Authorization: Bearer <secret>`.    |
+| `QB_DISABLED`, `NEXT_PUBLIC_QB_DISABLED` | No (mid-migration) | Disable QuickBooks integration when flipped to `true`.                  |
+
+---
+
+## Schema
+
+The `payments` table from `initDB()` in `src/lib/db.ts`:
+
+| Column                | Type           | Notes                                                                |
+| --------------------- | -------------- | -------------------------------------------------------------------- |
+| `id`                  | `TEXT` PK      | CRM id (`pay-<timestamp>-<rand>`).                                   |
+| `payment_number`      | `TEXT`         | Check number or human-friendly id.                                   |
+| `direction`           | `TEXT`         | `incoming` (default) or `outgoing`.                                  |
+| `amount`              | `NUMERIC`      | Always positive; refunds flip `status`.                              |
+| `currency`            | `TEXT`         | `USD`.                                                               |
+| `method`              | `TEXT`         | `card` / `ach` / `check` / `cash` / `other`.                         |
+| `status`              | `TEXT`         | `pending` / `succeeded` / `failed` / `refunded` / `disputed`.        |
+| `customer_id`         | `TEXT`         | FK to `customers`. Optional for ad-hoc Checkout.                     |
+| `invoice_id`          | `TEXT`         | FK to `invoices`. One incoming payment → one invoice.                |
+| `bill_id`             | `TEXT`         | FK to `project_bills` for outgoing.                                  |
+| `received_date`       | `TEXT`         | When funds arrived / were initiated.                                 |
+| `deposited_date`      | `TEXT`         | When the deposit cleared the bank.                                   |
+| `processor`           | `TEXT`         | `stripe` / `manual` / `qb`.                                          |
+| `processor_charge_id` | `TEXT`         | Stripe PaymentIntent id (`pi_...`). Unique index — drives idempotency. |
+| `processor_fee`       | `NUMERIC`      | Fee withheld by processor.                                           |
+| `notes`               | `TEXT`         | Internal.                                                            |
+| `metadata`            | `JSONB`        | Receipt URL, check_number, full Stripe envelope refs.                |
+
+Plus `payments_webhook_events` for idempotent webhook ingest, and a new
+`customers.stripe_customer_id` column populated lazily by
+`ensureStripeCustomer()`.
+
+### Reconciliation
+
+`reconcileInvoice(invoiceId)` is called automatically after every
+`recordPayment` mutation. It runs:
+
+```sql
+SELECT COALESCE(SUM(amount), 0)
+FROM payments
+WHERE invoice_id = $1
+  AND direction  = 'incoming'
+  AND status     = 'succeeded'
+```
+
+…and writes the result to `invoices.amount_paid`, then derives
+`amount_due` and `status` (Paid / Partial / Outstanding).
+
+---
+
+## Local development
+
+1. Install Stripe CLI: <https://docs.stripe.com/stripe-cli>.
+2. `stripe login`.
+3. Forward webhooks to local dev:
+   ```bash
+   stripe listen --forward-to localhost:3000/api/payments/webhook
+   ```
+   It will print a `whsec_...` for the session — paste it into
+   `STRIPE_WEBHOOK_SECRET` in `.env.local` (then restart `npm run dev`).
+4. Visit `/admin/invoices`, pick an invoice, copy the "Pay link", open it
+   in another tab, click "Pay $X" → use test card `4242 4242 4242 4242`
+   (any CVC, any future date, any ZIP).
+5. Watch the Stripe CLI tail. The `checkout.session.completed` event
+   should land at `/api/payments/webhook` and the cron drain will pick
+   it up within 5 minutes (or POST `/api/payments/cron` to force-drain).
+6. The invoice should flip to "Paid" in admin once the drain runs.
+
+For ACH testing, use bank `STRIPE TEST BANK` with routing `110000000`
+and account `000123456789` — Stripe's deterministic test bank.
+
+---
+
+## Production rollout
+
+1. Create a Stripe account (live mode), complete verification (bank,
+   business identity — usually 3–7 business days).
+2. From <https://dashboard.stripe.com/apikeys>, grab `sk_live_...` and
+   `pk_live_...` and put them in Vercel project env (Production).
+3. In <https://dashboard.stripe.com/webhooks>, add an endpoint:
+   `https://bridgepointepainting.com/api/payments/webhook`
+   Subscribe to these events (minimum):
+   - `checkout.session.completed`
+   - `payment_intent.succeeded`
+   - `payment_intent.payment_failed`
+   - `payment_intent.canceled`
+   - `charge.refunded`
+   - `charge.dispute.created`
+   Copy the signing secret (`whsec_...`) into `STRIPE_WEBHOOK_SECRET`.
+4. Set `NEXT_PUBLIC_APP_URL=https://bridgepointepainting.com` in Vercel.
+5. Set `CRON_SECRET` to something random.
+6. Redeploy.
+7. Run a $1 live test on a real invoice end-to-end; verify it lands
+   in the dashboard, the row in `payments`, and the invoice flips Paid.
 
 ---
 
 ## Related docs
 
-- [`QUICKBOOKS.md`](./QUICKBOOKS.md) — how payments flow today (read-only
-  pull from QB).
+- [`QB_DISCONNECT_RUNBOOK.md`](./QB_DISCONNECT_RUNBOOK.md) — how to
+  decommission the QuickBooks integration.
+- [`QUICKBOOKS.md`](./QUICKBOOKS.md) — legacy QB integration (deprecated).
 - [`CUSTOMERS.md`](./CUSTOMERS.md) — the customer entity that incoming
-  payments will reference.
+  payments reference.

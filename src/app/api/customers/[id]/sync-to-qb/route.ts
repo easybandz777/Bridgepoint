@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { initDB } from '@/lib/db';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
 import { pushCustomerToQb } from '@/lib/quickbooks/customers-push';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,6 +16,12 @@ type Ctx = { params: Promise<{ id: string }> };
  * time and updates it on subsequent calls. Returns 412 if QB is not connected.
  */
 export async function POST(req: Request, ctx: Ctx) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         await initDB();
 

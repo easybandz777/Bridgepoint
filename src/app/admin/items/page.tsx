@@ -13,6 +13,8 @@ const TYPE_LABEL: Record<ItemType, string> = {
     NonInventory: 'Non-Inventory',
 };
 
+const QB_DISABLED = process.env.NEXT_PUBLIC_QB_DISABLED === 'true';
+
 function fmtPrice(n: number | null): string {
     if (n == null) return '—';
     return `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -117,13 +119,15 @@ export default function ItemsListPage() {
                     <p className="text-sm text-white/50">Services, products, and inventory used as line items on invoices and estimates.</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button
-                        onClick={importFromQb}
-                        disabled={importing}
-                        className="h-10 px-4 bg-white/5 border border-white/10 text-white/80 text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-white/10 transition-colors disabled:opacity-50"
-                    >
-                        <Download size={14} /> {importing ? 'Importing…' : 'Pull from QuickBooks'}
-                    </button>
+                    {!QB_DISABLED && (
+                        <button
+                            onClick={importFromQb}
+                            disabled={importing}
+                            className="h-10 px-4 bg-white/5 border border-white/10 text-white/80 text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-white/10 transition-colors disabled:opacity-50"
+                        >
+                            <Download size={14} /> {importing ? 'Importing…' : 'Pull from QuickBooks'}
+                        </button>
+                    )}
                     <Link
                         href="/admin/items/new"
                         className="h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-[#cbb08c] transition-colors whitespace-nowrap"
@@ -177,17 +181,28 @@ export default function ItemsListPage() {
                     </h3>
                     <p className="text-white/40 mb-6 max-w-sm mx-auto">
                         {items.length === 0
-                            ? 'Pull your services and products from QuickBooks, or add one manually.'
+                            ? (QB_DISABLED
+                                ? 'Add a new service or product manually to get started.'
+                                : 'Pull your services and products from QuickBooks, or add one manually.')
                             : 'Try a different search or filter.'}
                     </p>
                     {items.length === 0 ? (
-                        <button
-                            onClick={importFromQb}
-                            disabled={importing}
-                            className="inline-flex items-center gap-2 h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full hover:bg-[#cbb08c] transition-colors disabled:opacity-50"
-                        >
-                            <Download size={14} /> {importing ? 'Importing…' : 'Pull from QuickBooks'}
-                        </button>
+                        !QB_DISABLED ? (
+                            <button
+                                onClick={importFromQb}
+                                disabled={importing}
+                                className="inline-flex items-center gap-2 h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full hover:bg-[#cbb08c] transition-colors disabled:opacity-50"
+                            >
+                                <Download size={14} /> {importing ? 'Importing…' : 'Pull from QuickBooks'}
+                            </button>
+                        ) : (
+                            <Link
+                                href="/admin/items/new"
+                                className="inline-flex items-center gap-2 h-10 px-5 bg-[#b8956a] text-black text-sm font-semibold rounded-full hover:bg-[#cbb08c] transition-colors"
+                            >
+                                <Plus size={14} /> New Item
+                            </Link>
+                        )
                     ) : (
                         <button
                             onClick={() => { setSearchQuery(''); setFilter('All'); }}

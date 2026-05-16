@@ -4,6 +4,7 @@ import { qbGet, QbApiError, safeQbErrorMessage } from '@/lib/quickbooks/client';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
 import { upsertVendorFromQb } from '@/lib/quickbooks/vendors-import';
 import type { QbVendor } from '@/lib/quickbooks/types';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +21,12 @@ interface VendorIdRow {
  * "refresh from QuickBooks" button on the vendor detail page.
  */
 export async function POST(_req: Request, ctx: Ctx) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const { id } = await ctx.params;
         await initDB();

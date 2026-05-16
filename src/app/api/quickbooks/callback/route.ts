@@ -14,6 +14,7 @@ import { importAllCustomersFromQb } from '@/lib/quickbooks/customers-import';
 import { importAllVendorsFromQb } from '@/lib/quickbooks/vendors-import';
 import { importAllItemsFromQb } from '@/lib/quickbooks/items-import';
 import { logActivity } from '@/lib/db';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,6 +30,12 @@ export const dynamic = 'force-dynamic';
  *   5. redirect to the integrations admin page with a success flag
  */
 export async function GET(req: Request) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
     const state = url.searchParams.get('state');

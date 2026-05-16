@@ -14,10 +14,17 @@ interface QbSyncButtonProps {
     onSynced?: (result: unknown) => void;
 }
 
+// Mirrors the server-side QB_DISABLED flag. When set to 'true', every
+// QbSyncButton renders null so admins don't see a control that 410s on
+// click. See QB_DISCONNECT_RUNBOOK.md.
+const QB_DISABLED = process.env.NEXT_PUBLIC_QB_DISABLED === 'true';
+
 export function QbSyncButton({ entityType, entityId, projectId, label, size = 'md', onSynced }: QbSyncButtonProps) {
     const [busy, setBusy] = useState(false);
     const [msg, setMsg] = useState<string | null>(null);
     const [ok, setOk] = useState<boolean | null>(null);
+
+    if (QB_DISABLED) return null;
 
     async function go() {
         setBusy(true);

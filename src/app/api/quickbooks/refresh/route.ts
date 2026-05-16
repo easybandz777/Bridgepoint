@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getActiveConnectionRow, refreshConnection } from '@/lib/quickbooks/connection';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +12,12 @@ export const dynamic = 'force-dynamic';
  * schedule to keep the access token warm.
  */
 export async function POST() {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const conn = await getActiveConnectionRow();
         if (!conn) {

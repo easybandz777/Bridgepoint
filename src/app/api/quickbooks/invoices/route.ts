@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server';
 import { qbQuery } from '@/lib/quickbooks/client';
 import type { QbInvoice } from '@/lib/quickbooks/types';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const url = new URL(req.url);
         const limit = Math.min(Number(url.searchParams.get('limit') ?? '50'), 200);

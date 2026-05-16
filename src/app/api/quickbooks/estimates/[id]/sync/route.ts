@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
 import { pushEstimate } from '@/lib/quickbooks/estimates';
 import { safeQbErrorMessage } from '@/lib/quickbooks/client';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
 type Ctx = { params: Promise<{ id: string }> };
 
 export async function POST(_req: Request, ctx: Ctx) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const { id } = await ctx.params;
         const result = await pushEstimate(id, 'admin');

@@ -3,6 +3,7 @@ import { initDB } from '@/lib/db';
 import { qbGet, QbApiError } from '@/lib/quickbooks/client';
 import { getActiveConnection } from '@/lib/quickbooks/connection';
 import type { QbCustomer } from '@/lib/quickbooks/types';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,12 @@ type Ctx = { params: Promise<{ qbId: string }> };
  * admin UI for debugging and verification.
  */
 export async function GET(_req: Request, ctx: Ctx) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const { qbId } = await ctx.params;
         await initDB();

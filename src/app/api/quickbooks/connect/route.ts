@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generateState, getAuthorizationUrl } from '@/lib/quickbooks/oauth';
 import { saveOauthState } from '@/lib/quickbooks/connection';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,12 @@ export const dynamic = 'force-dynamic';
  * pull the original "redirect after" path.
  */
 export async function GET(req: Request) {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const url = new URL(req.url);
         const rawRedirect = url.searchParams.get('redirect') ?? '/admin/integrations/quickbooks';

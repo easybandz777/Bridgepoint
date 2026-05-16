@@ -1,5 +1,24 @@
 # QuickBooks Online Integration
 
+> ⚠️ **DEPRECATED — being decommissioned.**
+>
+> The CRM is now the system of record for customers, invoices, estimates,
+> bills, and payments. Stripe handles money movement directly. See
+> [`PAYMENTS.md`](./PAYMENTS.md) for the live payments architecture and
+> [`QB_DISCONNECT_RUNBOOK.md`](./QB_DISCONNECT_RUNBOOK.md) for the
+> shutdown procedure.
+>
+> The integration code below is **gated behind the `QB_DISABLED` env flag**
+> and kept in place for two reasons:
+> 1. To support a final reconciling import (`/api/quickbooks/import-all`
+>    stays live even when disabled).
+> 2. To allow a roll-back if Stripe-mode reveals an unforeseen gap.
+>
+> Do not extend this integration. New work belongs in `src/lib/stripe/*`
+> and `src/app/api/payments/*`.
+
+---
+
 Operations and deployment guide for the Bridgepointe CRM ↔ QuickBooks Online
 integration. Audience: the company owner running the system day-to-day, plus
 the next engineer who has to debug or extend it.

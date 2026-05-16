@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCachedDefaults, refreshDefaults } from '@/lib/quickbooks/refs';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +12,12 @@ export const dynamic = 'force-dynamic';
  * re-resolve the cached QuickBooks default Item / Expense / Income refs.
  */
 export async function GET() {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const defaults = await getCachedDefaults();
         return NextResponse.json({ defaults });
@@ -20,6 +27,12 @@ export async function GET() {
 }
 
 export async function POST() {
+    if (isQbDisabled()) {
+        return NextResponse.json(
+            { error: 'QuickBooks integration is disabled. The CRM is now the system of record.' },
+            { status: 410 },
+        );
+    }
     try {
         const defaults = await refreshDefaults();
         return NextResponse.json({ ok: true, defaults });

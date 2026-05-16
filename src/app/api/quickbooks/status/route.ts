@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import sql, { initDB } from '@/lib/db';
 import { getActiveConnectionRow } from '@/lib/quickbooks/connection';
+import { isQbDisabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,14 +10,32 @@ export const dynamic = 'force-dynamic';
  *
  * Returns the current connection state + a few lifetime metrics for the
  * admin dashboard. Never returns the access/refresh tokens.
+ *
+ * NOTE: When `QB_DISABLED=true`, this route does NOT return 410 like the rest
+ * of the QB API. Instead it returns `{ disabled: true, ... }` so the admin UI
+ * can render its "QuickBooks disabled — CRM is system of record" state without
+ * a fetch error.
  */
 export async function GET() {
+    if (isQbDisabled()) {
+        return NextResponse.json({
+            disabled: true,
+            connected: false,
+            environment: process.env.QUICKBOOKS_ENVIRONMENT ?? 'sandbox',
+            hasCredentialsConfigured: Boolean(
+                process.env.QUICKBOOKS_CLIENT_ID && process.env.QUICKBOOKS_CLIENT_SECRET,
+            ),
+            message:
+                'QuickBooks integration is disabled. The CRM is now the system of record.',
+        });
+    }
     try {
         await initDB();
         const conn = await getActiveConnectionRow();
 
         if (!conn) {
             return NextResponse.json({
+                disabled: false,
                 connected: false,
                 environment: process.env.QUICKBOOKS_ENVIRONMENT ?? 'sandbox',
                 hasCredentialsConfigured: Boolean(process.env.QUICKBOOKS_CLIENT_ID && process.env.QUICKBOOKS_CLIENT_SECRET),
@@ -42,6 +61,7 @@ export async function GET() {
         `;
 
         return NextResponse.json({
+            disabled: false,
             connected: true,
             connectionId: conn.id,
             realmId: conn.realm_id,
