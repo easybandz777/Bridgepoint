@@ -18,6 +18,8 @@ import {
     DollarSign,
     Briefcase,
     FileText,
+    FilePlus,
+    Receipt,
     PlugZap,
     Loader2,
     CheckCircle,
@@ -402,6 +404,55 @@ export default function CustomerDetailPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Quick actions — start a new project, proposal, or invoice
+                pre-loaded against this customer. */}
+            {!editing && (
+                <div className="mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <Link
+                            href={`/admin/projects/new?customerId=${customer.id}`}
+                            className="group flex items-center gap-4 p-5 rounded-2xl bg-[#1a1a1a] border border-white/10 hover:border-[#b8956a]/50 hover:bg-[#1a1a1a]/80 transition-all"
+                        >
+                            <div className="w-11 h-11 rounded-xl bg-[#b8956a]/10 border border-[#b8956a]/20 flex items-center justify-center text-[#b8956a] group-hover:bg-[#b8956a]/20 transition-colors">
+                                <Briefcase size={18} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-white">Start Project</p>
+                                <p className="text-xs text-white/40">Pre-filled with this customer</p>
+                            </div>
+                        </Link>
+                        <Link
+                            href={`/admin/estimates/new?customerId=${customer.id}`}
+                            className="group flex items-center gap-4 p-5 rounded-2xl bg-[#1a1a1a] border border-white/10 hover:border-[#b8956a]/50 hover:bg-[#1a1a1a]/80 transition-all"
+                        >
+                            <div className="w-11 h-11 rounded-xl bg-[#b8956a]/10 border border-[#b8956a]/20 flex items-center justify-center text-[#b8956a] group-hover:bg-[#b8956a]/20 transition-colors">
+                                <FilePlus size={18} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-white">Generate Proposal</p>
+                                <p className="text-xs text-white/40">Estimate from template or blank</p>
+                            </div>
+                        </Link>
+                        <Link
+                            href={`/admin/invoices/new?customerId=${customer.id}`}
+                            className="group flex items-center gap-4 p-5 rounded-2xl bg-[#1a1a1a] border border-white/10 hover:border-[#b8956a]/50 hover:bg-[#1a1a1a]/80 transition-all"
+                        >
+                            <div className="w-11 h-11 rounded-xl bg-[#b8956a]/10 border border-[#b8956a]/20 flex items-center justify-center text-[#b8956a] group-hover:bg-[#b8956a]/20 transition-colors">
+                                <Receipt size={18} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-white">Generate Invoice</p>
+                                <p className="text-xs text-white/40">
+                                    {customer.balance > 0
+                                        ? `Balance ${fmtMoney(customer.balance)}`
+                                        : 'New invoice, ready to send'}
+                                </p>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+            )}
 
             {/* Identity edit (only visible in edit mode) */}
             {editing && (

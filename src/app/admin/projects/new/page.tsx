@@ -1,15 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Save, Briefcase, User, Calendar, DollarSign, FileText } from 'lucide-react';
 import { SAMPLE_ESTIMATES, formatCurrency } from '@/lib/estimates';
 import { createProject } from '@/lib/project-api';
 import { CustomerPicker } from '@/components/admin/customer-picker';
+import { getCustomer } from '@/lib/customers-client';
 
 export default function NewProjectPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-white/40">Loading…</div>}>
+            <NewProjectPageInner />
+        </Suspense>
+    );
+}
+
+function NewProjectPageInner() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const initialCustomerId = searchParams?.get('customerId') ?? null;
     const [source, setSource] = useState<'scratch' | 'estimate'>('scratch');
     const [selectedEstimateId, setSelectedEstimateId] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -17,7 +28,7 @@ export default function NewProjectPage() {
 
     // Form State
     const [name, setName] = useState('');
-    const [customerId, setCustomerId] = useState<string | null>(null);
+    const [customerId, setCustomerId] = useState<string | null>(initialCustomerId);
     const [clientName, setClientName] = useState('');
     const [clientEmail, setClientEmail] = useState('');
     const [clientPhone, setClientPhone] = useState('');
@@ -33,6 +44,30 @@ export default function NewProjectPage() {
     const [estimateId, setEstimateId] = useState<string | undefined>();
     const [estimateNumber, setEstimateNumber] = useState<string | undefined>();
     const [projectManager, setProjectManager] = useState('');
+
+    // Pre-fill client fields when arriving from a customer dashboard
+    // (Customer dashboard → "Start project" passes ?customerId=...).
+    useEffect(() => {
+        if (!initialCustomerId) return;
+        const ac = new AbortController();
+        (async () => {
+            try {
+                const c = await getCustomer(initialCustomerId, ac.signal);
+                if (!c || ac.signal.aborted) return;
+                setClientName(c.displayName);
+                if (c.email) setClientEmail(c.email);
+                if (c.phone) setClientPhone(c.phone);
+                const a = c.billAddress ?? {};
+                if (a.line1) setAddress(a.line1);
+                if (a.city) setCity(a.city);
+                if (a.state) setState(a.state);
+                if (a.zip) setZip(a.zip);
+            } catch {
+                // Best-effort; user can fill manually.
+            }
+        })();
+        return () => ac.abort();
+    }, [initialCustomerId]);
 
     function handleEstimateSelect(id: string) {
         setSelectedEstimateId(id);

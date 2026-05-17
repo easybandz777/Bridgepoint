@@ -1,10 +1,11 @@
 ﻿'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Plus, Trash2, ChevronDown, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { ESTIMATE_TEMPLATES, type EstimateTemplate, type LineItem, type Milestone } from '@/lib/estimate-templates';
 import { CustomerPicker } from '@/components/admin/customer-picker';
+import { getCustomer } from '@/lib/customers-client';
 
 const CATEGORIES = ['Labor', 'Materials', 'Subcontractor', 'Equipment', 'Permits & Fees'];
 const STATUS_OPTIONS = ['Draft', 'Sent', 'Approved', 'Declined'];
@@ -86,12 +87,15 @@ function TemplatePicker({ onSelect }: { onSelect: (t: EstimateTemplate | null) =
 
 export default function EstimateForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const initialCustomerId = searchParams?.get('customerId') ?? null;
+
     const [template, setTemplate] = useState<EstimateTemplate | null | undefined>(undefined);
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState('Draft');
 
     // Client
-    const [customerId, setCustomerId] = useState<string | null>(null);
+    const [customerId, setCustomerId] = useState<string | null>(initialCustomerId);
     const [clientName, setClientName] = useState('');
     const [clientCompany, setClientCompany] = useState('');
     const [clientAddress, setClientAddress] = useState('');
@@ -100,6 +104,35 @@ export default function EstimateForm() {
     const [clientZip, setClientZip] = useState('');
     const [clientEmail, setClientEmail] = useState('');
     const [clientPhone, setClientPhone] = useState('');
+
+    // When ?customerId= is in the URL (e.g. arrived from a customer dashboard),
+    // pre-fill the client fields from that customer record. The picker
+    // itself hydrates from its `value` prop on its own.
+    useEffect(() => {
+        if (!initialCustomerId) return;
+        const ac = new AbortController();
+        (async () => {
+            try {
+                const c = await getCustomer(initialCustomerId, ac.signal);
+                if (!c || ac.signal.aborted) return;
+                setClientName(c.displayName);
+                if (c.companyName) setClientCompany(c.companyName);
+                if (c.email) setClientEmail(c.email);
+                if (c.phone) setClientPhone(c.phone);
+                const a = c.billAddress ?? {};
+                if (a.line1) setClientAddress(a.line1);
+                if (a.city) setClientCity(a.city);
+                if (a.state) setClientState(a.state);
+                if (a.zip) setClientZip(a.zip);
+                // Leave the template picker visible — the user still picks
+                // "Painting / Cabinets / Pressure Washing / Blank" first,
+                // and the client info stays attached through the swap.
+            } catch {
+                // Best-effort; user can fill manually.
+            }
+        })();
+        return () => ac.abort();
+    }, [initialCustomerId]);
 
     // Project
     const [projTitle, setProjTitle] = useState('');

@@ -1,9 +1,10 @@
 ﻿'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
 import { CustomerPicker } from '@/components/admin/customer-picker';
+import { getCustomer } from '@/lib/customers-client';
 
 type LineItem = { id: string; description: string; quantity: number; unit: string; unitPrice: number; total: number };
 const STATUS_OPTIONS = ['Outstanding', 'Partial', 'Paid', 'Overdue'];
@@ -18,11 +19,14 @@ const section = `bg-[#1a1a1a] border border-white/6 rounded-2xl p-6 mb-4`;
 
 export default function InvoiceForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const initialCustomerId = searchParams?.get('customerId') ?? null;
+
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState('Outstanding');
 
     // Client
-    const [customerId, setCustomerId] = useState<string | null>(null);
+    const [customerId, setCustomerId] = useState<string | null>(initialCustomerId);
     const [clientName, setClientName] = useState('');
     const [clientCompany, setClientCompany] = useState('');
     const [clientAddress, setClientAddress] = useState('');
@@ -31,6 +35,31 @@ export default function InvoiceForm() {
     const [clientZip, setClientZip] = useState('');
     const [clientEmail, setClientEmail] = useState('');
     const [clientPhone, setClientPhone] = useState('');
+
+    // When ?customerId= is in the URL (arrived from customer dashboard),
+    // pre-fill client fields from that customer record.
+    useEffect(() => {
+        if (!initialCustomerId) return;
+        const ac = new AbortController();
+        (async () => {
+            try {
+                const c = await getCustomer(initialCustomerId, ac.signal);
+                if (!c || ac.signal.aborted) return;
+                setClientName(c.displayName);
+                if (c.companyName) setClientCompany(c.companyName);
+                if (c.email) setClientEmail(c.email);
+                if (c.phone) setClientPhone(c.phone);
+                const a = c.billAddress ?? {};
+                if (a.line1) setClientAddress(a.line1);
+                if (a.city) setClientCity(a.city);
+                if (a.state) setClientState(a.state);
+                if (a.zip) setClientZip(a.zip);
+            } catch {
+                // Best-effort; user can fill manually.
+            }
+        })();
+        return () => ac.abort();
+    }, [initialCustomerId]);
 
     // Project
     const [projTitle, setProjTitle] = useState('');
