@@ -58,8 +58,8 @@ async function createSession(invoiceId: string): Promise<
     const invoice = rows[0];
     const amountDue = Number(invoice.amount_due ?? 0);
 
-    if (invoice.status === 'Paid' || amountDue <= 0) {
-        return { ok: false, status: 400, body: { error: 'Invoice already paid' } };
+    if (invoice.status === 'Paid' || !Number.isFinite(amountDue) || amountDue <= 0) {
+        return { ok: false, status: 400, body: { error: 'Invoice already paid or has no balance due' } };
     }
 
     const stripe = getStripe();

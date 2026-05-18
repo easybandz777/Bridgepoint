@@ -57,6 +57,10 @@ export async function POST(
                     financial_connections: {
                         permissions: ['payment_method', 'balances'],
                     },
+                    // Force Plaid-style instant verification — matches the
+                    // PaymentIntent path. Without this, Stripe can fall
+                    // back to micro-deposits which is a multi-day delay.
+                    verification_method: 'instant',
                 },
             },
             metadata: { crm_customer_id: customerId },

@@ -262,17 +262,23 @@ export async function reconcileInvoice(invoiceId: string): Promise<void> {
     const total = Number(rows[0].total ?? 0);
     const paid = Number(rows[0].paid ?? 0);
     const due = Math.max(total - paid, 0);
-    const status =
+    const isPaid = paid >= total && total > 0;
+    const status: 'Outstanding' | 'Paid' | 'Partial' =
         paid <= 0 ? 'Outstanding'
-            : paid >= total ? 'Paid'
+            : isPaid ? 'Paid'
                 : 'Partial';
-    const paidDate = paid >= total ? new Date().toISOString().slice(0, 10) : null;
+    // Local-tz date (avoids UTC drift after 5pm Pacific). When an invoice
+    // is no longer fully paid (refund pushed it back below total), clear
+    // paid_date — otherwise stale "paid on" sticks around forever.
+    const d = new Date();
+    const todayLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const paidDate = isPaid ? todayLocal : null;
     await sql`
         UPDATE invoices SET
             amount_paid = ${paid},
             amount_due = ${due},
             status = ${status},
-            paid_date = COALESCE(${paidDate}, paid_date),
+            paid_date = ${paidDate},
             updated_at = NOW()
         WHERE id = ${invoiceId}
     `;
@@ -351,6 +357,8 @@ export function paymentFromIntent(
         processorFee: charge?.balance_transaction && typeof charge.balance_transaction === 'object'
             ? fromStripeAmount((charge.balance_transaction as Stripe.BalanceTransaction).fee)
             : 0,
-        metadata: { stripe_payment_intent: pi.id, ...pi.metadata },
+        // Spread user metadata FIRST so our authoritative keys (stripe_payment_intent)
+        // can't be overwritten by Stripe-side metadata that happens to share the name.
+        metadata: { ...pi.metadata, stripe_payment_intent: pi.id },
     };
 }

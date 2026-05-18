@@ -21,11 +21,23 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
     const secret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
     if (!secret || secret.startsWith('whsec_REPLACE')) {
-        return NextResponse.json({ error: 'STRIPE_WEBHOOK_SECRET not configured' }, { status: 500 });
+        // 503 + Retry-After so Stripe backs off but eventually redelivers
+        // once keys are configured. 500 would also retry but trigger more
+        // aggressive alerting on Stripe's side.
+        return new NextResponse(
+            JSON.stringify({ error: 'STRIPE_WEBHOOK_SECRET not configured' }),
+            { status: 503, headers: { 'Content-Type': 'application/json', 'Retry-After': '3600' } },
+        );
     }
 
-    const sig = (await headers()).get('stripe-signature') ?? '';
+    const sig = (await headers()).get('stripe-signature');
+    if (!sig) {
+        return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 });
+    }
     const raw = await req.text();
+    if (!raw) {
+        return NextResponse.json({ error: 'Empty body' }, { status: 400 });
+    }
 
     let event;
     try {

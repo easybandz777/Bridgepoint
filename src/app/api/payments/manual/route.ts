@@ -44,8 +44,10 @@ interface ErrorResponse {
 
 const ALLOWED_METHODS: readonly ManualMethod[] = ['check', 'cash', 'other'];
 
+/** Local-tz YYYY-MM-DD so a check entered at 9pm Pacific doesn't backdate to UTC tomorrow. */
 function todayIso(): string {
-    return new Date().toISOString().slice(0, 10);
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 export async function POST(
@@ -54,7 +56,15 @@ export async function POST(
     try {
         await initDB();
 
-        const body = (await req.json()) as ManualPaymentBody;
+        let body: ManualPaymentBody;
+        try {
+            body = (await req.json()) as ManualPaymentBody;
+        } catch {
+            return NextResponse.json({ error: 'Invalid or missing JSON body' }, { status: 400 });
+        }
+        if (!body || typeof body !== 'object') {
+            return NextResponse.json({ error: 'Body must be a JSON object' }, { status: 400 });
+        }
 
         const invoiceId = typeof body.invoiceId === 'string' ? body.invoiceId.trim() : '';
         if (!invoiceId) {
