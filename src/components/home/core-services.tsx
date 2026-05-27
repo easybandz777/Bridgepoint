@@ -8,6 +8,7 @@ import { AnimatedSection } from '@/components/shared/animated-section';
 // ── Real gallery photo paths ─────────────────────────────────────────────────
 const FLOORING = (n: string) => `/images/gallery/flooring/${n}`;
 const BATH = (n: string) => `/images/gallery/bathrooms/${n}`;
+const KITCHEN = (n: string) => `/images/gallery/kitchens/${n}`;
 
 interface ServiceSection {
     id: string;
@@ -94,11 +95,11 @@ const SECTIONS: ServiceSection[] = [
             'Full kitchen renovation coordination',
         ],
         cta: { label: 'Request a Kitchen Consultation', href: '/contact' },
-        mainImage: BATH('10.jpg'),
+        mainImage: KITCHEN('01.jpg'),
         gallery: [
-            BATH('12.jpg'),
-            BATH('14.jpg'),
-            BATH('16.jpg'),
+            KITCHEN('02.jpg'),
+            KITCHEN('03.jpg'),
+            KITCHEN('04.jpg'),
         ],
         flip: true,
     },
